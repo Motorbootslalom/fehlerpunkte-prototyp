@@ -62,15 +62,17 @@ const s = StyleSheet.create({
   groupLabel: { textAlign: 'center', fontWeight: 'bold', fontSize: 7.5, borderBottomWidth: 0.5, borderColor: INK, paddingVertical: 1 },
   subRow: { flexDirection: 'row', flexGrow: 1 },
   shaded: { backgroundColor: '#dcdcdc' },
-  sumCell: { backgroundColor: '#fafafa', fontWeight: 'bold' },
+  // Kein eigener Hintergrund: sonst überdeckt er die Grau-Schattierung der
+  // 5. Zeile. Die fette Schrift kennzeichnet die berechnete Spalte.
+  sumCell: { fontWeight: 'bold' },
   leftText: { textAlign: 'left' },
 
   legend: { marginTop: 6, fontSize: 7 },
   legendTitle: { fontWeight: 'bold', textDecoration: 'underline', marginBottom: 2, marginTop: 4 },
   legendRow: { flexDirection: 'row', marginBottom: 0.5 },
   lcCode: { width: 16, fontWeight: 'bold', textAlign: 'center' },
-  lcText: { flex: 1 },
-  lcPts: { width: 22, textAlign: 'right', fontWeight: 'bold' },
+  lcText: { flexShrink: 1 }, // nur so breit wie der Text – nicht bis zum Rand füllen
+  lcPts: { marginLeft: 10, fontWeight: 'bold' }, // Punkte direkt hinter der Beschreibung
   // Kein fontStyle: 'italic' – die eingebettete Schrift hat keine Kursiv-Variante
   // registriert (react-pdf würde sonst beim Auflösen hängen).
   note: { fontSize: 7, color: '#333', marginBottom: 1 },
