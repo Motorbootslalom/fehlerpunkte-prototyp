@@ -137,7 +137,16 @@ Zwei Wege sind vorgesehen (im Prototyp beide vorhanden, zum **Vergleich**):
    Knoten). „Als PDF speichern“ läuft über den Druckdialog → scharfer,
    auswählbarer Text, keine Zusatzbibliothek.
 2. **JS-Download** (html2canvas + jsPDF): direkter PDF-Download ohne Dialog.
-   Nachteil: rasterisierter (nicht auswählbarer) Text.
+   Nachteil: rasterisierter (nicht auswählbarer) Text. QR-Codes werden als
+   Canvas neu gezeichnet, da html2canvas SVG nicht erfasst.
+3. **Vektor-Prototyp** (`pdf.html`, `@react-pdf/renderer`): echtes, kleines
+   Vektor-PDF mit Live-Vorschau und Ein-Klick-Download; Kopf und
+   Spaltenüberschriften wiederholen sich zuverlässig auf jeder Seite, mit
+   Seitenzahlen und Vektor-QR. Dient dem Vergleich der Lösungen.
+
+Der Dateiname wird bei Browser-Druck und Vektor-Prototyp automatisch gebildet:
+`Fehlerpunkte – <Event> [– <Position>] [– Klasse X] [– N. Lauf] – <Zeitstempel>`,
+wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
 
 ## 9. Scanner-Erfassung (spätere Ausbaustufe)
 

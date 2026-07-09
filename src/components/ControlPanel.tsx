@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { getSheetDef, KLASSEN_LISTEN_ORDER, SHEET_TYPE_ORDER } from '../lib/sheetDefs'
 import { extendNumbers, formatNumbers, parseNumbers, shrinkNumbers } from '../lib/demo'
 import { exportSheetsToPdf } from '../lib/exportPdf'
-import { exportBaseName, printWithFilename } from '../lib/print'
+import { describeBoegen, exportBaseName, printWithFilename } from '../lib/print'
 import { useStore } from '../state/store'
 import { CLASS_IDS, type ClassId, type Lauf, type SheetTypeId } from '../types'
 
@@ -22,23 +22,11 @@ export function ControlPanel() {
 
   // Beschreibung aus der aktuellen Bogen-Auswahl: Position/Klasse/Lauf, aber nur
   // wenn eindeutig (alle Bögen teilen denselben Wert).
-  function describeSelection(): string {
-    const bs = state.boegen
-    if (bs.length === 0) return ''
-    const parts: string[] = []
-    const types = [...new Set(bs.map((b) => b.typeId))]
-    const classes = [...new Set(bs.map((b) => b.klasse))]
-    const laeufe = [...new Set(bs.map((b) => b.lauf))]
-    if (types.length === 1) parts.push(getSheetDef(types[0]).title)
-    if (classes.length === 1) parts.push(`Klasse ${classes[0]}`)
-    if (laeufe.length === 1) parts.push(`${laeufe[0]}. Lauf`)
-    return parts.join(' – ')
-  }
-
+  const describe = () => describeBoegen(state.boegen, (t) => getSheetDef(t).title)
   // Ohne Zeitstempel für die Vorschau in der Bedienleiste …
-  const namePreview = exportBaseName(state.eventName, describeSelection())
+  const namePreview = exportBaseName(state.eventName, describe())
   // … mit Zeitstempel wird der Name erst beim Klick erzeugt.
-  const currentName = () => exportBaseName(state.eventName, describeSelection(), new Date())
+  const currentName = () => exportBaseName(state.eventName, describe(), new Date())
 
   async function downloadPdf() {
     setBusy(true)
@@ -97,6 +85,9 @@ export function ControlPanel() {
           <br />
           Dateiname: <code>{namePreview} – …Uhr</code>
         </p>
+        <a className="alt-link" href="./pdf.html">
+          🧪 Vergleich: Vektor-PDF-Prototyp (react-pdf) öffnen →
+        </a>
       </section>
 
       <section>

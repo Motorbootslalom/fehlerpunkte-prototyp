@@ -34,8 +34,9 @@ bleiben ausschließlich **lokal im Browser** (localStorage) und überleben ein R
 - **Parcoursbilder** (SVG) je Klasse auf den Tor-/Parcours-Bögen.
 - **QR-Code** je Bogen für die spätere automatische Scanner-Zuordnung
   (Listentyp/Klasse/Lauf).
-- **Zwei Export-Wege zum Vergleich:** Browser-Druck („Als PDF speichern“,
-  scharfer Text) und direkter JS-PDF-Download (html2canvas + jsPDF, rasterisiert).
+- **Drei Export-Wege zum Vergleich** (siehe unten): Browser-Druck, Raster-PDF
+  (html2canvas + jsPDF) und ein **zweiter Prototyp als echtes Vektor-PDF**
+  (`@react-pdf/renderer`, eigene Seite `pdf.html`).
 - **Bögen zusammenstellen:** Listentyp, Klasse und Lauf je Bogen wählen,
   sortieren, hinzufügen/entfernen; Startnummern editierbar.
 
@@ -47,6 +48,29 @@ Links die Steuerleiste (nur am Bildschirm, im Druck ausgeblendet):
 2. Unter **Bögen** die gewünschten Listen zusammenstellen (Typ/Klasse/Lauf).
 3. In den Bögen rechts die Werte eintragen – Σ und Zeiten aktualisieren sich live.
 4. **Drucken / Als PDF (Browser)** oder **PDF herunterladen (JS)**.
+
+## PDF-Export – drei Wege im Vergleich
+
+Es gibt **zwei Einstiegspunkte** (Multi-Page-Build):
+
+| Seite | URL | Ansatz |
+| ----- | --- | ------ |
+| Haupt-Prototyp | `index.html` | Eingabemaske + **Browser-Druck** (Vektor) & **Raster-Download** |
+| Vektor-Prototyp | `pdf.html` | **echtes Vektor-PDF** via `@react-pdf/renderer` |
+
+- **Browser-Druck → „Als PDF speichern"** (empfohlen): scharfer, markierbarer
+  Text inkl. QR-Codes. Dateiname wird über `document.title` vorgeschlagen
+  (mit Zeitstempel und – falls eindeutig – Position/Klasse/Lauf).
+- **Raster-Download** (html2canvas + jsPDF): Ein-Klick-Download, aber gerastert
+  (unschärfer). QR-Codes werden dafür als Canvas neu gezeichnet.
+- **Vektor-Prototyp** (`pdf.html`): echtes, kleines Vektor-PDF mit Live-Vorschau
+  und Ein-Klick-Download. Kopf **und** Spaltenüberschriften wiederholen sich
+  zuverlässig auf jeder Seite (react-pdf `fixed`), inkl. Seitenzahlen und
+  Vektor-QR. Konfiguriert wird im Haupt-Prototyp (gemeinsamer localStorage);
+  die Vergleichsseite dann neu laden. Das Parcoursbild ist hier (noch) nicht
+  eingebettet.
+
+Beide Seiten sind über einen Link miteinander verbunden.
 
 ## Entwicklung
 
@@ -90,5 +114,6 @@ Die Parcoursbilder unter `public/parcours/` stammen aus `../Parcours/dist/`
 
 ## Tech-Stack
 
-React 19 · TypeScript · Vite · qrcode-generator (QR) · html2canvas + jsPDF
-(JS-PDF-Variante). Persistenz via localStorage.
+React 19 · TypeScript · Vite (Multi-Page) · qrcode-generator (QR) ·
+html2canvas + jsPDF (Raster-Variante) · @react-pdf/renderer (Vektor-Prototyp).
+Persistenz via localStorage.

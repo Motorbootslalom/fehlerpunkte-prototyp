@@ -1,3 +1,21 @@
+import type { Bogen, SheetTypeId } from '../types'
+
+/**
+ * Beschreibung aus der Bogen-Auswahl: Position (Listentyp) / Klasse / Lauf –
+ * aber nur die Teile, die über alle Bögen eindeutig sind.
+ */
+export function describeBoegen(boegen: Bogen[], titleOf: (t: SheetTypeId) => string): string {
+  if (boegen.length === 0) return ''
+  const parts: string[] = []
+  const types = [...new Set(boegen.map((b) => b.typeId))]
+  const classes = [...new Set(boegen.map((b) => b.klasse))]
+  const laeufe = [...new Set(boegen.map((b) => b.lauf))]
+  if (types.length === 1) parts.push(titleOf(types[0]))
+  if (classes.length === 1) parts.push(`Klasse ${classes[0]}`)
+  if (laeufe.length === 1) parts.push(`${laeufe[0]}. Lauf`)
+  return parts.join(' – ')
+}
+
 // Browser-Druck mit vorgeschlagenem Dateinamen.
 //
 // Trick: Chrome/Edge/Firefox verwenden im "Als PDF speichern"-Dialog den
