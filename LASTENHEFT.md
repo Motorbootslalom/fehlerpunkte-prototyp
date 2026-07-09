@@ -142,7 +142,8 @@ Zwei Wege sind vorgesehen (im Prototyp beide vorhanden, zum **Vergleich**):
 3. **Vektor-Prototyp** (`pdf.html`, `@react-pdf/renderer`): echtes, kleines
    Vektor-PDF mit Live-Vorschau und Ein-Klick-Download; Kopf und
    Spaltenüberschriften wiederholen sich zuverlässig auf jeder Seite, mit
-   Seitenzahlen und Vektor-QR. Dient dem Vergleich der Lösungen.
+   mittiger Seitenzahl, Vektor-QR, eingebetteter Schrift (korrektes „Σ") und
+   eingebettetem Parcoursbild (PNG; Tor-Bögen gedreht). Dient dem Vergleich.
 
 Der Dateiname wird bei Browser-Druck und Vektor-Prototyp automatisch gebildet:
 `Fehlerpunkte – <Event> [– <Position>] [– Klasse X] [– N. Lauf] – <Zeitstempel>`,

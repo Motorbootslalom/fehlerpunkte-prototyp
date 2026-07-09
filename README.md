@@ -65,10 +65,15 @@ Es gibt **zwei Einstiegspunkte** (Multi-Page-Build):
   (unschärfer). QR-Codes werden dafür als Canvas neu gezeichnet.
 - **Vektor-Prototyp** (`pdf.html`): echtes, kleines Vektor-PDF mit Live-Vorschau
   und Ein-Klick-Download. Kopf **und** Spaltenüberschriften wiederholen sich
-  zuverlässig auf jeder Seite (react-pdf `fixed`), inkl. Seitenzahlen und
-  Vektor-QR. Konfiguriert wird im Haupt-Prototyp (gemeinsamer localStorage);
-  die Vergleichsseite dann neu laden. Das Parcoursbild ist hier (noch) nicht
-  eingebettet.
+  zuverlässig auf jeder Seite (react-pdf `fixed`), inkl. mittiger Seitenzahlen,
+  Vektor-QR und eingebetteter Schrift (Liberation Sans → korrektes „Σ"). Das
+  **Parcoursbild** wird als PNG eingebettet – für die Tor-Bögen 90° gedreht,
+  für Tor 5/Parcours quer (per Schalter ab-/zuschaltbar). Konfiguriert wird im
+  Haupt-Prototyp (gemeinsamer localStorage); die Vergleichsseite dann neu laden.
+
+Die Parcoursbilder liegen unter `../Parcours/dist/` als **SVG, PNG und PDF** vor
+(eigenes Querformat ~226 × 95 mm, Seitenverhältnis 2,36:1 – kein A4). Der
+Haupt-Prototyp nutzt die SVGs, der Vektor-Prototyp die PNGs.
 
 Beide Seiten sind über einen Link miteinander verbunden.
 

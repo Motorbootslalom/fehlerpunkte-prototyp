@@ -40,6 +40,15 @@ body,
   gap: 10px;
 }
 
+.pdf-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #c9d3e2;
+  cursor: pointer;
+}
+
 .pdf-back {
   color: #c9d3e2;
   text-decoration: none;

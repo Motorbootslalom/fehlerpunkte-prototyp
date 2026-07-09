@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import { getSheetDef } from '../lib/sheetDefs'
 import { describeBoegen, exportBaseName } from '../lib/print'
 import { useStore } from '../state/store'
-import { SheetsDocument } from './SheetsDocument'
+import { SheetsDocument, type CourseImages } from './SheetsDocument'
+import { loadCourseImages } from './courseImages'
 
 // Zweiter Prototyp: echtes Vektor-PDF via @react-pdf/renderer.
 // Konfiguriert wird im Haupt-Prototyp (gemeinsamer localStorage-Zustand);
@@ -10,7 +12,24 @@ import { SheetsDocument } from './SheetsDocument'
 
 export function PdfApp() {
   const { state } = useStore()
-  const doc = <SheetsDocument state={state} />
+  const [images, setImages] = useState<CourseImages>({})
+  const [withImages, setWithImages] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    if (!withImages) {
+      setImages({})
+      return
+    }
+    loadCourseImages(state.boegen, import.meta.env.BASE_URL).then((imgs) => {
+      if (!cancelled) setImages(imgs)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [state.boegen, withImages])
+
+  const doc = <SheetsDocument state={state} images={images} />
   const name =
     exportBaseName(
       state.eventName,
@@ -26,6 +45,14 @@ export function PdfApp() {
           <span className="pdf-sub">react-pdf · scharfer Text · Vektor-QR · Ein-Klick-Download</span>
         </div>
         <div className="pdf-bar-right">
+          <label className="pdf-toggle" title="Parcoursbild als PNG einbetten">
+            <input
+              type="checkbox"
+              checked={withImages}
+              onChange={(e) => setWithImages(e.target.checked)}
+            />
+            Parcoursbild
+          </label>
           <a href="./index.html" className="pdf-back">
             ← Haupt-Prototyp
           </a>

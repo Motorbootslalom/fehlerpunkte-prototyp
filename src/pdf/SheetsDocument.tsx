@@ -1,4 +1,4 @@
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
+import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 import type { Style } from '@react-pdf/types'
 import { DISQ_TABLE, getSheetDef } from '../lib/sheetDefs'
 import { cellKey, scoreRow } from '../lib/scoring'
@@ -11,10 +11,20 @@ import { QrPdf } from './Qr'
 // Browser-Druck / Raster-Export. Nutzt dieselben Sheet-Definitionen und
 // dieselbe Punkte-/Disq-Logik wie der Haupt-Prototyp.
 
+// Eingebettete Schrift (Liberation Sans, Arial-metrisch) – enthält Σ und
+// Umlaute, anders als die eingebaute Helvetica.
+Font.register({
+  family: 'Sheet',
+  fonts: [
+    { src: `${import.meta.env.BASE_URL}fonts/LiberationSans-Regular.ttf`, fontWeight: 400 },
+    { src: `${import.meta.env.BASE_URL}fonts/LiberationSans-Bold.ttf`, fontWeight: 700 },
+  ],
+})
+
 const INK = '#000000'
 
 const s = StyleSheet.create({
-  page: { paddingTop: 16, paddingBottom: 26, paddingHorizontal: 16, fontSize: 8, fontFamily: 'Helvetica' },
+  page: { paddingTop: 16, paddingBottom: 26, paddingHorizontal: 16, fontSize: 8, fontFamily: 'Sheet' },
   headerBox: { borderWidth: 1.4, borderColor: INK, marginBottom: 5 },
   eventBar: {
     flexDirection: 'row',
@@ -26,12 +36,12 @@ const s = StyleSheet.create({
     position: 'relative',
     paddingVertical: 3,
   },
-  eventTitle: { fontSize: 15, fontFamily: 'Helvetica-Bold' },
+  eventTitle: { fontSize: 15, fontWeight: 'bold' },
   qrWrap: { position: 'absolute', right: 3, top: 3 },
   headerBody: { flexDirection: 'row' },
   headerLeft: { width: 110, borderRightWidth: 1.4, borderColor: INK },
   hlCell: { borderBottomWidth: 1, borderColor: INK, paddingVertical: 3, textAlign: 'center', fontSize: 9 },
-  hlTitle: { fontFamily: 'Helvetica-Bold' },
+  hlTitle: { fontWeight: 'bold' },
   wkrBox: { flex: 1, flexDirection: 'row', padding: 4, gap: 4 },
   wkrLabel: { fontSize: 9 },
 
@@ -47,27 +57,30 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 14,
   },
-  headCell: { fontFamily: 'Helvetica-Bold', fontSize: 7.5, backgroundColor: '#fff' },
+  headCell: { fontWeight: 'bold', fontSize: 7.5, backgroundColor: '#fff' },
   groupCell: { padding: 0, flexDirection: 'column' },
-  groupLabel: { textAlign: 'center', fontFamily: 'Helvetica-Bold', fontSize: 7.5, borderBottomWidth: 0.5, borderColor: INK, paddingVertical: 1 },
+  groupLabel: { textAlign: 'center', fontWeight: 'bold', fontSize: 7.5, borderBottomWidth: 0.5, borderColor: INK, paddingVertical: 1 },
   subRow: { flexDirection: 'row', flexGrow: 1 },
   shaded: { backgroundColor: '#dcdcdc' },
-  sumCell: { backgroundColor: '#fafafa', fontFamily: 'Helvetica-Bold' },
+  sumCell: { backgroundColor: '#fafafa', fontWeight: 'bold' },
   leftText: { textAlign: 'left' },
 
   legend: { marginTop: 6, fontSize: 7 },
-  legendTitle: { fontFamily: 'Helvetica-Bold', textDecoration: 'underline', marginBottom: 2, marginTop: 4 },
+  legendTitle: { fontWeight: 'bold', textDecoration: 'underline', marginBottom: 2, marginTop: 4 },
   legendRow: { flexDirection: 'row', marginBottom: 0.5 },
-  lcCode: { width: 16, fontFamily: 'Helvetica-Bold', textAlign: 'center' },
+  lcCode: { width: 16, fontWeight: 'bold', textAlign: 'center' },
   lcText: { flex: 1 },
-  lcPts: { width: 22, textAlign: 'right', fontFamily: 'Helvetica-Bold' },
-  note: { fontSize: 7, fontStyle: 'italic', marginBottom: 1 },
-  courseNote: { fontSize: 7, fontStyle: 'italic', color: '#555', marginTop: 4 },
+  lcPts: { width: 22, textAlign: 'right', fontWeight: 'bold' },
+  // Kein fontStyle: 'italic' – die eingebettete Schrift hat keine Kursiv-Variante
+  // registriert (react-pdf würde sonst beim Auflösen hängen).
+  note: { fontSize: 7, color: '#333', marginBottom: 1 },
 
   signature: { marginTop: 14, alignItems: 'flex-end' },
   sigLine: { width: 160, borderTopWidth: 0.6, borderColor: INK, marginBottom: 2 },
   sigLabel: { fontSize: 8 },
-  pageNum: { position: 'absolute', bottom: 10, right: 16, fontSize: 7, color: '#555' },
+  pageNum: { position: 'absolute', bottom: 10, left: 0, right: 0, textAlign: 'center', fontSize: 7, color: '#555' },
+  course: { marginTop: 6 },
+  courseImg: { objectFit: 'contain' },
 })
 
 interface Leaf {
@@ -94,11 +107,6 @@ function colFlex(kind: CellKind, grow?: number): { width?: number; flexGrow?: nu
 
 const NR_WIDTH = 26
 
-// Die eingebaute Helvetica (WinAnsi) kennt kein Σ – im PDF als "Pkt." zeigen.
-function pdfLabel(label: string): string {
-  return label === 'Σ' ? 'Pkt.' : label
-}
-
 interface RowData {
   id: string
   nr: string
@@ -106,17 +114,24 @@ interface RowData {
   shaded: boolean
 }
 
-export function SheetsDocument({ state }: { state: AppState }) {
+/** key = "<courseImageDir>/<klasse>" → data-URI (Tor-Bögen bereits gedreht). */
+export type CourseImages = Record<string, string>
+
+export function courseKey(dir: string, klasse: string): string {
+  return `${dir}/${klasse}`
+}
+
+export function SheetsDocument({ state, images }: { state: AppState; images: CourseImages }) {
   return (
     <Document title="Fehlerpunkte">
       {state.boegen.map((b) => (
-        <SheetPage key={b.id} state={state} bogen={b} />
+        <SheetPage key={b.id} state={state} bogen={b} images={images} />
       ))}
     </Document>
   )
 }
 
-function SheetPage({ state, bogen }: { state: AppState; bogen: Bogen }) {
+function SheetPage({ state, bogen, images }: { state: AppState; bogen: Bogen; images: CourseImages }) {
   const def = getSheetDef(bogen.typeId)
   const nums = state.numbers[bogen.klasse] ?? []
   const values = state.values[bogen.id] ?? {}
@@ -165,7 +180,7 @@ function SheetPage({ state, bogen }: { state: AppState; bogen: Bogen }) {
         })}
       </View>
 
-      <Legend def={def} bogen={bogen} />
+      <CourseFooter def={def} bogen={bogen} images={images} />
 
       <View style={s.signature}>
         <View style={s.sigLine} />
@@ -233,7 +248,7 @@ function HeaderRows({ def }: { def: SheetDef }) {
         }
         return (
           <Text key={col.key} style={[s.cell, s.headCell, flex]}>
-            {pdfLabel(col.label)}
+            {col.label}
           </Text>
         )
       })}
@@ -279,7 +294,50 @@ function DataCell({
   return <Text style={[s.cell, flex, extra]}>{text}</Text>
 }
 
-function Legend({ def, bogen }: { def: SheetDef; bogen: Bogen }) {
+// Tor-Bögen zeigen das (gedrehte) Bild rechts neben der Legende, sonst quer darunter.
+function isGate(t: Bogen['typeId']): boolean {
+  return t === 'gate135' || t === 'gate245'
+}
+
+function CourseFooter({
+  def,
+  bogen,
+  images,
+}: {
+  def: SheetDef
+  bogen: Bogen
+  images: CourseImages
+}) {
+  const uri = def.courseImageDir ? images[courseKey(def.courseImageDir, bogen.klasse)] : undefined
+  const gate = isGate(bogen.typeId)
+
+  if (gate && uri) {
+    return (
+      <View style={{ flexDirection: 'row', marginTop: 6 }}>
+        <View style={{ flex: 1 }}>
+          <Legend def={def} />
+        </View>
+        <View style={{ width: 90, marginLeft: 6, borderWidth: 1, borderColor: '#7a86c9', borderStyle: 'dashed', padding: 3 }}>
+          <Image src={uri} style={[s.courseImg, { width: 82 }]} />
+        </View>
+      </View>
+    )
+  }
+  return (
+    <View>
+      <Legend def={def} />
+      {uri && (
+        <View style={{ marginTop: 6, alignItems: 'center' }}>
+          <View style={{ width: 320, borderWidth: 1, borderColor: '#7a86c9', borderStyle: 'dashed', padding: 3 }}>
+            <Image src={uri} style={[s.courseImg, { width: 312 }]} />
+          </View>
+        </View>
+      )}
+    </View>
+  )
+}
+
+function Legend({ def }: { def: SheetDef }) {
   return (
     <View style={s.legend}>
       {def.errorTable && (
@@ -307,12 +365,6 @@ function Legend({ def, bogen }: { def: SheetDef; bogen: Bogen }) {
             </View>
           ))}
         </View>
-      )}
-
-      {def.courseImageDir && (
-        <Text style={s.courseNote}>
-          (Parcoursbild Klasse {bogen.klasse} – im Vektor-Prototyp nicht eingebettet)
-        </Text>
       )}
     </View>
   )
