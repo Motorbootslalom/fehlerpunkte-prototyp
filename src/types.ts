@@ -1,0 +1,109 @@
+// Kern-Datenmodell des Fehlerpunkte-Prototyps.
+//
+// Ein "Bogen" (WKR-Liste) entsteht aus der Kombination von Listentyp,
+// Klasse und Lauf. Der Aufbau der Bögen ist datengetrieben über SheetDef
+// beschrieben – ein einziger generischer Renderer stellt alle Typen dar.
+
+export type ClassId = 'E' | '1' | '2' | '3' | '4' | '5' | '6' | '7'
+
+export const CLASS_IDS: ClassId[] = ['E', '1', '2', '3', '4', '5', '6', '7']
+
+export type Lauf = 1 | 2 | 3
+
+/** Kennung der Listentypen (Stationen am Parcours). */
+export type SheetTypeId =
+  | 'gate135' // Tore 1 / 3 / 5
+  | 'gate245' // Tore 2 / 4 / 5
+  | 'tor5' // Tor 5 (Einfahrt + Parcoursüberwachung)
+  | 'mueb' // Mann-über-Bord / Schikane
+  | 'steg' // Steg (Ablegen / Anlegen)
+  | 'zeit' // Zeitnahme
+  | 'knoten' // Knoten
+  | 'parcours' // Parcours einfach (nur Fahrweg)
+
+/** Verhalten einer Eingabezelle. */
+export type CellKind =
+  | 'buoy' // Anzahl Bojenberührungen → Punkte = Anzahl × weight; Buchstabe A–X = Disq an dieser Stelle
+  | 'code' // Fehlercode(s) aus der Legende, kommagetrennt → Punkte laut errorTable
+  | 'points' // direkte Punkteingabe → fließt in Σ
+  | 'time' // Zeiteingabe (Sonderformatierung, siehe lib/time)
+  | 'disq' // Disqualifikations-Buchstabe A–X
+  | 'text' // Freitext (Bemerkung)
+  | 'sum' // berechnete Σ-Zelle (nur Anzeige)
+
+export interface Column {
+  key: string
+  label: string
+  kind: CellKind
+  /**
+   * Unter-Spalten (z. B. Blickrichtungen "H K" / "H H" an einem Tor). Jede
+   * erzeugt eine eigene Zelle; der Kopf wird dann zweizeilig dargestellt.
+   */
+  sub?: string[]
+  /**
+   * Nur für 'code'-Zellen: Schlüssel der 'sum'-Spalte, in der die aus den
+   * Codes berechneten Punkte (read-only) angezeigt werden.
+   */
+  pointsCol?: string
+  /** Relative Spaltenbreite (CSS-Flexbasis-artig, nur grobe Steuerung). */
+  grow?: number
+}
+
+export interface ErrorDef {
+  code: string
+  text: string
+  punkte: number
+}
+
+export interface DisqDef {
+  code: string
+  text: string
+}
+
+export interface SheetDef {
+  typeId: SheetTypeId
+  /** Kurzname (erscheint links im Kopf), z. B. "Mann-über-Bord". */
+  title: string
+  /** Ausführlicher Name für Auswahl-Menüs. */
+  menuLabel: string
+  orientation: 'portrait' | 'landscape'
+  columns: Column[]
+  /** Schlüssel der Spalte, die die berechnete Σ zeigt (falls vorhanden). */
+  sumColumnKey?: string
+  /** Fehlercodes → Punkte (für Legende und Auto-Summe der 'code'-Zellen). */
+  errorTable?: ErrorDef[]
+  /** Überschrift über der errorTable-Legende. */
+  errorTableTitle?: string
+  /** Zeigt die vollständige Disqualifikations-Tabelle A–X in der Legende. */
+  showDisqTable?: boolean
+  /** Zusätzliche Hinweiszeile in der Legende. */
+  legendNote?: string
+  /** Bindet das Parcours-Bild ein (gate*, tor5, parcours). */
+  courseImageDir?: 'alcatraz_I' | 'alcatraz_II' | 'alcatraz_Parcours'
+}
+
+/** Ein Bogen = konkrete Instanz eines Listentyps für Klasse + Lauf. */
+export interface Bogen {
+  id: string
+  typeId: SheetTypeId
+  klasse: ClassId
+  lauf: Lauf
+}
+
+/** Zellwerte werden flach als Map gespeichert: bogenId → "nr:colKey" → value. */
+export type SheetValues = Record<string, Record<string, string>>
+
+export interface AppState {
+  eventName: string
+  /** Anzahl leerer Zeilen, die nach den Startnummern angehängt werden. */
+  emptyRows: number
+  /** Startnummern je Klasse (Reihenfolge = Startreihenfolge). */
+  numbers: Partial<Record<ClassId, number[]>>
+  /** WKR-Name je Bogen. */
+  wkr: Record<string, string>
+  /** Aktuell im Setup zusammengestellte Bögen. */
+  boegen: Bogen[]
+  /** Eingetragene Zellwerte. */
+  values: SheetValues
+  initialized: boolean
+}
