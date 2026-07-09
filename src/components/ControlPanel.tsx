@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { getSheetDef, KLASSEN_LISTEN_ORDER, SHEET_TYPE_ORDER } from '../lib/sheetDefs'
 import { extendNumbers, formatNumbers, parseNumbers, shrinkNumbers } from '../lib/demo'
 import { exportSheetsToPdf } from '../lib/exportPdf'
+import { exportBaseName, printWithFilename } from '../lib/print'
 import { useStore } from '../state/store'
 import { CLASS_IDS, type ClassId, type Lauf, type SheetTypeId } from '../types'
 
@@ -19,10 +20,30 @@ export function ControlPanel() {
   const bulk = (items: { typeId: SheetTypeId; klasse: ClassId; lauf: Lauf }[]) =>
     dispatch({ type: 'ADD_BOEGEN_BULK', items })
 
+  // Beschreibung aus der aktuellen Bogen-Auswahl: Position/Klasse/Lauf, aber nur
+  // wenn eindeutig (alle Bögen teilen denselben Wert).
+  function describeSelection(): string {
+    const bs = state.boegen
+    if (bs.length === 0) return ''
+    const parts: string[] = []
+    const types = [...new Set(bs.map((b) => b.typeId))]
+    const classes = [...new Set(bs.map((b) => b.klasse))]
+    const laeufe = [...new Set(bs.map((b) => b.lauf))]
+    if (types.length === 1) parts.push(getSheetDef(types[0]).title)
+    if (classes.length === 1) parts.push(`Klasse ${classes[0]}`)
+    if (laeufe.length === 1) parts.push(`${laeufe[0]}. Lauf`)
+    return parts.join(' – ')
+  }
+
+  // Ohne Zeitstempel für die Vorschau in der Bedienleiste …
+  const namePreview = exportBaseName(state.eventName, describeSelection())
+  // … mit Zeitstempel wird der Name erst beim Klick erzeugt.
+  const currentName = () => exportBaseName(state.eventName, describeSelection(), new Date())
+
   async function downloadPdf() {
     setBusy(true)
     try {
-      await exportSheetsToPdf(`Fehlerpunkte_${slug(state.eventName)}.pdf`)
+      await exportSheetsToPdf(`${currentName()}.pdf`)
     } finally {
       setBusy(false)
     }
@@ -59,16 +80,22 @@ export function ControlPanel() {
       <section>
         <h2>Export</h2>
         <div className="btn-row">
-          <button onClick={() => window.print()} title="Öffnet den Druckdialog; dort auch „Als PDF speichern“">
-            🖨 Drucken / Als PDF (Browser)
+          <button
+            onClick={() => printWithFilename(currentName())}
+            title="Öffnet den Druckdialog; „Als PDF speichern“ schlägt den Dateinamen unten vor"
+          >
+            🖨 Drucken / Als PDF (empfohlen)
           </button>
           <button onClick={downloadPdf} disabled={busy}>
-            {busy ? '… erzeuge PDF' : '⬇ PDF herunterladen (JS)'}
+            {busy ? '… erzeuge PDF' : '⬇ PDF herunterladen (Bild)'}
           </button>
         </div>
         <p className="hint">
-          Zwei Wege zum Vergleich: Der Browser-Druck liefert scharfen, auswählbaren Text; die
-          JS-Variante lädt eine (rasterisierte) PDF direkt herunter.
+          <strong>Empfohlen:</strong> Browser-Druck → „Als PDF speichern“ liefert scharfen,
+          markierbaren Text inkl. QR-Codes (Tipp: im Dialog „Kopf- und Fußzeilen“ deaktivieren).
+          Der Download-Button erzeugt eine gerasterte Bild-PDF (unschärfer) – nur als Fallback.
+          <br />
+          Dateiname: <code>{namePreview} – …Uhr</code>
         </p>
       </section>
 
@@ -325,8 +352,4 @@ export function ControlPanel() {
       </footer>
     </aside>
   )
-}
-
-function slug(s: string): string {
-  return s.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'listen'
 }

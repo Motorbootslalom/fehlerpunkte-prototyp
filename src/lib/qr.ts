@@ -21,6 +21,21 @@ function slug(s: string): string {
     .slice(0, 40)
 }
 
+/** QR-Modulmatrix (true = dunkles Modul) – z. B. zum Zeichnen auf ein Canvas. */
+export function qrModules(text: string): boolean[][] {
+  const qr = qrcode(0, 'M')
+  qr.addData(text)
+  qr.make()
+  const count = qr.getModuleCount()
+  const out: boolean[][] = []
+  for (let r = 0; r < count; r++) {
+    const row: boolean[] = []
+    for (let c = 0; c < count; c++) row.push(qr.isDark(r, c))
+    out.push(row)
+  }
+  return out
+}
+
 /** Erzeugt einen scharfen SVG-QR-Code als data:-URI (für <img> und Druck). */
 export function qrSvgDataUri(text: string): string {
   const qr = qrcode(0, 'M')
