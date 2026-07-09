@@ -71,8 +71,8 @@ const s = StyleSheet.create({
   legendTitle: { fontWeight: 'bold', textDecoration: 'underline', marginBottom: 2, marginTop: 4 },
   legendRow: { flexDirection: 'row', marginBottom: 0.5 },
   lcCode: { width: 16, fontWeight: 'bold', textAlign: 'center' },
-  lcText: { flexShrink: 1 }, // nur so breit wie der Text – nicht bis zum Rand füllen
-  lcPts: { marginLeft: 10, fontWeight: 'bold' }, // Punkte direkt hinter der Beschreibung
+  lcText: {}, // Breite/Flex wird je Kontext inline gesetzt
+  lcPts: { width: 24, textAlign: 'right', fontWeight: 'bold', marginLeft: 6 }, // ausgerichtete Punkte-Spalte
   // Kein fontStyle: 'italic' – die eingebettete Schrift hat keine Kursiv-Variante
   // registriert (react-pdf würde sonst beim Auflösen hängen).
   note: { fontSize: 7, color: '#333', marginBottom: 1 },
@@ -123,17 +123,44 @@ export function courseKey(dir: string, klasse: string): string {
   return `${dir}/${klasse}`
 }
 
-export function SheetsDocument({ state, images }: { state: AppState; images: CourseImages }) {
+/** Breite der Beschreibungsspalte je Listentyp (in pt), im Browser gemessen. */
+export type LegendWidths = Record<string, number>
+
+export function SheetsDocument({
+  state,
+  images,
+  legendWidths,
+}: {
+  state: AppState
+  images: CourseImages
+  legendWidths?: LegendWidths
+}) {
   return (
     <Document title="Fehlerpunkte">
       {state.boegen.map((b) => (
-        <SheetPage key={b.id} state={state} bogen={b} images={images} />
+        <SheetPage
+          key={b.id}
+          state={state}
+          bogen={b}
+          images={images}
+          descWidth={legendWidths?.[b.typeId]}
+        />
       ))}
     </Document>
   )
 }
 
-function SheetPage({ state, bogen, images }: { state: AppState; bogen: Bogen; images: CourseImages }) {
+function SheetPage({
+  state,
+  bogen,
+  images,
+  descWidth,
+}: {
+  state: AppState
+  bogen: Bogen
+  images: CourseImages
+  descWidth?: number
+}) {
   const def = getSheetDef(bogen.typeId)
   const nums = state.numbers[bogen.klasse] ?? []
   const values = state.values[bogen.id] ?? {}
@@ -182,7 +209,7 @@ function SheetPage({ state, bogen, images }: { state: AppState; bogen: Bogen; im
         })}
       </View>
 
-      <CourseFooter def={def} bogen={bogen} images={images} />
+      <CourseFooter def={def} bogen={bogen} images={images} descWidth={descWidth} />
 
       <View style={s.signature}>
         <View style={s.sigLine} />
@@ -305,10 +332,12 @@ function CourseFooter({
   def,
   bogen,
   images,
+  descWidth,
 }: {
   def: SheetDef
   bogen: Bogen
   images: CourseImages
+  descWidth?: number
 }) {
   const uri = def.courseImageDir ? images[courseKey(def.courseImageDir, bogen.klasse)] : undefined
   const gate = isGate(bogen.typeId)
@@ -317,7 +346,7 @@ function CourseFooter({
     return (
       <View style={{ flexDirection: 'row', marginTop: 6 }}>
         <View style={{ flex: 1 }}>
-          <Legend def={def} />
+          <Legend def={def} descWidth={descWidth} />
         </View>
         <View style={{ width: 90, marginLeft: 6, borderWidth: 1, borderColor: '#7a86c9', borderStyle: 'dashed', padding: 3 }}>
           <Image src={uri} style={[s.courseImg, { width: 82 }]} />
@@ -327,7 +356,7 @@ function CourseFooter({
   }
   return (
     <View>
-      <Legend def={def} />
+      <Legend def={def} descWidth={descWidth} />
       {uri && (
         <View style={{ marginTop: 6, alignItems: 'center' }}>
           <View style={{ width: 320, borderWidth: 1, borderColor: '#7a86c9', borderStyle: 'dashed', padding: 3 }}>
@@ -339,7 +368,16 @@ function CourseFooter({
   )
 }
 
-function Legend({ def }: { def: SheetDef }) {
+/** Grobschätzung der Beschreibungsbreite, falls keine Messung vorliegt. */
+function estimateDescWidth(texts: string[]): number {
+  const maxLen = Math.max(0, ...texts.map((t) => t.length))
+  return Math.min(maxLen * 4 + 6, 380)
+}
+
+function Legend({ def, descWidth }: { def: SheetDef; descWidth?: number }) {
+  const w = def.errorTable
+    ? (descWidth ?? estimateDescWidth(def.errorTable.map((e) => e.text)))
+    : 0
   return (
     <View style={s.legend}>
       {def.errorTable && (
@@ -348,7 +386,7 @@ function Legend({ def }: { def: SheetDef }) {
           {def.errorTable.map((e) => (
             <View key={e.code} style={s.legendRow}>
               <Text style={s.lcCode}>{e.code}</Text>
-              <Text style={s.lcText}>{e.text}</Text>
+              <Text style={[s.lcText, { width: w }]}>{e.text}</Text>
               <Text style={s.lcPts}>{e.punkte}</Text>
             </View>
           ))}
@@ -363,7 +401,7 @@ function Legend({ def }: { def: SheetDef }) {
           {DISQ_TABLE.map((d) => (
             <View key={d.code} style={s.legendRow}>
               <Text style={s.lcCode}>{d.code}</Text>
-              <Text style={s.lcText}>{d.text}</Text>
+              <Text style={[s.lcText, { flex: 1 }]}>{d.text}</Text>
             </View>
           ))}
         </View>
