@@ -1,4 +1,3 @@
-import { DISQ_TABLE } from '../lib/sheetDefs'
 import type { SheetDef } from '../types'
 
 /** Fußbereich eines Bogens: Fehlertabelle, Hinweise und Disqualifikations-Codes. */
@@ -24,12 +23,12 @@ export function Legend({ def }: { def: SheetDef }) {
 
       {def.legendNote && <div className="legend-note">{def.legendNote}</div>}
 
-      {def.showDisqTable && (
+      {def.disqTable && def.disqTable.length > 0 && (
         <div className="legend-block">
           <div className="legend-title">Disqualifikation:</div>
           <table className="legend-disq">
             <tbody>
-              {DISQ_TABLE.map((d) => (
+              {def.disqTable.map((d) => (
                 <tr key={d.code}>
                   <td className="lc-code">{d.code}</td>
                   <td className="lc-text">{d.text}</td>

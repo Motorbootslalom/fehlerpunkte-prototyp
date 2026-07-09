@@ -18,9 +18,10 @@ bleiben ausschließlich **lokal im Browser** (localStorage) und überleben ein R
 
 ## Funktionen
 
-- **Acht Listentypen**, jeweils als originalgetreuer A4-Bogen (Knoten im
-  Querformat): Tore 1/3/5, Tore 2/4/5, Tor 5, Mann-über-Bord/Schikane, Steg,
-  Zeit, Knoten, Parcours einfach.
+- **Konfigurierbare Positionen** (per YAML, siehe unten): mitgeliefert sind die
+  Alcatraz-Listen (Tore 1/3/5, Tore 2/4/5, Tor 5, Mann-über-Bord/Schikane, Steg,
+  Zeit, Knoten, Parcours einfach) plus Beispiel-Positionen. Eigene Positionen mit
+  anderer Spaltenreihenfolge/Blickrichtung lassen sich frei ergänzen.
 - **WYSIWYG:** Bildschirm-Eingabemaske = Druckansicht. Zellen sind direkt
   beschreibbar.
 - **Automatische Summen (Σ):** Bojenberührungen × 5 bzw. Fehlercodes → Punkte
@@ -76,6 +77,27 @@ Die Parcoursbilder liegen unter `../Parcours/dist/` als **SVG, PNG und PDF** vor
 Haupt-Prototyp nutzt die SVGs, der Vektor-Prototyp die PNGs.
 
 Beide Seiten sind über einen Link miteinander verbunden.
+
+## Konfiguration (Positionen & Fehlerpunkte)
+
+Listen, Spalten und Fehlerpunkte sind **datengetrieben** und liegen in zwei
+YAML-Dateien unter `public/config/` (werden zur Laufzeit geladen – Änderung
+wirkt nach dem Neuladen der Seite, ohne Neubau):
+
+- **`fehlerpunkte.yaml`** – Disqualifikationen und Fehler-Kataloge. Kommen aus
+  der **Ausschreibung** und sind i. d. R. für alle gleich.
+- **`positionen.yaml`** – die **orts-/personenabhängigen Positionen** (welche
+  Liste, welche Spalten in welcher Reihenfolge, welches Bild/Drehung). Positionen
+  binden Kataloge und wiederverwendbare **Hinweise** per Verweis (ID) ein.
+
+Wichtige Felder einer Position: `spalten` (Reihenfolge/Typen), `katalog`
+(Verweis auf einen Fehler-Katalog), `hinweis` (Verweis auf einen Hinweistext),
+`disq: alle | keine | [A, B, …]` (nicht relevante Disqualifikationen ausblenden),
+`bild` + `bildDrehung: 0 | 90 | -90 | 180`.
+
+Die gebündelten Kopien unter `src/config/` dienen als Fallback (offline / falls
+die Laufzeit-Datei fehlt oder fehlerhaft ist). Beide Prototypen (Eingabe und
+Vektor-PDF) nutzen dieselbe Konfiguration.
 
 ## Entwicklung
 

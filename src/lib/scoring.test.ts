@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getSheetDef } from './sheetDefs'
+import { getSheetDef } from '../config/active'
 import { cellKey, scoreRow } from './scoring'
 
 function getter(values: Record<string, string>) {

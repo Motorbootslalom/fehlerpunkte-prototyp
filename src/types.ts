@@ -10,16 +10,11 @@ export const CLASS_IDS: ClassId[] = ['E', '1', '2', '3', '4', '5', '6', '7']
 
 export type Lauf = 1 | 2 | 3
 
-/** Kennung der Listentypen (Stationen am Parcours). */
-export type SheetTypeId =
-  | 'gate135' // Tore 1 / 3 / 5
-  | 'gate245' // Tore 2 / 4 / 5
-  | 'tor5' // Tor 5 (Einfahrt + Parcoursüberwachung)
-  | 'mueb' // Mann-über-Bord / Schikane
-  | 'steg' // Steg (Ablegen / Anlegen)
-  | 'zeit' // Zeitnahme
-  | 'knoten' // Knoten
-  | 'parcours' // Parcours einfach (nur Fahrweg)
+/**
+ * Kennung einer Position/Liste. Frei konfigurierbar (siehe config/positionen.yaml),
+ * daher ein String und keine feste Aufzählung.
+ */
+export type SheetTypeId = string
 
 /** Verhalten einer Eingabezelle. */
 export type CellKind =
@@ -74,12 +69,16 @@ export interface SheetDef {
   errorTable?: ErrorDef[]
   /** Überschrift über der errorTable-Legende. */
   errorTableTitle?: string
-  /** Zeigt die vollständige Disqualifikations-Tabelle A–X in der Legende. */
+  /** Für diese Position gültige Disqualifikationen (bereits gefiltert). */
+  disqTable?: DisqDef[]
+  /** Zeigt die Disqualifikations-Tabelle in der Legende (= disqTable vorhanden). */
   showDisqTable?: boolean
   /** Zusätzliche Hinweiszeile in der Legende. */
   legendNote?: string
-  /** Bindet das Parcours-Bild ein (gate*, tor5, parcours). */
-  courseImageDir?: 'alcatraz_I' | 'alcatraz_II' | 'alcatraz_Parcours'
+  /** Bildordner unter public/parcours (z. B. alcatraz_Parcours). */
+  courseImageDir?: string
+  /** Bild-Drehung in Grad: 0 | 90 | -90 | 180. */
+  bildDrehung?: number
 }
 
 /** Ein Bogen = konkrete Instanz eines Listentyps für Klasse + Lauf. */

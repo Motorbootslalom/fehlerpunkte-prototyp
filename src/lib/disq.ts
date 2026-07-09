@@ -1,11 +1,14 @@
-import { DISQ_TABLE } from './sheetDefs'
+import type { DisqDef } from '../types'
 
 // Eingabehilfen für Disqualifikations-Codes.
 //   • automatisch Großbuchstaben
-//   • nur Codes zulässig, die in der Legende stehen (DISQ_TABLE: A–L, X)
+//   • nur Codes zulässig, die für die jeweilige Position konfiguriert sind
 //   • mehrere Codes mit Komma und/oder Leerzeichen getrennt
 
-export const ALLOWED_DISQ: Set<string> = new Set(DISQ_TABLE.map((d) => d.code))
+/** Menge der erlaubten Codes aus der (positionsspezifischen) Disq-Tabelle. */
+export function allowedSet(disqTable?: DisqDef[]): Set<string> {
+  return new Set((disqTable ?? []).map((d) => d.code))
+}
 
 /**
  * Bereinigt eine Disq-Eingabe: Großbuchstaben, nur erlaubte Codes; mehrere
@@ -13,8 +16,8 @@ export const ALLOWED_DISQ: Set<string> = new Set(DISQ_TABLE.map((d) => d.code))
  * oder ohne Trenner getippt – "A B", "a,x" und "gf" werden zu "A, B" / "A, X"
  * / "G, F".
  */
-export function sanitizeDisq(raw: string): string {
-  const codes = [...raw.toUpperCase()].filter((c) => ALLOWED_DISQ.has(c))
+export function sanitizeDisq(raw: string, allowed: Set<string>): string {
+  const codes = [...raw.toUpperCase()].filter((c) => allowed.has(c))
   return codes.join(', ')
 }
 
@@ -22,10 +25,10 @@ export function sanitizeDisq(raw: string): string {
  * Bereinigt eine Bojen-/Tor-Zelle: entweder Punkte (Ziffern) ODER ein einzelner
  * erlaubter Disq-Buchstabe (großgeschrieben).
  */
-export function sanitizeBuoy(raw: string): string {
+export function sanitizeBuoy(raw: string, allowed: Set<string>): string {
   const up = raw.toUpperCase()
   // Enthält die Eingabe einen erlaubten Buchstaben, gilt sie als Disq-Marke.
-  const letter = [...up].find((c) => ALLOWED_DISQ.has(c))
+  const letter = [...up].find((c) => allowed.has(c))
   if (letter) return letter
   // sonst nur Ziffern behalten
   return raw.replace(/\D/g, '')

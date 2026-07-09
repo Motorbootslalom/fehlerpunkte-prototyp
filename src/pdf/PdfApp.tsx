@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
-import { getSheetDef } from '../lib/sheetDefs'
+import { getSheetDef } from '../config/active'
 import { describeBoegen, exportBaseName } from '../lib/print'
 import { useStore } from '../state/store'
 import { SheetsDocument, type CourseImages, type LegendWidths } from './SheetsDocument'

@@ -1,16 +1,11 @@
 import { useState } from 'react'
-import { getSheetDef } from '../lib/sheetDefs'
+import { getSheetDef } from '../config/active'
 import { gridNavKeyDown } from '../lib/gridnav'
 import { formatCodes } from '../lib/codes'
-import { sanitizeBuoy, sanitizeDisq } from '../lib/disq'
+import { allowedSet, sanitizeBuoy, sanitizeDisq } from '../lib/disq'
 import { cellKey, formatDisqs, scoreRow } from '../lib/scoring'
 import { useCell, useStore } from '../state/store'
-import type { Bogen, CellKind, Column, SheetTypeId } from '../types'
-
-/** Tor-Bögen zeigen das Parcoursbild um 90° gedreht (Hochformat). */
-function isGate(t: SheetTypeId): boolean {
-  return t === 'gate135' || t === 'gate245'
-}
+import type { Bogen, CellKind, Column } from '../types'
 import { Legend } from './Legend'
 import { SheetHeader } from './SheetHeader'
 import { TimeCell } from './TimeCell'
@@ -102,9 +97,14 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
   // Gesamtspaltenzahl (Nr. + alle Blatt-Spalten) für die über die volle Breite
   // gehenden Kopf-/Fußzellen.
   const totalCols = 1 + leaves.length
+  // Erlaubte Disq-Codes dieser Position (für Eingabe-Validierung).
+  const allowed = allowedSet(def.disqTable)
+  // Bild um ±90° gedreht → Hochformat neben der Legende.
+  const drehung = def.bildDrehung ?? 0
+  const gedreht = Math.abs(drehung) === 90
 
   return (
-    <div className={`sheet sheet--${bogen.typeId} sheet--${def.orientation}`}>
+    <div className={`sheet sheet--${def.orientation}${gedreht ? ' sheet--rotated' : ''}`}>
       {/* Der gesamte Bogen ist EINE Tabelle: <thead>/<tfoot> wiederholen sich
           beim Druck automatisch auf jeder Seite, wenn die Liste umbricht. */}
       <table className="sheet-table" onFocusCapture={handleFocus} onBlurCapture={handleBlur}>
@@ -153,8 +153,8 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
                 <Legend def={def} />
                 {def.courseImageDir && (
                   <div className="course">
-                    {isGate(bogen.typeId) ? (
-                      // Um 90° gedreht und formatfüllend: Inline-SVG mit
+                    {gedreht ? (
+                      // Um ±90° gedreht und formatfüllend: Inline-SVG mit
                       // preserveAspectRatio füllt die (beliebig hohe) Box proportional.
                       <svg
                         className="course-svg"
@@ -165,7 +165,9 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
                           href={`${import.meta.env.BASE_URL}parcours/${def.courseImageDir}/Klasse${bogen.klasse}.svg`}
                           width="237"
                           height="100"
-                          transform="translate(100 0) rotate(90)"
+                          transform={
+                            drehung === -90 ? 'translate(0 237) rotate(-90)' : 'translate(100 0) rotate(90)'
+                          }
                           preserveAspectRatio="xMidYMid meet"
                         />
                       </svg>
@@ -213,7 +215,16 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
                   )}
                 </td>
                 {leaves.map((leaf, li) =>
-                  renderLeafCell(leaf, rowKey, cell, score, disqTitle, autoDisq, hl(rowIdx, li + 1)),
+                  renderLeafCell(
+                    leaf,
+                    rowKey,
+                    cell,
+                    score,
+                    disqTitle,
+                    autoDisq,
+                    hl(rowIdx, li + 1),
+                    allowed,
+                  ),
                 )}
               </tr>
             )
@@ -247,6 +258,7 @@ function renderLeafCell(
   disqTitle: string | undefined,
   autoDisq: string,
   hlCls: string,
+  allowed: Set<string>,
 ) {
   const ck = cellKey(rowKey, leaf.colKey, leaf.subIndex)
   const key = leaf.subIndex === undefined ? leaf.colKey : `${leaf.colKey}#${leaf.subIndex}`
@@ -278,7 +290,7 @@ function renderLeafCell(
         <input
           className={`cell-input disq-input${showAuto ? ' disq-auto' : ''}`}
           value={stored === '' ? autoDisq : stored}
-          onChange={(e) => cell.set(ck, sanitizeDisq(e.target.value))}
+          onChange={(e) => cell.set(ck, sanitizeDisq(e.target.value, allowed))}
           onKeyDown={gridNavKeyDown}
         />
       </td>
@@ -286,7 +298,8 @@ function renderLeafCell(
   }
 
   const cls = leaf.kind === 'text' ? 'text-input' : leaf.kind === 'buoy' ? 'buoy-input' : 'code-input'
-  const sanitize = leaf.kind === 'buoy' ? sanitizeBuoy : undefined
+  const sanitize =
+    leaf.kind === 'buoy' ? (v: string) => sanitizeBuoy(v, allowed) : undefined
   // Fehlercode-Felder beim Verlassen numerisch sortieren und mit ", " trennen.
   const onBlur =
     leaf.kind === 'code'

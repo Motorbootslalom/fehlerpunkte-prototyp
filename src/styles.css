@@ -624,9 +624,8 @@ body {
   font-size: 9pt;
 }
 
-/* Tor-Bögen: Legende links, Parcoursbild rechts daneben */
-.sheet--gate135 .sheet-footer,
-.sheet--gate245 .sheet-footer {
+/* Positionen mit gedrehtem Bild: Legende links, Parcoursbild rechts daneben */
+.sheet--rotated .sheet-footer {
   display: grid;
   grid-template-columns: 1fr 50mm;
   grid-template-areas:
@@ -635,17 +634,15 @@ body {
   column-gap: 8px;
 }
 
-.sheet--gate135 .legend,
-.sheet--gate245 .legend {
+.sheet--rotated .legend {
   grid-area: legend;
 }
 
-/* Das Alcatraz-Parcoursbild liegt horizontal vor, auf den Tor-Bögen wird es
-   – wie in den Original-Listen – um 90° gedreht (Hochformat). Das Inline-SVG
-   (siehe SheetView) füllt die Box formatfüllend, ohne höher als die Legende zu
-   werden (die Zelle ist per Grid genauso hoch wie der Beschreibungsblock). */
-.sheet--gate135 .course,
-.sheet--gate245 .course {
+/* Das Alcatraz-Parcoursbild liegt horizontal vor und wird – wie in den
+   Original-Listen – um 90° gedreht (Hochformat). Das Inline-SVG (siehe
+   SheetView) füllt die Box formatfüllend, ohne höher als die Legende zu werden
+   (die Zelle ist per Grid genauso hoch wie der Beschreibungsblock). */
+.sheet--rotated .course {
   grid-area: course;
   margin: 0;
   position: relative;
@@ -659,8 +656,7 @@ body {
   height: auto;
 }
 
-.sheet--gate135 .signature,
-.sheet--gate245 .signature {
+.sheet--rotated .signature {
   grid-area: sig;
 }
 

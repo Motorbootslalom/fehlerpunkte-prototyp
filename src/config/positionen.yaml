@@ -1,0 +1,191 @@
+# =====================================================================
+# Beobachtungs-Positionen  (ORTS- und PERSONENABHÄNGIG)
+# =====================================================================
+# Positionen hängen vom Platz und den verfügbaren Wettkampfrichtern ab (z. B.
+# wenige WKR oder ein Platz nur von einer Seite einsehbar). Sie binden die
+# Fehler-Kataloge (fehlerpunkte.yaml) und Hinweise (unten) per Verweis ein.
+#
+# Spalten-Typen (typ):
+#   boje  – Punkte direkt eintragen (5, 10, 15 …); ein Disq-Buchstabe markiert
+#           die Disqualifikation an dieser Stelle. sub = Unter-Spalten.
+#   code  – Fehlercodes (Zahlen) aus dem verwiesenen Katalog; punkteSpalte
+#   summe – berechnete Punkte-/Σ-Spalte     zeit – Zeiteingabe
+#   disq  – Disqualifikations-Spalte          text – Freitext (breite)
+#
+# katalog:  Verweis auf fehlerpunkte.kataloge.<id>
+# hinweis:  Verweis auf hinweise.<id> (unten) – oder direkter Text
+# disq:     alle | keine | [A, B, G, …]   (nicht relevante ausblenden)
+# bildDrehung: 0 | 90 | -90 | 180   (Bild um so viel Grad drehen)
+# =====================================================================
+
+# ---- Wiederverwendbare Hinweise (Bojen-Bezeichnungen) --------------
+hinweise:
+  blickrichtung: |-
+    Bojen-Bezeichnung (eindeutig, ohne links/rechts):
+    1. Buchstabe = Fahrtrichtung: H = Hinfahrt, R = Rückfahrt
+    2. Buchstabe = Seite: H = Hafen, K = Kai
+    Start = Berührung Einfahrt-Bojentor · Ziel = Berührung Ausfahrt-Bojentor
+    Fehler: pro berührter Boje (auch außerhalb des Manövers) = 5
+  knoten: "Fehler: 5 pro fehlerhafter Knoten"
+  parcours: "Es ist nur der eigentliche Fahrweg zu beobachten – keine Bojenberührungen!"
+
+# ---- Reihenfolge für „eine Klasse · alle Positionen“ ---------------
+klassenReihenfolge: [zeit, steg, gate135, gate245, tor5, mueb, parcours, knoten]
+
+# ---- Positionen ----------------------------------------------------
+positionen:
+  # === Alcatraz-Standard (WKR sitzt hinten, Bild um 90° gedreht) ===
+  - id: gate135
+    titel: "Tor 1 / 3 / 5"
+    menue: "Tore 1 / 3 / 5 (Alcatraz)"
+    ausrichtung: hoch
+    bild: alcatraz_I
+    bildDrehung: 90
+    summeSpalte: sum
+    disq: alle
+    hinweis: blickrichtung
+    spalten:
+      - { key: start, label: "Start", typ: boje, sub: ["H K"] }
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["H K", "H H"] }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["H K", "H H"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["H K", "R K"] }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["R K", "R H"] }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["R K", "R H"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["R K"] }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: sum, label: "Σ", typ: summe }
+
+  - id: gate245
+    titel: "Tor 2 / 4 / 5"
+    menue: "Tore 2 / 4 / 5 (Alcatraz)"
+    ausrichtung: hoch
+    bild: alcatraz_II
+    bildDrehung: 90
+    summeSpalte: sum
+    disq: alle
+    hinweis: blickrichtung
+    spalten:
+      - { key: start, label: "Start", typ: boje, sub: ["H H"] }
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["H K", "H H"] }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["H K", "H H"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["H H", "R H"] }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["R K", "R H"] }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["R K", "R H"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["R H"] }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: sum, label: "Σ", typ: summe }
+
+  - id: tor5
+    titel: "Tor 5"
+    menue: "Tor 5 (Einfahrt + Parcoursüberwachung)"
+    ausrichtung: hoch
+    bild: alcatraz_Parcours
+    summeSpalte: sum
+    disq: alle
+    katalog: tor5
+    spalten:
+      - { key: fehler, label: "Fehler", typ: code, punkteSpalte: sum, breite: 1 }
+      - { key: sum, label: "Σ", typ: summe }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 3 }
+
+  - id: mueb
+    titel: "Mann-über-Bord"
+    menue: "Mann-über-Bord / Schikane"
+    ausrichtung: hoch
+    summeSpalte: sum
+    disq: alle
+    katalog: mueb
+    spalten:
+      - { key: fehler, label: "Fehler", typ: code, punkteSpalte: fp, breite: 1 }
+      - { key: fp, label: "Fehlerpunkte", typ: summe }
+      - { key: sum, label: "Σ", typ: summe }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 3 }
+
+  - id: steg
+    titel: "Steg"
+    menue: "Steg (Ablegen / Anlegen)"
+    ausrichtung: hoch
+    disq: alle
+    katalog: steg
+    spalten:
+      - { key: fehlerAB, label: "Fehler AB", typ: code, punkteSpalte: fpab, breite: 1 }
+      - { key: fpab, label: "F-punkte", typ: summe }
+      - { key: fehlerAN, label: "Fehler AN", typ: code, punkteSpalte: fpan, breite: 1 }
+      - { key: fpan, label: "F-Punkte", typ: summe }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 2 }
+
+  - id: zeit
+    titel: "Zeit"
+    menue: "Zeitnahme"
+    ausrichtung: hoch
+    spalten:
+      - { key: zeit1, label: "Zeit 1", typ: zeit }
+      - { key: zeit2, label: "Zeit 2", typ: zeit }
+      - { key: zeit3, label: "Zeit 3", typ: zeit }
+
+  - id: knoten
+    titel: "Knoten"
+    menue: "Knoten"
+    ausrichtung: quer
+    summeSpalte: sum
+    hinweis: knoten
+    spalten:
+      - { key: webleinstek, label: "Webleinstek", typ: boje, breite: 1 }
+      - { key: schotstek, label: "Schotstek", typ: boje, breite: 1 }
+      - { key: palsteg, label: "Palsteg", typ: boje, breite: 1 }
+      - { key: kreuzknoten, label: "Kreuzknoten", typ: boje, breite: 1 }
+      - { key: klampe, label: "Klampe", typ: boje, breite: 1 }
+      - { key: stern, label: "*", typ: boje, breite: 1 }
+      - { key: sum, label: "Σ", typ: summe }
+
+  - id: parcours
+    titel: "Parcours"
+    menue: "Parcours einfach (nur Fahrweg)"
+    ausrichtung: hoch
+    bild: alcatraz_Parcours
+    disq: alle
+    hinweis: parcours
+    spalten:
+      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 4 }
+      - { key: disq, label: "Disq.", typ: disq }
+
+  # === Beispiele für andere Beobachtungs-Positionen ==================
+  # Frontal auf Tor 1/3/5 (WKR steht vorne). Andere Spaltenreihenfolge,
+  # ungedrehtes Parcoursbild, nur relevante Disqualifikationen.
+  - id: frontal135
+    titel: "Frontal 1 / 3 / 5"
+    menue: "Beispiel: Frontal Tore 1 / 3 / 5"
+    ausrichtung: hoch
+    bild: alcatraz_Parcours
+    summeSpalte: sum
+    disq: [A, B, G, H, I, J, X]
+    hinweis: blickrichtung
+    spalten:
+      - { key: start, label: "Start", typ: boje, sub: ["H H"] }
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["H H", "H K"] }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["H H", "H K"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["R K", "H K"] }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["R H", "R K"] }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["R H", "R K"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["R H"] }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: sum, label: "Σ", typ: summe }
+
+  # Seitenposition nur für Tor 5 (Wende). Nutzt denselben Tor-5-Katalog,
+  # aber nur wenige Disqualifikationen.
+  - id: seite5
+    titel: "Seite Tor 5"
+    menue: "Beispiel: Seitenposition Tor 5"
+    ausrichtung: hoch
+    bild: alcatraz_Parcours
+    summeSpalte: sum
+    disq: [B, C, G, J, X]
+    katalog: tor5
+    spalten:
+      - { key: fehler, label: "Fehler", typ: code, punkteSpalte: sum, breite: 1 }
+      - { key: sum, label: "Σ", typ: summe }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 3 }

@@ -49,7 +49,13 @@ Jeder Bogen ist eine A4-Seite (Knoten: Querformat) und besteht aus:
 - **Fuß:** Legende (Fehlercodes mit Punkten, Disqualifikations-Codes A–X),
   ggf. Parcoursbild, Unterschriftszeile „Unterschrift WKR“.
 
-## 4. Listentypen (Stationen am Parcours)
+## 4. Listentypen / Positionen (Stationen am Parcours)
+
+> **Konfigurierbar:** Positionen, Spaltenreihenfolge und Fehlerpunkte sind
+> datengetrieben (YAML, siehe §12a). Fehlerpunkte/Disqualifikationen kommen aus
+> der Ausschreibung (`fehlerpunkte.yaml`, für alle gleich); die Positionen sind
+> orts-/personenabhängig (`positionen.yaml`). Die folgende Tabelle beschreibt die
+> mitgelieferten Alcatraz-Standard-Positionen.
 
 | Typ | Kopf-Titel | Spalten (nach Nr.) | Σ | Bild |
 | --- | ---------- | ------------------ | :-: | :-: |
@@ -171,6 +177,24 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
 
 - Der Prototyp verarbeitet **keine echten personenbezogenen Daten**.
 - Alle Eingaben bleiben **lokal im Browser** (localStorage), keine Server-Übertragung.
+
+## 12a. Konfiguration (Positionen & Fehlerpunkte)
+
+- **Trennung der Belange:** Fehlerpunkte/Disqualifikationen (aus der
+  **Ausschreibung**, i. d. R. für alle gleich) sind getrennt von den
+  **orts-/personenabhängigen Positionen** (z. B. wenige WKR oder Plätze nur von
+  einer Seite einsehbar).
+- **Zwei YAML-Dateien** unter `public/config/` (zur Laufzeit geladen, ohne Neubau
+  änderbar; `src/config/`-Kopien als Fallback):
+  - `fehlerpunkte.yaml` – `disqualifikationen` (beliebig viele, mit Buchstaben) und
+    benannte `kataloge` (Fehler mit Zahlen → Punkte).
+  - `positionen.yaml` – wiederverwendbare `hinweise` und die `positionen`
+    (Spalten/Reihenfolge, `katalog`- und `hinweis`-Verweis, `bild`,
+    `bildDrehung: 0|90|-90|180`).
+- **Disqualifikationen pro Position ausblendbar** via `disq: alle | keine | [A,…]`.
+- **Hinweise** (Bojen-Bezeichnungen) sind zentral und werden per Verweis
+  eingebunden; eindeutige Seitennamen (Hafen/Kai/See/Land) statt links/rechts.
+- Beide Ausgaben (Eingabe-Prototyp und Vektor-PDF) nutzen dieselbe Konfiguration.
 
 ## 12. Nicht-Ziele / offene Punkte
 

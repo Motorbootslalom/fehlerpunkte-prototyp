@@ -1,4 +1,4 @@
-import { getSheetDef } from '../lib/sheetDefs'
+import { getSheetDef } from '../config/active'
 import type { Bogen } from '../types'
 import { courseKey, type CourseImages } from './SheetsDocument'
 
@@ -6,7 +6,7 @@ import { courseKey, type CourseImages } from './SheetsDocument'
 // und zeichnen sie – für die Tor-Bögen um 90° gedreht – auf ein Canvas, um sie
 // als Data-URI einzubetten.
 
-async function loadCourseImage(url: string, rotate: boolean): Promise<string> {
+async function loadCourseImage(url: string, drehung: number): Promise<string> {
   const img = await new Promise<HTMLImageElement>((resolve, reject) => {
     const i = new window.Image()
     i.onload = () => resolve(i)
@@ -16,37 +16,33 @@ async function loadCourseImage(url: string, rotate: boolean): Promise<string> {
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
   if (!ctx) return url
-  if (rotate) {
-    canvas.width = img.naturalHeight
-    canvas.height = img.naturalWidth
-    ctx.translate(canvas.width / 2, canvas.height / 2)
-    ctx.rotate(Math.PI / 2) // im Uhrzeigersinn – wie im Haupt-Prototyp
-    ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2)
-  } else {
-    canvas.width = img.naturalWidth
-    canvas.height = img.naturalHeight
-    ctx.drawImage(img, 0, 0)
-  }
+  const swap = Math.abs(drehung % 180) === 90
+  canvas.width = swap ? img.naturalHeight : img.naturalWidth
+  canvas.height = swap ? img.naturalWidth : img.naturalHeight
+  ctx.translate(canvas.width / 2, canvas.height / 2)
+  ctx.rotate((drehung * Math.PI) / 180)
+  ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2)
   return canvas.toDataURL('image/png')
 }
 
 /** Lädt (und dreht) alle für die Bögen benötigten Parcoursbilder. */
 export async function loadCourseImages(boegen: Bogen[], baseUrl: string): Promise<CourseImages> {
-  const needed = new Map<string, { dir: string; klasse: string; rotate: boolean }>()
+  const needed = new Map<string, { dir: string; klasse: string; drehung: number }>()
   for (const b of boegen) {
-    const dir = getSheetDef(b.typeId).courseImageDir
-    if (dir) {
-      needed.set(courseKey(dir, b.klasse), {
-        dir,
+    const def = getSheetDef(b.typeId)
+    if (def.courseImageDir) {
+      const drehung = def.bildDrehung ?? 0
+      needed.set(courseKey(def.courseImageDir, b.klasse, drehung), {
+        dir: def.courseImageDir,
         klasse: b.klasse,
-        rotate: dir !== 'alcatraz_Parcours', // Tor-Bögen drehen, Parcours quer lassen
+        drehung,
       })
     }
   }
   const entries = await Promise.all(
-    [...needed].map(async ([key, { dir, klasse, rotate }]) => {
+    [...needed].map(async ([key, { dir, klasse, drehung }]) => {
       try {
-        const uri = await loadCourseImage(`${baseUrl}parcours/${dir}/Klasse${klasse}.png`, rotate)
+        const uri = await loadCourseImage(`${baseUrl}parcours/${dir}/Klasse${klasse}.png`, drehung)
         return [key, uri] as const
       } catch {
         return null

@@ -1,6 +1,6 @@
 import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 import type { Style } from '@react-pdf/types'
-import { DISQ_TABLE, getSheetDef } from '../lib/sheetDefs'
+import { getSheetDef } from '../config/active'
 import { cellKey, scoreRow } from '../lib/scoring'
 import { formatTimeDisplay, parseTime } from '../lib/time'
 import { bogenPayload } from '../lib/qr'
@@ -116,11 +116,11 @@ interface RowData {
   shaded: boolean
 }
 
-/** key = "<courseImageDir>/<klasse>" → data-URI (Tor-Bögen bereits gedreht). */
+/** key = "<dir>/<klasse>/<drehung>" → data-URI. */
 export type CourseImages = Record<string, string>
 
-export function courseKey(dir: string, klasse: string): string {
-  return `${dir}/${klasse}`
+export function courseKey(dir: string, klasse: string, drehung: number): string {
+  return `${dir}/${klasse}/${drehung}`
 }
 
 /** Breite der Beschreibungsspalte je Listentyp (in pt), im Browser gemessen. */
@@ -323,11 +323,6 @@ function DataCell({
   return <Text style={[s.cell, flex, extra]}>{text}</Text>
 }
 
-// Tor-Bögen zeigen das (gedrehte) Bild rechts neben der Legende, sonst quer darunter.
-function isGate(t: Bogen['typeId']): boolean {
-  return t === 'gate135' || t === 'gate245'
-}
-
 function CourseFooter({
   def,
   bogen,
@@ -339,10 +334,14 @@ function CourseFooter({
   images: CourseImages
   descWidth?: number
 }) {
-  const uri = def.courseImageDir ? images[courseKey(def.courseImageDir, bogen.klasse)] : undefined
-  const gate = isGate(bogen.typeId)
+  // Um ±90° gedrehte Bilder stehen rechts neben der Legende, sonst quer darunter.
+  const drehung = def.bildDrehung ?? 0
+  const rotated = Math.abs(drehung) === 90
+  const uri = def.courseImageDir
+    ? images[courseKey(def.courseImageDir, bogen.klasse, drehung)]
+    : undefined
 
-  if (gate && uri) {
+  if (rotated && uri) {
     return (
       <View style={{ flexDirection: 'row', marginTop: 6 }}>
         <View style={{ flex: 1 }}>
@@ -395,10 +394,10 @@ function Legend({ def, descWidth }: { def: SheetDef; descWidth?: number }) {
 
       {def.legendNote && <Text style={s.note}>{def.legendNote}</Text>}
 
-      {def.showDisqTable && (
+      {def.disqTable && def.disqTable.length > 0 && (
         <View>
           <Text style={s.legendTitle}>Disqualifikation:</Text>
-          {DISQ_TABLE.map((d) => (
+          {def.disqTable.map((d) => (
             <View key={d.code} style={s.legendRow}>
               <Text style={s.lcCode}>{d.code}</Text>
               <Text style={[s.lcText, { flex: 1 }]}>{d.text}</Text>

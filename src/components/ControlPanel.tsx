@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getSheetDef, KLASSEN_LISTEN_ORDER, SHEET_TYPE_ORDER } from '../lib/sheetDefs'
+import { getSheetDef, klassenListenOrder, sheetTypeOrder } from '../config/active'
 import { extendNumbers, formatNumbers, parseNumbers, shrinkNumbers } from '../lib/demo'
 import { exportSheetsToPdf } from '../lib/exportPdf'
 import { describeBoegen, exportBaseName, printWithFilename } from '../lib/print'
@@ -102,11 +102,11 @@ export function ControlPanel() {
                 {LAEUFE.map((l) => (
                   <button
                     key={l}
-                    title={`Alle ${SHEET_TYPE_ORDER.length} Listentypen × alle Klassen für den ${l}. Lauf`}
+                    title={`Alle ${sheetTypeOrder().length} Listentypen × alle Klassen für den ${l}. Lauf`}
                     onClick={() =>
                       bulk(
                         CLASS_IDS.flatMap((c) =>
-                          KLASSEN_LISTEN_ORDER.map((t) => ({ typeId: t, klasse: c, lauf: l })),
+                          klassenListenOrder().map((t) => ({ typeId: t, klasse: c, lauf: l })),
                         ),
                       )
                     }
@@ -135,7 +135,7 @@ export function ControlPanel() {
             <div className="qp-row">
               <span className="qp-label">Eine Position · alle Klassen · {qpLauf}. Lauf:</span>
               <div className="qp-btns">
-                {SHEET_TYPE_ORDER.map((t) => (
+                {sheetTypeOrder().map((t) => (
                   <button
                     key={t}
                     title={`${getSheetDef(t).menuLabel} für alle Klassen (${qpLauf}. Lauf)`}
@@ -157,7 +157,7 @@ export function ControlPanel() {
                     key={c}
                     title={`Alle Listentypen für Klasse ${c} (${qpLauf}. Lauf)`}
                     onClick={() =>
-                      bulk(KLASSEN_LISTEN_ORDER.map((t) => ({ typeId: t, klasse: c, lauf: qpLauf })))
+                      bulk(klassenListenOrder().map((t) => ({ typeId: t, klasse: c, lauf: qpLauf })))
                     }
                   >
                     Kl. {c}
@@ -187,7 +187,7 @@ export function ControlPanel() {
                   })
                 }
               >
-                {SHEET_TYPE_ORDER.map((t) => (
+                {sheetTypeOrder().map((t) => (
                   <option key={t} value={t}>
                     {getSheetDef(t).menuLabel}
                   </option>
@@ -253,7 +253,7 @@ export function ControlPanel() {
 
         <div className="add-bogen">
           <select value={addType} onChange={(e) => setAddType(e.target.value as SheetTypeId)}>
-            {SHEET_TYPE_ORDER.map((t) => (
+            {sheetTypeOrder().map((t) => (
               <option key={t} value={t}>
                 {getSheetDef(t).menuLabel}
               </option>

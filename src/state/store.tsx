@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, type ReactNode } from 'react'
 import type { AppState, Bogen, ClassId, Lauf, SheetTypeId } from '../types'
+import { klassenListenOrder } from '../config/active'
 import { allDemoNumbers } from '../lib/demo'
 import { cellKey } from '../lib/scoring'
 import { clearState, loadState, saveState } from '../lib/storage'
@@ -8,29 +9,23 @@ function uid(prefix: string): string {
   return prefix + '_' + Math.random().toString(36).slice(2, 9)
 }
 
-/** Standard-Zusammenstellung: je ein Bogen pro Listentyp für Klasse 3, Lauf 1. */
+/** Standard-Zusammenstellung: je ein Bogen pro Position für Klasse 3, Lauf 1. */
 function defaultBoegen(): Bogen[] {
-  const types: SheetTypeId[] = [
-    'gate135',
-    'gate245',
-    'tor5',
-    'mueb',
-    'steg',
-    'zeit',
-    'knoten',
-    'parcours',
-  ]
-  return types.map((t) => ({ id: uid('bg'), typeId: t, klasse: '3', lauf: 1 }))
+  return klassenListenOrder().map((t) => ({ id: uid('bg'), typeId: t, klasse: '3', lauf: 1 }))
 }
 
-const emptyState: AppState = {
-  eventName: '30. Möwepokal 2026',
-  emptyRows: 3,
-  numbers: allDemoNumbers(),
-  wkr: {},
-  boegen: defaultBoegen(),
-  values: {},
-  initialized: false,
+// Lazy erzeugt (nicht als Modul-Konstante), damit die geladene Konfiguration
+// berücksichtigt wird.
+function defaultState(): AppState {
+  return {
+    eventName: '30. Möwepokal 2026',
+    emptyRows: 3,
+    numbers: allDemoNumbers(),
+    wkr: {},
+    boegen: defaultBoegen(),
+    values: {},
+    initialized: false,
+  }
 }
 
 export type Action =
@@ -121,7 +116,7 @@ function reducer(state: AppState, action: Action): AppState {
 
     case 'RESET_ALL':
       clearState()
-      return { ...emptyState, numbers: allDemoNumbers(), boegen: defaultBoegen() }
+      return defaultState()
 
     default:
       return state
@@ -130,8 +125,8 @@ function reducer(state: AppState, action: Action): AppState {
 
 function init(): AppState {
   const loaded = loadState()
-  if (loaded) return { ...emptyState, ...loaded }
-  return emptyState
+  if (loaded) return { ...defaultState(), ...loaded }
+  return defaultState()
 }
 
 interface StoreContextValue {
