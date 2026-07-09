@@ -10,7 +10,7 @@ export function App() {
       <ControlPanel />
       <main className="sheets">
         {state.boegen.length === 0 ? (
-          <p className="empty">Keine Bögen ausgewählt – links einen Bogen hinzufügen.</p>
+          <p className="empty">Keine Bögen ausgewählt - links einen Bogen hinzufügen.</p>
         ) : (
           state.boegen.map((b) => <SheetView key={b.id} bogen={b} />)
         )}

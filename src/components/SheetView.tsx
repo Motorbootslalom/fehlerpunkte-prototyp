@@ -43,7 +43,7 @@ function toLeaves(columns: Column[]): Leaf[] {
 /**
  * Spaltenbreite fürs <colgroup>. Weil der Kopf als eine über alle Spalten
  * gehende Zelle in <thead> steckt, kann `table-layout: fixed` die Breiten nicht
- * mehr aus der ersten Zeile ableiten – deshalb definieren wir sie hier.
+ * mehr aus der ersten Zeile ableiten - deshalb definieren wir sie hier.
  */
 function leafWidth(leaf: Leaf): string | undefined {
   if (leaf.kind === 'sum') return '12mm'

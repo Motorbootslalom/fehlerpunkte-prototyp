@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { sanitizeBuoy, sanitizeDisq } from './disq'
 
-// Standard-Set (A–L, X) für die Tests.
+// Standard-Set (A-L, X) für die Tests.
 const A = new Set('ABCDEFGHIJKLX'.split(''))
 
 describe('sanitizeDisq', () => {
@@ -9,7 +9,7 @@ describe('sanitizeDisq', () => {
     expect(sanitizeDisq('g', A)).toBe('G')
   })
 
-  it('lässt nur erlaubte Codes zu (A–L, X)', () => {
+  it('lässt nur erlaubte Codes zu (A-L, X)', () => {
     expect(sanitizeDisq('gz', A)).toBe('G') // z ist kein gültiger Code
     expect(sanitizeDisq('m', A)).toBe('') // M gibt es nicht
     expect(sanitizeDisq('9A', A)).toBe('A') // Ziffern raus

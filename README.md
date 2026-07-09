@@ -1,4 +1,4 @@
-# Fehlerpunkte – Motorbootslalom (Prototyp)
+# Fehlerpunkte - Motorbootslalom (Prototyp)
 
 **Live-Demo:** _(nach Deploy)_ <https://motorbootslalom.github.io/fehlerpunkte-prototyp/>
 
@@ -8,7 +8,7 @@ Schwesterprojekt zu *verzahnungs-prototyp*.
 
 Ziel: mit den Fachteams abstimmen, wie eine Eingabemaske für Fehlerpunkte aussehen
 kann, und das anderen Entwicklern anschaulich erklären. Kernidee (wie bei der
-bisherigen Excel-Lösung): **Eingabe und Ausdruck sind dieselbe Ansicht** – so ist
+bisherigen Excel-Lösung): **Eingabe und Ausdruck sind dieselbe Ansicht** - so ist
 die Kontrolle der Eintragungen extrem einfach.
 
 Die ausführlichen Anforderungen stehen im **[Lastenheft](./LASTENHEFT.md)**.
@@ -27,7 +27,7 @@ bleiben ausschließlich **lokal im Browser** (localStorage) und überleben ein R
 - **Automatische Summen (Σ):** Bojenberührungen × 5 bzw. Fehlercodes → Punkte
   laut Legende, laufend aufsummiert. Bei Mann-über-Bord/Schikane liegt die
   Σ-Spalte bewusst mittig.
-- **Disqualifikation verorten:** Codes A–X in der Disq.-Spalte **oder** direkt in
+- **Disqualifikation verorten:** Codes A-X in der Disq.-Spalte **oder** direkt in
   einer Tor-Spalte (dokumentiert Ort und Grund).
 - **Schnelle Zeiteingabe** über das Numpad: eine Zahl mit Komma/Punkt, Regel
   „> 20 = Sekunden, ≤ 20 = Minuten“; Enter springt weiter; Anzeige normalisiert
@@ -47,10 +47,10 @@ Links die Steuerleiste (nur am Bildschirm, im Druck ausgeblendet):
 
 1. Veranstaltungsnamen setzen.
 2. Unter **Bögen** die gewünschten Listen zusammenstellen (Typ/Klasse/Lauf).
-3. In den Bögen rechts die Werte eintragen – Σ und Zeiten aktualisieren sich live.
+3. In den Bögen rechts die Werte eintragen - Σ und Zeiten aktualisieren sich live.
 4. **Drucken / Als PDF (Browser)** oder **PDF herunterladen (JS)**.
 
-## PDF-Export – drei Wege im Vergleich
+## PDF-Export - drei Wege im Vergleich
 
 Es gibt **zwei Einstiegspunkte** (Multi-Page-Build):
 
@@ -61,19 +61,19 @@ Es gibt **zwei Einstiegspunkte** (Multi-Page-Build):
 
 - **Browser-Druck → „Als PDF speichern"** (empfohlen): scharfer, markierbarer
   Text inkl. QR-Codes. Dateiname wird über `document.title` vorgeschlagen
-  (mit Zeitstempel und – falls eindeutig – Position/Klasse/Lauf).
+  (mit Zeitstempel und - falls eindeutig - Position/Klasse/Lauf).
 - **Raster-Download** (html2canvas + jsPDF): Ein-Klick-Download, aber gerastert
   (unschärfer). QR-Codes werden dafür als Canvas neu gezeichnet.
 - **Vektor-Prototyp** (`pdf.html`): echtes, kleines Vektor-PDF mit Live-Vorschau
   und Ein-Klick-Download. Kopf **und** Spaltenüberschriften wiederholen sich
   zuverlässig auf jeder Seite (react-pdf `fixed`), inkl. mittiger Seitenzahlen,
   Vektor-QR und eingebetteter Schrift (Liberation Sans → korrektes „Σ"). Das
-  **Parcoursbild** wird als PNG eingebettet – für die Tor-Bögen 90° gedreht,
+  **Parcoursbild** wird als PNG eingebettet - für die Tor-Bögen 90° gedreht,
   für Tor 5/Parcours quer (per Schalter ab-/zuschaltbar). Konfiguriert wird im
   Haupt-Prototyp (gemeinsamer localStorage); die Vergleichsseite dann neu laden.
 
 Die Parcoursbilder liegen unter `../Parcours/dist/` als **SVG, PNG und PDF** vor
-(eigenes Querformat ~226 × 95 mm, Seitenverhältnis 2,36:1 – kein A4). Der
+(eigenes Querformat ~226 × 95 mm, Seitenverhältnis 2,36:1 - kein A4). Der
 Haupt-Prototyp nutzt die SVGs, der Vektor-Prototyp die PNGs.
 
 Beide Seiten sind über einen Link miteinander verbunden.
@@ -81,12 +81,12 @@ Beide Seiten sind über einen Link miteinander verbunden.
 ## Konfiguration (Positionen & Fehlerpunkte)
 
 Listen, Spalten und Fehlerpunkte sind **datengetrieben** und liegen in zwei
-YAML-Dateien unter `public/config/` (werden zur Laufzeit geladen – Änderung
+YAML-Dateien unter `public/config/` (werden zur Laufzeit geladen - Änderung
 wirkt nach dem Neuladen der Seite, ohne Neubau):
 
-- **`fehlerpunkte.yaml`** – Disqualifikationen und Fehler-Kataloge. Kommen aus
+- **`fehlerpunkte.yaml`** - Disqualifikationen und Fehler-Kataloge. Kommen aus
   der **Ausschreibung** und sind i. d. R. für alle gleich.
-- **`positionen.yaml`** – die **orts-/personenabhängigen Positionen** (welche
+- **`positionen.yaml`** - die **orts-/personenabhängigen Positionen** (welche
   Liste, welche Spalten in welcher Reihenfolge, welches Bild/Drehung). Positionen
   binden Kataloge und wiederverwendbare **Hinweise** per Verweis (ID) ein.
 
@@ -116,7 +116,7 @@ UI-Render-Smoke-Test sind mit **Vitest** abgedeckt.
 ```bash
 npm test            # alle Tests einmal ausführen
 npm run test:watch  # Watch-Modus
-npm run check       # Typecheck (tsc) + Tests – auch im pre-commit-Hook
+npm run check       # Typecheck (tsc) + Tests - auch im pre-commit-Hook
 ```
 
 Die Tests laufen automatisch **lokal bei jedem Commit** (Git-Hook

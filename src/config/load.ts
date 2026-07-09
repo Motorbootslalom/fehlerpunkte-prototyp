@@ -2,8 +2,8 @@ import { bundledConfig, mergeAndBuild } from './active'
 import type { ResolvedConfig } from './build'
 
 // Lädt die Konfiguration zur Laufzeit aus public/config/*.yaml:
-//   • fehlerpunkte.yaml – Disqualifikationen + Fehler-Kataloge (Ausschreibung)
-//   • positionen.yaml   – Hinweise + Positionen (orts-/personenabhängig)
+//   • fehlerpunkte.yaml - Disqualifikationen + Fehler-Kataloge (Ausschreibung)
+//   • positionen.yaml   - Hinweise + Positionen (orts-/personenabhängig)
 // Schlägt das fehl, wird die gebündelte Standard-Konfiguration verwendet.
 
 export async function loadConfig(baseUrl: string): Promise<ResolvedConfig> {

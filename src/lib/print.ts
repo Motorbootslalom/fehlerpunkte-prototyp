@@ -1,7 +1,7 @@
 import type { Bogen, SheetTypeId } from '../types'
 
 /**
- * Beschreibung aus der Bogen-Auswahl: Position (Listentyp) / Klasse / Lauf –
+ * Beschreibung aus der Bogen-Auswahl: Position (Listentyp) / Klasse / Lauf -
  * aber nur die Teile, die über alle Bögen eindeutig sind.
  */
 export function describeBoegen(boegen: Bogen[], titleOf: (t: SheetTypeId) => string): string {
@@ -13,7 +13,7 @@ export function describeBoegen(boegen: Bogen[], titleOf: (t: SheetTypeId) => str
   if (types.length === 1) parts.push(titleOf(types[0]))
   if (classes.length === 1) parts.push(`Klasse ${classes[0]}`)
   if (laeufe.length === 1) parts.push(`${laeufe[0]}. Lauf`)
-  return parts.join(' – ')
+  return parts.join(' - ')
 }
 
 // Browser-Druck mit vorgeschlagenem Dateinamen.
@@ -33,7 +33,7 @@ export function printWithFilename(filename: string): void {
   window.print()
 }
 
-/** Dateisystem-freundlicher Name (ohne Endung – die ergänzt der Browser). */
+/** Dateisystem-freundlicher Name (ohne Endung - die ergänzt der Browser). */
 export function sanitizeFilename(name: string): string {
   return (
     name
@@ -53,7 +53,7 @@ export function timestampSuffix(d: Date): string {
 
 /**
  * Baut den Export-Basisnamen zusammen:
- *   Fehlerpunkte – <Event> – <Beschreibung> – <Zeitstempel>
+ *   Fehlerpunkte - <Event> - <Beschreibung> - <Zeitstempel>
  * Die Beschreibung (z. B. "Klasse 3", "Zeit") kommt aus dem Aufrufer, der
  * Zeitstempel nur, wenn ein Datum übergeben wird.
  */
@@ -63,5 +63,5 @@ export function exportBaseName(eventName: string, descriptor: string, date?: Dat
   if (ev) parts.push(ev)
   if (descriptor) parts.push(descriptor)
   if (date) parts.push(timestampSuffix(date))
-  return sanitizeFilename(parts.join(' – '))
+  return sanitizeFilename(parts.join(' - '))
 }

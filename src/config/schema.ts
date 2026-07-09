@@ -1,7 +1,7 @@
 // Roh-Struktur der YAML-Konfiguration. Sie ist auf zwei Dateien verteilt:
-//   • fehlerpunkte.yaml – Disqualifikationen + Fehler-Kataloge (aus der
+//   • fehlerpunkte.yaml - Disqualifikationen + Fehler-Kataloge (aus der
 //     Ausschreibung, i. d. R. für alle gleich)
-//   • positionen.yaml   – Hinweise + Positionen (orts-/personenabhängig),
+//   • positionen.yaml   - Hinweise + Positionen (orts-/personenabhängig),
 //     die Kataloge und Hinweise per Verweis (ID) einbinden
 // Aus der zusammengeführten Struktur erzeugt build.ts die interne Darstellung.
 
@@ -34,7 +34,7 @@ export interface RawSpalte {
   key: string
   label: string
   typ: RawSpaltenTyp
-  /** Unter-Spalten (z. B. Bojen-Bezeichnungen [H K, H H]) – nur bei 'boje'. */
+  /** Unter-Spalten (z. B. Bojen-Bezeichnungen [H K, H H]) - nur bei 'boje'. */
   sub?: string[]
   /** Nur 'code': Schlüssel der 'summe'-Spalte, in der die Punkte erscheinen. */
   punkteSpalte?: string

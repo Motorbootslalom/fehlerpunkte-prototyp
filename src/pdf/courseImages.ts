@@ -3,7 +3,7 @@ import type { Bogen } from '../types'
 import { courseKey, type CourseImages } from './SheetsDocument'
 
 // react-pdf <Image> kann nur PNG/JPEG (kein SVG). Wir laden die Parcours-PNGs
-// und zeichnen sie – für die Tor-Bögen um 90° gedreht – auf ein Canvas, um sie
+// und zeichnen sie - für die Tor-Bögen um 90° gedreht - auf ein Canvas, um sie
 // als Data-URI einzubetten.
 
 async function loadCourseImage(url: string, drehung: number): Promise<string> {

@@ -6,7 +6,7 @@ function getter(values: Record<string, string>) {
   return (key: string) => values[key] ?? ''
 }
 
-describe('scoreRow – Tor-Liste (Bojen)', () => {
+describe('scoreRow - Tor-Liste (Bojen)', () => {
   const def = getSheetDef('gate135')
 
   it('summiert direkt eingegebene Bojen-Punkte (5, 10, 15)', () => {
@@ -35,7 +35,7 @@ describe('scoreRow – Tor-Liste (Bojen)', () => {
   })
 })
 
-describe('scoreRow – Mann-über-Bord (Fehlercodes → Punkte)', () => {
+describe('scoreRow - Mann-über-Bord (Fehlercodes → Punkte)', () => {
   const def = getSheetDef('mueb')
 
   it('mappt Codes auf Punkte und füllt Fehlerpunkte + Σ', () => {
@@ -54,7 +54,7 @@ describe('scoreRow – Mann-über-Bord (Fehlercodes → Punkte)', () => {
   })
 })
 
-describe('scoreRow – Steg (zwei Fehlergruppen, unterschiedliche Gewichte)', () => {
+describe('scoreRow - Steg (zwei Fehlergruppen, unterschiedliche Gewichte)', () => {
   const def = getSheetDef('steg')
 
   it('rechnet AB und AN getrennt in ihre Punkte-Spalten', () => {
@@ -69,7 +69,7 @@ describe('scoreRow – Steg (zwei Fehlergruppen, unterschiedliche Gewichte)', ()
   })
 })
 
-describe('scoreRow – Tor 5 (Code 1 = 20 Punkte)', () => {
+describe('scoreRow - Tor 5 (Code 1 = 20 Punkte)', () => {
   it('mappt Code 1 auf 20', () => {
     const def = getSheetDef('tor5')
     const nr = '305'

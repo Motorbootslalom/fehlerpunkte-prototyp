@@ -5,7 +5,7 @@ import type { Column, SheetDef } from '../types'
 // Regeln:
 //   • 'buoy'-Zelle: enthält sie eine Zahl → das ist die Punktzahl direkt
 //                   (der WKR trägt 5, 10, 15 … ein, nicht die Anzahl).
-//                   enthält sie einen Buchstaben A–X → Disqualifikation an
+//                   enthält sie einen Buchstaben A-X → Disqualifikation an
 //                   genau dieser Stelle (zählt nicht als Punkte).
 //   • 'code'-Zelle: kommagetrennte Fehlercodes → Punkte laut errorTable.
 //                   Die Summe wird (read-only) in der zugehörigen pointsCol
@@ -100,7 +100,7 @@ export function scoreRow(
       disqs.push({ where, code: v.toUpperCase() })
       return
     }
-    // Direkte Punkteingabe (5, 10, 15 …) – nicht die Anzahl der Berührungen.
+    // Direkte Punkteingabe (5, 10, 15 …) - nicht die Anzahl der Berührungen.
     const n = parseInt(v, 10)
     if (!Number.isNaN(n)) sum += n
   }

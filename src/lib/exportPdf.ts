@@ -39,7 +39,7 @@ export async function exportSheetsToPdf(fileName: string): Promise<void> {
       scale: SCALE,
       backgroundColor: '#ffffff',
       useCORS: true,
-      // html2canvas kann SVG-<img> (unsere QR-Codes) nicht zeichnen – deshalb
+      // html2canvas kann SVG-<img> (unsere QR-Codes) nicht zeichnen - deshalb
       // ersetzen wir sie im Klon durch ein frisch gezeichnetes Canvas.
       onclone: (doc) => replaceQrWithCanvas(doc),
     })

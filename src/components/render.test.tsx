@@ -50,7 +50,7 @@ describe('UI-Render (SSR-Smoke)', () => {
     expect(html).toContain('FP1;e=30-moewepokal-2026;t=gate135;k=3;l=1')
   })
 
-  it('zeigt die Disqualifikations-Legende (A–X) auf den Tor-Bögen', () => {
+  it('zeigt die Disqualifikations-Legende (A-X) auf den Tor-Bögen', () => {
     const html = render()
     expect(html).toContain('Disqualifikation:')
     expect(html).toContain('Nicht gestartet') // Code X

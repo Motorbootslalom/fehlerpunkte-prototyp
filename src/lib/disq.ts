@@ -13,7 +13,7 @@ export function allowedSet(disqTable?: DisqDef[]): Set<string> {
 /**
  * Bereinigt eine Disq-Eingabe: Großbuchstaben, nur erlaubte Codes; mehrere
  * Codes werden einheitlich mit ", " getrennt. Egal ob mit Komma, Leerzeichen
- * oder ohne Trenner getippt – "A B", "a,x" und "gf" werden zu "A, B" / "A, X"
+ * oder ohne Trenner getippt - "A B", "a,x" und "gf" werden zu "A, B" / "A, X"
  * / "G, F".
  */
 export function sanitizeDisq(raw: string, allowed: Set<string>): string {

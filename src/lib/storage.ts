@@ -18,7 +18,7 @@ export function saveState(state: AppState): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {
-    // Speicher voll oder nicht verfügbar – im Prototyp still ignorieren.
+    // Speicher voll oder nicht verfügbar - im Prototyp still ignorieren.
   }
 }
 

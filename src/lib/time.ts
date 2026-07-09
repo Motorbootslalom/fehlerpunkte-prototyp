@@ -82,7 +82,7 @@ function padHundredths(after: string): number {
   return parseInt((after + '00').slice(0, 2), 10)
 }
 
-/** mm:ss,cc – die "Uhrzeit"-Darstellung. */
+/** mm:ss,cc - die "Uhrzeit"-Darstellung. */
 export function formatClock(centis: number): string {
   const totalSecs = Math.floor(centis / 100)
   const mm = Math.floor(totalSecs / 60)
@@ -91,7 +91,7 @@ export function formatClock(centis: number): string {
   return `${pad2(mm)}:${pad2(ss)},${pad2(cc)}`
 }
 
-/** ss,cc – die reine Sekunden-Darstellung. */
+/** ss,cc - die reine Sekunden-Darstellung. */
 export function formatSeconds(centis: number): string {
   const secs = Math.floor(centis / 100)
   const cc = centis % 100

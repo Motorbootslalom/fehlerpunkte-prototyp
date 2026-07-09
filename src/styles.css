@@ -1,5 +1,5 @@
 /* ============================================================
-   Fehlerpunkte-Prototyp – Stile
+   Fehlerpunkte-Prototyp - Stile
    Zwei Welten:
    (1) Bildschirm: Steuerleiste links + Bögen als "Papierseiten" auf grauem
        Grund.
@@ -416,7 +416,7 @@ body {
 }
 
 /* Kopf- und Fußzelle gehen über die volle Breite und tragen keine Tabellen-
-   Rahmen/Polsterung – der Inhalt (Kopfbox bzw. Legende) bringt seine eigene
+   Rahmen/Polsterung - der Inhalt (Kopfbox bzw. Legende) bringt seine eigene
    Gestaltung mit. In <thead>/<tfoot> wiederholen sie sich beim Druck je Seite. */
 .sheet-head-cell,
 .sheet-foot-cell {
@@ -441,7 +441,7 @@ body {
   width: 13mm;
 }
 
-/* Nur die direkten Zellen der Zeilengruppen bekommen Rahmen/Zentrierung –
+/* Nur die direkten Zellen der Zeilengruppen bekommen Rahmen/Zentrierung -
    NICHT die verschachtelten Legenden-Tabellen im Fuß. */
 .sheet-table > thead > tr > th,
 .sheet-table > thead > tr > td,
@@ -638,8 +638,8 @@ body {
   grid-area: legend;
 }
 
-/* Das Alcatraz-Parcoursbild liegt horizontal vor und wird – wie in den
-   Original-Listen – um 90° gedreht (Hochformat). Das Inline-SVG (siehe
+/* Das Alcatraz-Parcoursbild liegt horizontal vor und wird - wie in den
+   Original-Listen - um 90° gedreht (Hochformat). Das Inline-SVG (siehe
    SheetView) füllt die Box formatfüllend, ohne höher als die Legende zu werden
    (die Zelle ist per Grid genauso hoch wie der Beschreibungsblock). */
 .sheet--rotated .course {

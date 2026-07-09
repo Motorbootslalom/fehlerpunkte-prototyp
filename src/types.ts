@@ -2,7 +2,7 @@
 //
 // Ein "Bogen" (WKR-Liste) entsteht aus der Kombination von Listentyp,
 // Klasse und Lauf. Der Aufbau der Bögen ist datengetrieben über SheetDef
-// beschrieben – ein einziger generischer Renderer stellt alle Typen dar.
+// beschrieben - ein einziger generischer Renderer stellt alle Typen dar.
 
 export type ClassId = 'E' | '1' | '2' | '3' | '4' | '5' | '6' | '7'
 
@@ -18,11 +18,11 @@ export type SheetTypeId = string
 
 /** Verhalten einer Eingabezelle. */
 export type CellKind =
-  | 'buoy' // Anzahl Bojenberührungen → Punkte = Anzahl × weight; Buchstabe A–X = Disq an dieser Stelle
+  | 'buoy' // Anzahl Bojenberührungen → Punkte = Anzahl × weight; Buchstabe A-X = Disq an dieser Stelle
   | 'code' // Fehlercode(s) aus der Legende, kommagetrennt → Punkte laut errorTable
   | 'points' // direkte Punkteingabe → fließt in Σ
   | 'time' // Zeiteingabe (Sonderformatierung, siehe lib/time)
-  | 'disq' // Disqualifikations-Buchstabe A–X
+  | 'disq' // Disqualifikations-Buchstabe A-X
   | 'text' // Freitext (Bemerkung)
   | 'sum' // berechnete Σ-Zelle (nur Anzeige)
 

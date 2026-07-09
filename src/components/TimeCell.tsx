@@ -6,7 +6,7 @@ import { formatTimeDisplay, parseTime, sanitizeTimeInput } from '../lib/time'
 //   • Live wird die Roh-Eingabe (z. B. "1,2345") gezeigt.
 //   • Enter übernimmt und springt ins nächste Zeitfeld.
 //   • Nach Verlassen zeigt die Zelle "mm:ss,00 (ss,00)".
-// Gespeichert wird die Roh-Eingabe – so bleibt sie beim Editieren erhalten und
+// Gespeichert wird die Roh-Eingabe - so bleibt sie beim Editieren erhalten und
 // der Parser interpretiert sie identisch wieder.
 
 export function TimeCell({

@@ -3,8 +3,8 @@ import { exportBaseName, sanitizeFilename, timestampSuffix } from './print'
 
 describe('sanitizeFilename', () => {
   it('entfernt dateisystem-kritische Zeichen', () => {
-    expect(sanitizeFilename('Fehlerpunkte – 30. Möwepokal 2026')).toBe(
-      'Fehlerpunkte – 30. Möwepokal 2026',
+    expect(sanitizeFilename('Fehlerpunkte - 30. Möwepokal 2026')).toBe(
+      'Fehlerpunkte - 30. Möwepokal 2026',
     )
     expect(sanitizeFilename('A/B:C*?"<>|D')).toBe('A B C D')
   })
@@ -27,16 +27,16 @@ describe('exportBaseName', () => {
   const d = new Date(2026, 6, 9, 17, 31, 45)
 
   it('setzt Event, Beschreibung und Zeitstempel zusammen', () => {
-    expect(exportBaseName('30. Möwepokal 2026', 'Zeit – Klasse 3 – 1. Lauf', d)).toBe(
-      'Fehlerpunkte – 30. Möwepokal 2026 – Zeit – Klasse 3 – 1. Lauf – 2026-07-09_17.31.45Uhr',
+    expect(exportBaseName('30. Möwepokal 2026', 'Zeit - Klasse 3 - 1. Lauf', d)).toBe(
+      'Fehlerpunkte - 30. Möwepokal 2026 - Zeit - Klasse 3 - 1. Lauf - 2026-07-09_17.31.45Uhr',
     )
   })
 
   it('lässt leere Teile weg', () => {
-    expect(exportBaseName('', '', d)).toBe('Fehlerpunkte – 2026-07-09_17.31.45Uhr')
+    expect(exportBaseName('', '', d)).toBe('Fehlerpunkte - 2026-07-09_17.31.45Uhr')
   })
 
   it('ohne Datum kein Zeitstempel (für die Vorschau)', () => {
-    expect(exportBaseName('Cup', 'Klasse 3')).toBe('Fehlerpunkte – Cup – Klasse 3')
+    expect(exportBaseName('Cup', 'Klasse 3')).toBe('Fehlerpunkte - Cup - Klasse 3')
   })
 })

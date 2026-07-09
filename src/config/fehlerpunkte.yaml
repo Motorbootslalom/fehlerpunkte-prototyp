@@ -41,7 +41,7 @@ kataloge:
       - { code: 19, text: "2. und 3. Versuch des Elementes", punkte: 5 }
 
   steg:
-    titel: "Ablegen (AB): 3–5 · Anlegen (AN): 7–12"
+    titel: "Ablegen (AB): 3-5 · Anlegen (AN): 7-12"
     fehler:
       - { code: 3, text: "erneute Stegberührung", punkte: 5 }
       - { code: 4, text: "Treten auf den Schlauch / ab Klasse 3", punkte: 5 }

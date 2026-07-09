@@ -1,9 +1,9 @@
 import type { KeyboardEvent } from 'react'
 
 // Tastatur-Navigation in einer Bogen-Tabelle:
-//   • ↑ / ↓        – eine Zeile hoch/runter (gleiche Spalte)
-//   • Enter        – eine Zeile runter (wie ↓)
-//   • ← / →        – vorheriges/nächstes Feld, aber nur wenn der Cursor am
+//   • ↑ / ↓        - eine Zeile hoch/runter (gleiche Spalte)
+//   • Enter        - eine Zeile runter (wie ↓)
+//   • ← / →        - vorheriges/nächstes Feld, aber nur wenn der Cursor am
 //                    Rand des Textes steht (sonst normale Cursor-Bewegung)
 // Fokussiert wird nur innerhalb derselben Tabelle (.sheet-table).
 

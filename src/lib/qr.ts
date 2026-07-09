@@ -21,7 +21,7 @@ function slug(s: string): string {
     .slice(0, 40)
 }
 
-/** QR-Modulmatrix (true = dunkles Modul) – z. B. zum Zeichnen auf ein Canvas. */
+/** QR-Modulmatrix (true = dunkles Modul) - z. B. zum Zeichnen auf ein Canvas. */
 export function qrModules(text: string): boolean[][] {
   const qr = qrcode(0, 'M')
   qr.addData(text)

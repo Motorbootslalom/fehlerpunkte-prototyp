@@ -2,8 +2,8 @@ import type { ClassId } from '../types'
 import { CLASS_IDS } from '../types'
 
 // Demo-Startnummern in Anlehnung an die alten Listen (z. B. Klasse 3 → 301…314).
-// Es sind KEINE echten personenbezogenen Daten – nur Nummern zum Ausprobieren
-// der Eingabemaske. Zwei kleine Gruppen je Klasse (…01–…05 und …11–…14) bilden
+// Es sind KEINE echten personenbezogenen Daten - nur Nummern zum Ausprobieren
+// der Eingabemaske. Zwei kleine Gruppen je Klasse (…01-…05 und …11-…14) bilden
 // die typische Verzahnungs-Aufteilung nach.
 
 const PREFIX: Record<ClassId, number> = {

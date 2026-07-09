@@ -2,7 +2,7 @@ import { load as yamlLoad } from 'js-yaml'
 import type { DisqDef, SheetDef } from '../types'
 import { buildConfig, type ResolvedConfig } from './build'
 import type { RawConfig, RawFehlerpunkte, RawPositionen } from './schema'
-// Gebündelte Standard-Konfiguration – immer verfügbar, auch ohne Netz. Die
+// Gebündelte Standard-Konfiguration - immer verfügbar, auch ohne Netz. Die
 // Dateien public/config/*.yaml (zur Laufzeit geladen) überschreiben sie.
 import bundledFehler from './fehlerpunkte.yaml?raw'
 import bundledPositionen from './positionen.yaml?raw'

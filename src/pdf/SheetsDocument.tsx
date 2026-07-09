@@ -7,11 +7,11 @@ import { bogenPayload } from '../lib/qr'
 import type { AppState, Bogen, CellKind, Column, SheetDef } from '../types'
 import { QrPdf } from './Qr'
 
-// Echtes Vektor-PDF via @react-pdf/renderer – zum Vergleich mit dem
+// Echtes Vektor-PDF via @react-pdf/renderer - zum Vergleich mit dem
 // Browser-Druck / Raster-Export. Nutzt dieselben Sheet-Definitionen und
 // dieselbe Punkte-/Disq-Logik wie der Haupt-Prototyp.
 
-// Eingebettete Schrift (Liberation Sans, Arial-metrisch) – enthält Σ und
+// Eingebettete Schrift (Liberation Sans, Arial-metrisch) - enthält Σ und
 // Umlaute, anders als die eingebaute Helvetica.
 Font.register({
   family: 'Sheet',
@@ -73,7 +73,7 @@ const s = StyleSheet.create({
   lcCode: { width: 16, fontWeight: 'bold', textAlign: 'center' },
   lcText: {}, // Breite/Flex wird je Kontext inline gesetzt
   lcPts: { width: 24, textAlign: 'right', fontWeight: 'bold', marginLeft: 6 }, // ausgerichtete Punkte-Spalte
-  // Kein fontStyle: 'italic' – die eingebettete Schrift hat keine Kursiv-Variante
+  // Kein fontStyle: 'italic' - die eingebettete Schrift hat keine Kursiv-Variante
   // registriert (react-pdf würde sonst beim Auflösen hängen).
   note: { fontSize: 7, color: '#333', marginBottom: 1 },
 

@@ -1,4 +1,4 @@
-# Lastenheft – Fehlerpunkte-Eingabemasken (Motorbootslalom)
+# Lastenheft - Fehlerpunkte-Eingabemasken (Motorbootslalom)
 
 Version 0.1 · Konzept-Prototyp · Stand 2026-07
 
@@ -16,7 +16,7 @@ beschriebenen Punkte beispielhaft um.
   (siehe Ordner `alte PDF-Listen/`).
 - **Großer Vorteil der bisherigen Lösung:** Ausdruck (PDF) und Eingabe erfolgen
   in **derselben Maske/Ansicht**. Dadurch ist eine **Kontrolle der Eingaben
-  extrem einfach** – man sieht Formular und eingetragene Werte gleichzeitig.
+  extrem einfach** - man sieht Formular und eingetragene Werte gleichzeitig.
 - Nachteil: Excel ist umständlich, fehleranfällig, nicht scanner-/tabletfähig
   und rechnet Ergebnisse nur eingeschränkt zusammen.
 
@@ -46,7 +46,7 @@ Jeder Bogen ist eine A4-Seite (Knoten: Querformat) und besteht aus:
   Lauf, rechts das WKR-Feld (Name/Unterschrift).
 - **Tabelle:** eine Zeile je Startnummer (Startreihenfolge), plus einige leere
   Zeilen. Spalten je nach Listentyp (siehe §4).
-- **Fuß:** Legende (Fehlercodes mit Punkten, Disqualifikations-Codes A–X),
+- **Fuß:** Legende (Fehlercodes mit Punkten, Disqualifikations-Codes A-X),
   ggf. Parcoursbild, Unterschriftszeile „Unterschrift WKR“.
 
 ## 4. Listentypen / Positionen (Stationen am Parcours)
@@ -62,11 +62,11 @@ Jeder Bogen ist eine A4-Seite (Knoten: Querformat) und besteht aus:
 | Tore 1/3/5 | Tor 1 / 3 / 5 | Start · Tor 1 · Tor 3 · Tor 5 · Tor 3 · Tor 1 · Ziel (je Bojenspalten mit Blickrichtung) · Disq. · Σ | ✓ | alcatraz_I |
 | Tore 2/4/5 | Tor 2 / 4 / 5 | analog mit Toren 2/4/5 | ✓ | alcatraz_II |
 | Tor 5 | Tor 5 | Fehler · Σ · Disq. · Bemerkung | ✓ | alcatraz_Parcours |
-| Mann-über-Bord / Schikane | Mann-über-Bord | Fehler · Fehlerpunkte · **Σ (mittig)** · Disq. · Bemerkung | ✓ | – |
-| Steg | Steg | Fehler AB · F-punkte · Fehler AN · F-Punkte · Disq. · Bemerkung | (je Gruppe) | – |
-| Zeit | Zeit | Zeit 1 · Zeit 2 · Zeit 3 | – | – |
-| Knoten (quer) | Knoten | Webleinstek · Schotstek · Palsteg · Kreuzknoten · Klampe · * · Σ | ✓ | – |
-| Parcours einfach | Parcours | Bemerkung · Disq. | – | alcatraz_Parcours |
+| Mann-über-Bord / Schikane | Mann-über-Bord | Fehler · Fehlerpunkte · **Σ (mittig)** · Disq. · Bemerkung | ✓ | - |
+| Steg | Steg | Fehler AB · F-punkte · Fehler AN · F-Punkte · Disq. · Bemerkung | (je Gruppe) | - |
+| Zeit | Zeit | Zeit 1 · Zeit 2 · Zeit 3 | - | - |
+| Knoten (quer) | Knoten | Webleinstek · Schotstek · Palsteg · Kreuzknoten · Klampe · * · Σ | ✓ | - |
+| Parcours einfach | Parcours | Bemerkung · Disq. | - | alcatraz_Parcours |
 
 **Blickrichtungen** an den Tor-Bojenspalten:
 `H H` = Hinfahrt Hafen/Links · `H K` = Hinfahrt Kai/Rechts ·
@@ -90,12 +90,12 @@ Fehlertabellen (aus den Alt-Listen übernommen):
   Schaltung / erst ab Klasse 5 (5).
 - **Ablegen (Steg):** 3, 4, 5 = je 5.
 - **Anlegen (Steg):** 7, 8, 10, 11 = je 5 · 9, 12 = je 10.
-- **Mann-über-Bord:** 13–19 = je 5.
+- **Mann-über-Bord:** 13-19 = je 5.
 - **Knoten:** 5 pro fehlerhafter Knoten.
 
 ## 6. Disqualifikation
 
-- Es gibt eine geltungsweite Code-Tabelle **A–L, X** (auf jedem Bogen als Legende).
+- Es gibt eine geltungsweite Code-Tabelle **A-L, X** (auf jedem Bogen als Legende).
 - Disqualifikation kann eingetragen werden
   - in der eigenen **Disq.-Spalte** der Zeile **oder**
   - **direkt in einer Tor-/Bojenspalte** (Buchstabe statt Zahl). So ist die
@@ -103,7 +103,7 @@ Fehlertabellen (aus den Alt-Listen übernommen):
 - Für die Ergebnisseite (nicht Teil des Prototyps) stehen damit **Ort und Grund**
   der Disqualifikation strukturiert bereit.
 - **Eingabehilfe:** Disq-Eingaben werden automatisch groß geschrieben; es sind
-  **nur Codes zulässig, die in der Legende stehen** (A–L, X). Mehrere Codes mit
+  **nur Codes zulässig, die in der Legende stehen** (A-L, X). Mehrere Codes mit
   Komma und/oder Leerzeichen; die Anzeige normalisiert einheitlich auf „A, B".
 
 ## 7. Zeiteingabe
@@ -112,7 +112,7 @@ Es existieren verschiedene Stoppuhren: manche zeigen `mm:ss,00`, manche `ss,00`.
 Die Eingabe muss **sehr schnell über das Numpad** möglich sein und beide Formate
 abdecken.
 
-**Regeln** (eine Zahl mit Trenner – Komma **oder** Punkt, je nach Layout):
+**Regeln** (eine Zahl mit Trenner - Komma **oder** Punkt, je nach Layout):
 
 - Zahl vor dem Trenner **> 20** → es sind **Sekunden**, danach **Hundertstel**.
   Beispiel `45,67` → 0:45,67.
@@ -152,7 +152,7 @@ Zwei Wege sind vorgesehen (im Prototyp beide vorhanden, zum **Vergleich**):
    eingebettetem Parcoursbild (PNG; Tor-Bögen gedreht). Dient dem Vergleich.
 
 Der Dateiname wird bei Browser-Druck und Vektor-Prototyp automatisch gebildet:
-`Fehlerpunkte – <Event> [– <Position>] [– Klasse X] [– N. Lauf] – <Zeitstempel>`,
+`Fehlerpunkte - <Event> [- <Position>] [- Klasse X] [- N. Lauf] - <Zeitstempel>`,
 wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
 
 ## 9. Scanner-Erfassung (spätere Ausbaustufe)
@@ -170,8 +170,8 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
 - Im Prototyp sind Demo-Nummern hinterlegt und editierbar (keine echten Daten).
 - Produktiv kommen die Nummern und die Verzahnungs-/Gruppenaufteilung aus dem
   Schwesterprojekt *verzahnungs-prototyp* bzw. dem Auswertungstool.
-- Es gibt die Klassen **E und 1–7** (Klasse A entfällt).
-- **Jede 5. Zeile** ist grau hinterlegt – reine Lesehilfe zur Orientierung.
+- Es gibt die Klassen **E und 1-7** (Klasse A entfällt).
+- **Jede 5. Zeile** ist grau hinterlegt - reine Lesehilfe zur Orientierung.
 
 ## 11. Datenschutz
 
@@ -186,9 +186,9 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
   einer Seite einsehbar).
 - **Zwei YAML-Dateien** unter `public/config/` (zur Laufzeit geladen, ohne Neubau
   änderbar; `src/config/`-Kopien als Fallback):
-  - `fehlerpunkte.yaml` – `disqualifikationen` (beliebig viele, mit Buchstaben) und
+  - `fehlerpunkte.yaml` - `disqualifikationen` (beliebig viele, mit Buchstaben) und
     benannte `kataloge` (Fehler mit Zahlen → Punkte).
-  - `positionen.yaml` – wiederverwendbare `hinweise` und die `positionen`
+  - `positionen.yaml` - wiederverwendbare `hinweise` und die `positionen`
     (Spalten/Reihenfolge, `katalog`- und `hinweis`-Verweis, `bild`,
     `bildDrehung: 0|90|-90|180`).
 - **Disqualifikationen pro Position ausblendbar** via `disq: alle | keine | [A,…]`.

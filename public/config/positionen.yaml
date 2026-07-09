@@ -6,14 +6,14 @@
 # Fehler-Kataloge (fehlerpunkte.yaml) und Hinweise (unten) per Verweis ein.
 #
 # Spalten-Typen (typ):
-#   boje  – Punkte direkt eintragen (5, 10, 15 …); ein Disq-Buchstabe markiert
+#   boje  - Punkte direkt eintragen (5, 10, 15 …); ein Disq-Buchstabe markiert
 #           die Disqualifikation an dieser Stelle. sub = Unter-Spalten.
-#   code  – Fehlercodes (Zahlen) aus dem verwiesenen Katalog; punkteSpalte
-#   summe – berechnete Punkte-/Σ-Spalte     zeit – Zeiteingabe
-#   disq  – Disqualifikations-Spalte          text – Freitext (breite)
+#   code  - Fehlercodes (Zahlen) aus dem verwiesenen Katalog; punkteSpalte
+#   summe - berechnete Punkte-/Σ-Spalte     zeit - Zeiteingabe
+#   disq  - Disqualifikations-Spalte          text - Freitext (breite)
 #
 # katalog:  Verweis auf fehlerpunkte.kataloge.<id>
-# hinweis:  Verweis auf hinweise.<id> (unten) – oder direkter Text
+# hinweis:  Verweis auf hinweise.<id> (unten) - oder direkter Text
 # disq:     alle | keine | [A, B, G, …]   (nicht relevante ausblenden)
 # bildDrehung: 0 | 90 | -90 | 180   (Bild um so viel Grad drehen)
 # =====================================================================
@@ -27,7 +27,7 @@ hinweise:
     Start = Berührung Einfahrt-Bojentor · Ziel = Berührung Ausfahrt-Bojentor
     Fehler: pro berührter Boje (auch außerhalb des Manövers) = 5
   knoten: "Fehler: 5 pro fehlerhafter Knoten"
-  parcours: "Es ist nur der eigentliche Fahrweg zu beobachten – keine Bojenberührungen!"
+  parcours: "Es ist nur der eigentliche Fahrweg zu beobachten - keine Bojenberührungen!"
 
 # ---- Reihenfolge für „eine Klasse · alle Positionen“ ---------------
 klassenReihenfolge: [zeit, steg, gate135, gate245, tor5, mueb, parcours, knoten]

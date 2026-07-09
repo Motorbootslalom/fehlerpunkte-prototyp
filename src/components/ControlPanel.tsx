@@ -8,7 +8,7 @@ import { CLASS_IDS, type ClassId, type Lauf, type SheetTypeId } from '../types'
 
 const LAEUFE: Lauf[] = [1, 2, 3]
 
-/** Steuerungsleiste – nur am Bildschirm sichtbar, im Druck ausgeblendet. */
+/** Steuerungsleiste - nur am Bildschirm sichtbar, im Druck ausgeblendet. */
 export function ControlPanel() {
   const { state, dispatch } = useStore()
   const [addType, setAddType] = useState<SheetTypeId>('gate135')
@@ -41,7 +41,7 @@ export function ControlPanel() {
     <aside className="control-panel">
       <h1>Fehlerpunkte-Prototyp</h1>
       <p className="intro">
-        Prototyp der WKR-Eingabemasken. Eingabe und Ausdruck sind dieselbe Ansicht – so lässt
+        Prototyp der WKR-Eingabemasken. Eingabe und Ausdruck sind dieselbe Ansicht - so lässt
         sich jede Eintragung direkt kontrollieren. Alle Daten bleiben lokal im Browser.
       </p>
 
@@ -81,9 +81,9 @@ export function ControlPanel() {
         <p className="hint">
           <strong>Empfohlen:</strong> Browser-Druck → „Als PDF speichern“ liefert scharfen,
           markierbaren Text inkl. QR-Codes (Tipp: im Dialog „Kopf- und Fußzeilen“ deaktivieren).
-          Der Download-Button erzeugt eine gerasterte Bild-PDF (unschärfer) – nur als Fallback.
+          Der Download-Button erzeugt eine gerasterte Bild-PDF (unschärfer) - nur als Fallback.
           <br />
-          Dateiname: <code>{namePreview} – …Uhr</code>
+          Dateiname: <code>{namePreview} - …Uhr</code>
         </p>
         <a className="alt-link" href="./pdf.html">
           🧪 Vergleich: Vektor-PDF-Prototyp (react-pdf) öffnen →
@@ -288,7 +288,7 @@ export function ControlPanel() {
           <summary>
             <h2 style={{ display: 'inline' }}>Startnummern</h2>
           </summary>
-          <p className="hint">Demo-Nummern (keine echten Daten) – frei editierbar, kommagetrennt.</p>
+          <p className="hint">Demo-Nummern (keine echten Daten) - frei editierbar, kommagetrennt.</p>
           {CLASS_IDS.map((c) => {
             const nums = state.numbers[c] ?? []
             return (
