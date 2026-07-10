@@ -19,12 +19,24 @@
 # bildDrehung: 0 | 90 | -90 | 180   (Bild um so viel Grad drehen)
 # =====================================================================
 
+# ---- Globale Bojen-Kürzel (an EINER Stelle umstellbar) -------------
+# In "sub" und Hinweisen werden diese Tokens (als ganze Wörter) ersetzt.
+# So wird aus "hin seiteA" -> "H R". Alternativen:
+#   Hafen/Kai:    seiteA: H,  seiteB: K
+#   Land/See:     seiteA: L,  seiteB: S
+#   Rechts/Links: seiteA: R,  seiteB: L   (Standard; darum Rückfahrt = Z)
+bezeichnungen:
+  hin: "H"      # 1. Zeichen: Hinfahrt
+  rueck: "Z"    # 1. Zeichen: Rückfahrt (Z = Zurück, kein Konflikt mit R)
+  seiteA: "R"   # 2. Zeichen: eine Bojen-Seite (Standard: Rechts)
+  seiteB: "L"   # 2. Zeichen: andere Bojen-Seite (Standard: Links)
+
 # ---- Wiederverwendbare Hinweise (Bojen-Bezeichnungen) --------------
 hinweise:
   blickrichtung: |-
-    Bojen-Bezeichnung (eindeutig, ohne links/rechts):
-    1. Buchstabe = Fahrtrichtung: H = Hinfahrt, R = Rückfahrt
-    2. Buchstabe = Seite: H = Hafen, K = Kai
+    Bojen-Bezeichnung (eindeutig):
+    1. Zeichen = Fahrtrichtung: hin = Hinfahrt, rueck = Rückfahrt
+    2. Zeichen = Seite: seiteA = Rechts, seiteB = Links
     Start = Berührung Einfahrt-Bojentor · Ziel = Berührung Ausfahrt-Bojentor
     Fehler: pro berührter Boje (auch außerhalb des Manövers) = 5
   knoten: "Fehler: 5 pro fehlerhafter Knoten"
@@ -130,13 +142,13 @@ positionen:
     disq: alle
     hinweis: blickrichtung
     spalten:
-      - { key: start, label: "Start", typ: boje, sub: ["H K"] }
-      - { key: t1a, label: "Tor 1", typ: boje, sub: ["H K", "H H"] }
-      - { key: t3a, label: "Tor 3", typ: boje, sub: ["H K", "H H"] }
-      - { key: t5, label: "Tor 5", typ: boje, sub: ["H K", "R K"] }
-      - { key: t3b, label: "Tor 3", typ: boje, sub: ["R K", "R H"] }
-      - { key: t1b, label: "Tor 1", typ: boje, sub: ["R K", "R H"] }
-      - { key: ziel, label: "Ziel", typ: boje, sub: ["R K"] }
+      - { key: start, label: "Start", typ: boje, sub: ["hin seiteA"] }
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["hin seiteA", "rueck seiteA"] }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteA"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
 
@@ -150,13 +162,13 @@ positionen:
     disq: alle
     hinweis: blickrichtung
     spalten:
-      - { key: start, label: "Start", typ: boje, sub: ["H H"] }
-      - { key: t2a, label: "Tor 2", typ: boje, sub: ["H K", "H H"] }
-      - { key: t4a, label: "Tor 4", typ: boje, sub: ["H K", "H H"] }
-      - { key: t5, label: "Tor 5", typ: boje, sub: ["H H", "R H"] }
-      - { key: t4b, label: "Tor 4", typ: boje, sub: ["R K", "R H"] }
-      - { key: t2b, label: "Tor 2", typ: boje, sub: ["R K", "R H"] }
-      - { key: ziel, label: "Ziel", typ: boje, sub: ["R H"] }
+      - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["hin seiteB", "rueck seiteB"] }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
 
@@ -171,13 +183,13 @@ positionen:
     disq: [A, B, G, H, I, J, X]
     hinweis: blickrichtung
     spalten:
-      - { key: start, label: "Start", typ: boje, sub: ["H H"] }
-      - { key: t1a, label: "Tor 1", typ: boje, sub: ["H H", "H K"] }
-      - { key: t3a, label: "Tor 3", typ: boje, sub: ["H H", "H K"] }
-      - { key: t5, label: "Tor 5", typ: boje, sub: ["R K", "H K"] }
-      - { key: t3b, label: "Tor 3", typ: boje, sub: ["R H", "R K"] }
-      - { key: t1b, label: "Tor 1", typ: boje, sub: ["R H", "R K"] }
-      - { key: ziel, label: "Ziel", typ: boje, sub: ["R H"] }
+      - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteB", "hin seiteA"] }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteB", "hin seiteA"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["rueck seiteA", "hin seiteA"] }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteB", "rueck seiteA"] }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteB", "rueck seiteA"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
 
@@ -190,12 +202,12 @@ positionen:
     disq: [A, B, G, H, I, J, X]
     hinweis: blickrichtung
     spalten:
-      - { key: start, label: "Start", typ: boje, sub: ["H H"] }
-      - { key: t2a, label: "Tor 2", typ: boje, sub: ["H H", "H K"] }
-      - { key: t4a, label: "Tor 4", typ: boje, sub: ["H H", "H K"] }
-      - { key: t5, label: "Tor 5", typ: boje, sub: ["R H", "H H"] }
-      - { key: t4b, label: "Tor 4", typ: boje, sub: ["R H", "R K"] }
-      - { key: t2b, label: "Tor 2", typ: boje, sub: ["R H", "R K"] }
-      - { key: ziel, label: "Ziel", typ: boje, sub: ["R H"] }
+      - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteB", "hin seiteA"] }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteB", "hin seiteA"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["rueck seiteB", "hin seiteB"] }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteB", "rueck seiteA"] }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteB", "rueck seiteA"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }

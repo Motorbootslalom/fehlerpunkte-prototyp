@@ -198,6 +198,11 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
 - **Disqualifikationen pro Position ausblendbar** via `disq: alle | keine | [A,…]`.
 - **Hinweise** (Bojen-Bezeichnungen) sind zentral und werden per Verweis
   eingebunden; eindeutige Seitennamen (Hafen/Kai/See/Land) statt links/rechts.
+- **Globale Bojen-Kürzel** (`bezeichnungen`): die Richtungs-/Seitenkürzel sind
+  eine Token-Map. In `sub` und Hinweisen werden `hin`/`rueck`/`seiteA`/`seiteB`
+  als ganze Wörter ersetzt - so lassen sich R/L, L/S (Land/See) oder H/K
+  (Hafen/Kai) an EINER Stelle umstellen. (Standard R/L; darum Rückfahrt = Z,
+  damit R eindeutig „Rechts" bleibt.)
 - Beide Ausgaben (Eingabe-Prototyp und Vektor-PDF) nutzen dieselbe Konfiguration.
 
 ## 12. Nicht-Ziele / offene Punkte

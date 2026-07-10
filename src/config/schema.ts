@@ -72,6 +72,13 @@ export interface RawAufbau {
 
 /** positionen.yaml */
 export interface RawPositionen {
+  /**
+   * Globale Bojen-Kürzel als Token-Map, z. B. { hin: "H", rueck: "Z",
+   * seiteA: "R", seiteB: "L" }. In Spalten-`sub` und Hinweisen werden diese
+   * Tokens (als ganze Wörter) durch die Kürzel ersetzt - so lassen sich die
+   * Bezeichnungen (R/L, L/S, H/K …) an einer Stelle umstellen.
+   */
+  bezeichnungen?: Record<string, string>
   /** Wiederverwendbare Hinweistexte (Bojen-Bezeichnungen). */
   hinweise?: Record<string, string>
   /** Aufbauten (Setups); der erste ist der Standard. */

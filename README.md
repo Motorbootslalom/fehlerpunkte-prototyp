@@ -99,6 +99,12 @@ Wichtige Felder einer Position: `spalten` (Reihenfolge/Typen), `katalog`
 `disq: alle | keine | [A, B, …]` (nicht relevante Disqualifikationen ausblenden),
 `bild` + `bildDrehung: 0 | 90 | -90 | 180`.
 
+**Globale Bojen-Kürzel:** Die Seiten-/Richtungskürzel stehen zentral unter
+`bezeichnungen` (Token-Map, z. B. `seiteA: R`, `seiteB: L`). In `sub` und in den
+Hinweisen werden die Tokens (`hin`, `rueck`, `seiteA`, `seiteB`) als ganze Wörter
+ersetzt - so stellt man von Rechts/Links auf Land/See (`L`/`S`) oder Hafen/Kai
+(`H`/`K`) an EINER Stelle um; die Spaltenköpfe und der Hinweis ziehen automatisch nach.
+
 Die gebündelten Kopien unter `src/config/` dienen als Fallback (offline / falls
 die Laufzeit-Datei fehlt oder fehlerhaft ist). Beide Prototypen (Eingabe und
 Vektor-PDF) nutzen dieselbe Konfiguration.
