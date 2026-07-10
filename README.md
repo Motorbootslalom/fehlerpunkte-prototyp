@@ -89,6 +89,10 @@ wirkt nach dem Neuladen der Seite, ohne Neubau):
 - **`positionen.yaml`** - die **orts-/personenabhängigen Positionen** (welche
   Liste, welche Spalten in welcher Reihenfolge, welches Bild/Drehung). Positionen
   binden Kataloge und wiederverwendbare **Hinweise** per Verweis (ID) ein.
+  Positionen sind zu **Aufbauten (Setups)** gebündelt (z. B. `Alcatraz`, `Frontal`);
+  ein Aufbau enthält alle genutzten Listen. Gemeinsame Listen (Zeit, Knoten, …)
+  werden geteilt, nur die Tor-Positionen unterscheiden sich je Aufbau. In der
+  Bedienleiste wählt man den Aufbau; das erzeugt dessen Bögen neu.
 
 Wichtige Felder einer Position: `spalten` (Reihenfolge/Typen), `katalog`
 (Verweis auf einen Fehler-Katalog), `hinweis` (Verweis auf einen Hinweistext),

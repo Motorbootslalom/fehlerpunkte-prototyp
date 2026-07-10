@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getSheetDef, klassenListenOrder, sheetTypeOrder } from '../config/active'
+import { getAufbau, getAufbauten, getSheetDef } from '../config/active'
 import { extendNumbers, formatNumbers, parseNumbers, shrinkNumbers } from '../lib/demo'
 import { exportSheetsToPdf } from '../lib/exportPdf'
 import { describeBoegen, exportBaseName, printWithFilename } from '../lib/print'
@@ -11,11 +11,15 @@ const LAEUFE: Lauf[] = [1, 2, 3]
 /** Steuerungsleiste - nur am Bildschirm sichtbar, im Druck ausgeblendet. */
 export function ControlPanel() {
   const { state, dispatch } = useStore()
-  const [addType, setAddType] = useState<SheetTypeId>('gate135')
   const [addClass, setAddClass] = useState<ClassId>('3')
   const [addLauf, setAddLauf] = useState<Lauf>(1)
   const [qpLauf, setQpLauf] = useState<Lauf>(1)
   const [busy, setBusy] = useState(false)
+
+  // Positionen des gewählten Aufbaus (Setup).
+  const order = getAufbau(state.aufbau).order
+  const [addTypeRaw, setAddType] = useState<SheetTypeId>('')
+  const addType = order.includes(addTypeRaw) ? addTypeRaw : (order[0] ?? '')
 
   const bulk = (items: { typeId: SheetTypeId; klasse: ClassId; lauf: Lauf }[]) =>
     dispatch({ type: 'ADD_BOEGEN_BULK', items })
@@ -47,6 +51,20 @@ export function ControlPanel() {
 
       <section>
         <label className="field">
+          <span>Aufbau (Setup)</span>
+          <select
+            value={state.aufbau}
+            onChange={(e) => dispatch({ type: 'SET_AUFBAU', aufbau: e.target.value })}
+            title="Bei einem Wettkampf genutzter Aufbau; wechseln erzeugt dessen Bögen neu"
+          >
+            {getAufbauten().map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="field" style={{ marginTop: 8 }}>
           <span>Veranstaltung</span>
           <input
             value={state.eventName}
@@ -102,11 +120,11 @@ export function ControlPanel() {
                 {LAEUFE.map((l) => (
                   <button
                     key={l}
-                    title={`Alle ${sheetTypeOrder().length} Listentypen × alle Klassen für den ${l}. Lauf`}
+                    title={`Alle ${order.length} Listentypen × alle Klassen für den ${l}. Lauf`}
                     onClick={() =>
                       bulk(
                         CLASS_IDS.flatMap((c) =>
-                          klassenListenOrder().map((t) => ({ typeId: t, klasse: c, lauf: l })),
+                          order.map((t) => ({ typeId: t, klasse: c, lauf: l })),
                         ),
                       )
                     }
@@ -135,7 +153,7 @@ export function ControlPanel() {
             <div className="qp-row">
               <span className="qp-label">Eine Position · alle Klassen · {qpLauf}. Lauf:</span>
               <div className="qp-btns">
-                {sheetTypeOrder().map((t) => (
+                {order.map((t) => (
                   <button
                     key={t}
                     title={`${getSheetDef(t).menuLabel} für alle Klassen (${qpLauf}. Lauf)`}
@@ -157,7 +175,7 @@ export function ControlPanel() {
                     key={c}
                     title={`Alle Listentypen für Klasse ${c} (${qpLauf}. Lauf)`}
                     onClick={() =>
-                      bulk(klassenListenOrder().map((t) => ({ typeId: t, klasse: c, lauf: qpLauf })))
+                      bulk(order.map((t) => ({ typeId: t, klasse: c, lauf: qpLauf })))
                     }
                   >
                     Kl. {c}
@@ -187,7 +205,7 @@ export function ControlPanel() {
                   })
                 }
               >
-                {sheetTypeOrder().map((t) => (
+                {order.map((t) => (
                   <option key={t} value={t}>
                     {getSheetDef(t).menuLabel}
                   </option>
@@ -253,7 +271,7 @@ export function ControlPanel() {
 
         <div className="add-bogen">
           <select value={addType} onChange={(e) => setAddType(e.target.value as SheetTypeId)}>
-            {sheetTypeOrder().map((t) => (
+            {order.map((t) => (
               <option key={t} value={t}>
                 {getSheetDef(t).menuLabel}
               </option>

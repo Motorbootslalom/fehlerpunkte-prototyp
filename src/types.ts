@@ -94,6 +94,8 @@ export type SheetValues = Record<string, Record<string, string>>
 
 export interface AppState {
   eventName: string
+  /** Gewählter Aufbau (Setup), z. B. "alcatraz" oder "frontal". */
+  aufbau: string
   /** Anzahl leerer Zeilen, die nach den Startnummern angehängt werden. */
   emptyRows: number
   /** Startnummern je Klasse (Reihenfolge = Startreihenfolge). */

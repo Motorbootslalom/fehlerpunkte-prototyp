@@ -1,6 +1,6 @@
 import { load as yamlLoad } from 'js-yaml'
 import type { DisqDef, SheetDef } from '../types'
-import { buildConfig, type ResolvedConfig } from './build'
+import { buildConfig, type ResolvedAufbau, type ResolvedConfig } from './build'
 import type { RawConfig, RawFehlerpunkte, RawPositionen } from './schema'
 // Gebündelte Standard-Konfiguration - immer verfügbar, auch ohne Netz. Die
 // Dateien public/config/*.yaml (zur Laufzeit geladen) überschreiben sie.
@@ -42,12 +42,18 @@ export function getPositions(): SheetDef[] {
   return cfg().positions
 }
 
-export function sheetTypeOrder(): string[] {
-  return cfg().order
+export function getAufbauten(): ResolvedAufbau[] {
+  return cfg().aufbauten
 }
 
-export function klassenListenOrder(): string[] {
-  return cfg().klassenOrder
+export function defaultAufbauId(): string {
+  return cfg().aufbauten[0]?.id ?? 'standard'
+}
+
+/** Aufbau nach ID (Fallback: erster/Standard-Aufbau). */
+export function getAufbau(id: string): ResolvedAufbau {
+  const a = cfg().aufbauten.find((x) => x.id === id)
+  return a ?? cfg().aufbauten[0] ?? { id: 'standard', name: 'Standard', order: [] }
 }
 
 export function allDisqs(): DisqDef[] {

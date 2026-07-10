@@ -4,12 +4,17 @@ import type { RawConfig, RawPosition, RawSpalte } from './schema'
 // Wandelt die geparste (zusammengeführte) YAML-Konfiguration in die interne
 // Darstellung um. Positionen binden Fehler-Kataloge und Hinweise per Verweis ein.
 
+export interface ResolvedAufbau {
+  id: string
+  name: string
+  /** Positions-IDs dieses Aufbaus (nur existierende, in Reihenfolge). */
+  order: string[]
+}
+
 export interface ResolvedConfig {
   positions: SheetDef[]
-  /** Reihenfolge der Positionen (IDs). */
-  order: string[]
-  /** Reihenfolge für „eine Klasse · alle Positionen“. */
-  klassenOrder: string[]
+  /** Aufbauten (Setups); der erste ist der Standard. */
+  aufbauten: ResolvedAufbau[]
   /** Alle konfigurierten Disqualifikationen. */
   allDisqs: DisqDef[]
 }
@@ -72,9 +77,16 @@ export function buildConfig(raw: RawConfig): ResolvedConfig {
     }
   })
 
-  const order = positions.map((p) => p.typeId)
-  const klassenOrder =
-    raw.klassenReihenfolge && raw.klassenReihenfolge.length > 0 ? raw.klassenReihenfolge : order
+  const known = new Set(positions.map((p) => p.typeId))
+  // Aufbauten: nur existierende Positions-IDs; ohne Definition ein Standard mit allen.
+  const aufbauten: ResolvedAufbau[] =
+    raw.aufbauten && raw.aufbauten.length > 0
+      ? raw.aufbauten.map((a) => ({
+          id: a.id,
+          name: a.name,
+          order: a.positionen.filter((id) => known.has(id)),
+        }))
+      : [{ id: 'standard', name: 'Standard', order: positions.map((p) => p.typeId) }]
 
-  return { positions, order, klassenOrder, allDisqs }
+  return { positions, aufbauten, allDisqs }
 }

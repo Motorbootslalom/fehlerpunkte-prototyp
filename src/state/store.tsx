@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, type ReactNode } from 'react'
 import type { AppState, Bogen, ClassId, Lauf, SheetTypeId } from '../types'
-import { klassenListenOrder } from '../config/active'
+import { defaultAufbauId, getAufbau } from '../config/active'
 import { allDemoNumbers } from '../lib/demo'
 import { cellKey } from '../lib/scoring'
 import { clearState, loadState, saveState } from '../lib/storage'
@@ -9,20 +9,22 @@ function uid(prefix: string): string {
   return prefix + '_' + Math.random().toString(36).slice(2, 9)
 }
 
-/** Standard-Zusammenstellung: je ein Bogen pro Position für Klasse 3, Lauf 1. */
-function defaultBoegen(): Bogen[] {
-  return klassenListenOrder().map((t) => ({ id: uid('bg'), typeId: t, klasse: '3', lauf: 1 }))
+/** Standard-Zusammenstellung: je ein Bogen pro Position des Aufbaus (Klasse 3, Lauf 1). */
+function defaultBoegen(aufbau: string): Bogen[] {
+  return getAufbau(aufbau).order.map((t) => ({ id: uid('bg'), typeId: t, klasse: '3', lauf: 1 }))
 }
 
 // Lazy erzeugt (nicht als Modul-Konstante), damit die geladene Konfiguration
 // berücksichtigt wird.
 function defaultState(): AppState {
+  const aufbau = defaultAufbauId()
   return {
     eventName: '30. Möwepokal 2026',
+    aufbau,
     emptyRows: 3,
     numbers: allDemoNumbers(),
     wkr: {},
-    boegen: defaultBoegen(),
+    boegen: defaultBoegen(aufbau),
     values: {},
     initialized: false,
   }
@@ -30,6 +32,7 @@ function defaultState(): AppState {
 
 export type Action =
   | { type: 'SET_EVENT'; eventName: string }
+  | { type: 'SET_AUFBAU'; aufbau: string }
   | { type: 'SET_EMPTY_ROWS'; emptyRows: number }
   | { type: 'SET_NUMBERS'; klasse: ClassId; numbers: number[] }
   | { type: 'SET_WKR'; bogenId: string; name: string }
@@ -48,6 +51,10 @@ function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SET_EVENT':
       return { ...state, eventName: action.eventName }
+
+    case 'SET_AUFBAU':
+      // Aufbau wechseln = neue Bogen-Grundausstattung dieses Setups (Klasse 3).
+      return { ...state, aufbau: action.aufbau, boegen: defaultBoegen(action.aufbau) }
 
     case 'SET_EMPTY_ROWS':
       return { ...state, emptyRows: Math.max(0, Math.min(30, action.emptyRows)) }

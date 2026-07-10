@@ -62,12 +62,21 @@ export interface RawPosition {
   spalten: RawSpalte[]
 }
 
+/** Ein Aufbau (Setup) bündelt die bei einem Wettkampf genutzten Positionen. */
+export interface RawAufbau {
+  id: string
+  name: string
+  /** Positions-IDs in Reihenfolge (auch gemeinsame wie zeit, knoten …). */
+  positionen: string[]
+}
+
 /** positionen.yaml */
 export interface RawPositionen {
   /** Wiederverwendbare Hinweistexte (Bojen-Bezeichnungen). */
   hinweise?: Record<string, string>
-  /** Reihenfolge beim „eine Klasse · alle Positionen“. Sonst = Definitionsreihenfolge. */
-  klassenReihenfolge?: string[]
+  /** Aufbauten (Setups); der erste ist der Standard. */
+  aufbauten?: RawAufbau[]
+  /** Alle Positionen (werden von den Aufbauten per ID referenziert). */
   positionen: RawPosition[]
 }
 

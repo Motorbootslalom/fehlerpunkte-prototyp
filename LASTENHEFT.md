@@ -188,9 +188,13 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
   änderbar; `src/config/`-Kopien als Fallback):
   - `fehlerpunkte.yaml` - `disqualifikationen` (beliebig viele, mit Buchstaben) und
     benannte `kataloge` (Fehler mit Zahlen → Punkte).
-  - `positionen.yaml` - wiederverwendbare `hinweise` und die `positionen`
+  - `positionen.yaml` - wiederverwendbare `hinweise`, die `positionen`
     (Spalten/Reihenfolge, `katalog`- und `hinweis`-Verweis, `bild`,
-    `bildDrehung: 0|90|-90|180`).
+    `bildDrehung: 0|90|-90|180`) und die `aufbauten` (Setups).
+- **Aufbauten (Setups):** Positionen sind zu Aufbauten gebündelt (z. B. Alcatraz,
+  Frontal). Bei einem Wettkampf wird ein Aufbau gewählt; er enthält alle Listen
+  (auch Zeit/Knoten). Gemeinsame Listen werden geteilt, nur die Tor-Positionen
+  unterscheiden sich je Aufbau (Blickrichtung/Spaltenreihenfolge).
 - **Disqualifikationen pro Position ausblendbar** via `disq: alle | keine | [A,…]`.
 - **Hinweise** (Bojen-Bezeichnungen) sind zentral und werden per Verweis
   eingebunden; eindeutige Seitennamen (Hafen/Kai/See/Land) statt links/rechts.

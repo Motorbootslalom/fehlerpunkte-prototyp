@@ -1,9 +1,10 @@
 # =====================================================================
 # Beobachtungs-Positionen  (ORTS- und PERSONENABHÄNGIG)
 # =====================================================================
-# Positionen hängen vom Platz und den verfügbaren Wettkampfrichtern ab (z. B.
-# wenige WKR oder ein Platz nur von einer Seite einsehbar). Sie binden die
-# Fehler-Kataloge (fehlerpunkte.yaml) und Hinweise (unten) per Verweis ein.
+# Bei einem Wettkampf wird ein bestimmter AUFBAU (Setup) genutzt - Standard ist
+# "Alcatraz" (WKR sitzt hinten). Jeder Aufbau bündelt die genutzten Positionen
+# (auch gemeinsame wie Zeit/Knoten). Nur die Tor-Positionen unterscheiden sich
+# je Aufbau (Blickrichtung/Spaltenreihenfolge); die übrigen werden geteilt.
 #
 # Spalten-Typen (typ):
 #   boje  - Punkte direkt eintragen (5, 10, 15 …); ein Disq-Buchstabe markiert
@@ -29,51 +30,40 @@ hinweise:
   knoten: "Fehler: 5 pro fehlerhafter Knoten"
   parcours: "Es ist nur der eigentliche Fahrweg zu beobachten - keine Bojenberührungen!"
 
-# ---- Reihenfolge für „eine Klasse · alle Positionen“ ---------------
-klassenReihenfolge: [zeit, steg, gate135, gate245, tor5, mueb, parcours, knoten]
+# ---- Aufbauten (Setups) - der erste ist der Standard ---------------
+aufbauten:
+  - id: alcatraz
+    name: Alcatraz
+    positionen: [zeit, steg, gate135, gate245, tor5, mueb, parcours, knoten]
+  - id: frontal
+    name: Frontal
+    positionen: [zeit, steg, frontal135, frontal245, tor5, mueb, parcours, knoten]
 
-# ---- Positionen ----------------------------------------------------
+# ---- Positionen (von den Aufbauten per ID referenziert) ------------
 positionen:
-  # === Alcatraz-Standard (WKR sitzt hinten, Bild um 90° gedreht) ===
-  - id: gate135
-    titel: "Tor 1 / 3 / 5"
-    menue: "Tore 1 / 3 / 5 (Alcatraz)"
+  # === Gemeinsame Positionen (in jedem Aufbau gleich) ===
+  - id: zeit
+    titel: "Zeit"
+    menue: "Zeitnahme"
     ausrichtung: hoch
-    bild: alcatraz_I
-    bildDrehung: 90
-    summeSpalte: sum
-    disq: alle
-    hinweis: blickrichtung
     spalten:
-      - { key: start, label: "Start", typ: boje, sub: ["H K"] }
-      - { key: t1a, label: "Tor 1", typ: boje, sub: ["H K", "H H"] }
-      - { key: t3a, label: "Tor 3", typ: boje, sub: ["H K", "H H"] }
-      - { key: t5, label: "Tor 5", typ: boje, sub: ["H K", "R K"] }
-      - { key: t3b, label: "Tor 3", typ: boje, sub: ["R K", "R H"] }
-      - { key: t1b, label: "Tor 1", typ: boje, sub: ["R K", "R H"] }
-      - { key: ziel, label: "Ziel", typ: boje, sub: ["R K"] }
-      - { key: disq, label: "Disq.", typ: disq }
-      - { key: sum, label: "Σ", typ: summe }
+      - { key: zeit1, label: "Zeit 1", typ: zeit }
+      - { key: zeit2, label: "Zeit 2", typ: zeit }
+      - { key: zeit3, label: "Zeit 3", typ: zeit }
 
-  - id: gate245
-    titel: "Tor 2 / 4 / 5"
-    menue: "Tore 2 / 4 / 5 (Alcatraz)"
+  - id: steg
+    titel: "Steg"
+    menue: "Steg (Ablegen / Anlegen)"
     ausrichtung: hoch
-    bild: alcatraz_II
-    bildDrehung: 90
-    summeSpalte: sum
     disq: alle
-    hinweis: blickrichtung
+    katalog: steg
     spalten:
-      - { key: start, label: "Start", typ: boje, sub: ["H H"] }
-      - { key: t2a, label: "Tor 2", typ: boje, sub: ["H K", "H H"] }
-      - { key: t4a, label: "Tor 4", typ: boje, sub: ["H K", "H H"] }
-      - { key: t5, label: "Tor 5", typ: boje, sub: ["H H", "R H"] }
-      - { key: t4b, label: "Tor 4", typ: boje, sub: ["R K", "R H"] }
-      - { key: t2b, label: "Tor 2", typ: boje, sub: ["R K", "R H"] }
-      - { key: ziel, label: "Ziel", typ: boje, sub: ["R H"] }
+      - { key: fehlerAB, label: "Fehler AB", typ: code, punkteSpalte: fpab, breite: 1 }
+      - { key: fpab, label: "F-punkte", typ: summe }
+      - { key: fehlerAN, label: "Fehler AN", typ: code, punkteSpalte: fpan, breite: 1 }
+      - { key: fpan, label: "F-Punkte", typ: summe }
       - { key: disq, label: "Disq.", typ: disq }
-      - { key: sum, label: "Σ", typ: summe }
+      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 2 }
 
   - id: tor5
     titel: "Tor 5"
@@ -103,28 +93,16 @@ positionen:
       - { key: disq, label: "Disq.", typ: disq }
       - { key: bemerkung, label: "Bemerkung", typ: text, breite: 3 }
 
-  - id: steg
-    titel: "Steg"
-    menue: "Steg (Ablegen / Anlegen)"
+  - id: parcours
+    titel: "Parcours"
+    menue: "Parcours einfach (nur Fahrweg)"
     ausrichtung: hoch
+    bild: alcatraz_Parcours
     disq: alle
-    katalog: steg
+    hinweis: parcours
     spalten:
-      - { key: fehlerAB, label: "Fehler AB", typ: code, punkteSpalte: fpab, breite: 1 }
-      - { key: fpab, label: "F-punkte", typ: summe }
-      - { key: fehlerAN, label: "Fehler AN", typ: code, punkteSpalte: fpan, breite: 1 }
-      - { key: fpan, label: "F-Punkte", typ: summe }
+      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 4 }
       - { key: disq, label: "Disq.", typ: disq }
-      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 2 }
-
-  - id: zeit
-    titel: "Zeit"
-    menue: "Zeitnahme"
-    ausrichtung: hoch
-    spalten:
-      - { key: zeit1, label: "Zeit 1", typ: zeit }
-      - { key: zeit2, label: "Zeit 2", typ: zeit }
-      - { key: zeit3, label: "Zeit 3", typ: zeit }
 
   - id: knoten
     titel: "Knoten"
@@ -141,23 +119,52 @@ positionen:
       - { key: stern, label: "*", typ: boje, breite: 1 }
       - { key: sum, label: "Σ", typ: summe }
 
-  - id: parcours
-    titel: "Parcours"
-    menue: "Parcours einfach (nur Fahrweg)"
+  # === Aufbau ALCATRAZ: Tor-Positionen (Bild um 90° gedreht) ===
+  - id: gate135
+    titel: "Tor 1 / 3 / 5"
+    menue: "Tore 1 / 3 / 5"
     ausrichtung: hoch
-    bild: alcatraz_Parcours
+    bild: alcatraz_I
+    bildDrehung: 90
+    summeSpalte: sum
     disq: alle
-    hinweis: parcours
+    hinweis: blickrichtung
     spalten:
-      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 4 }
+      - { key: start, label: "Start", typ: boje, sub: ["H K"] }
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["H K", "H H"] }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["H K", "H H"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["H K", "R K"] }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["R K", "R H"] }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["R K", "R H"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["R K"] }
       - { key: disq, label: "Disq.", typ: disq }
+      - { key: sum, label: "Σ", typ: summe }
 
-  # === Beispiele für andere Beobachtungs-Positionen ==================
-  # Frontal auf Tor 1/3/5 (WKR steht vorne). Andere Spaltenreihenfolge,
-  # ungedrehtes Parcoursbild, nur relevante Disqualifikationen.
+  - id: gate245
+    titel: "Tor 2 / 4 / 5"
+    menue: "Tore 2 / 4 / 5"
+    ausrichtung: hoch
+    bild: alcatraz_II
+    bildDrehung: 90
+    summeSpalte: sum
+    disq: alle
+    hinweis: blickrichtung
+    spalten:
+      - { key: start, label: "Start", typ: boje, sub: ["H H"] }
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["H K", "H H"] }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["H K", "H H"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["H H", "R H"] }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["R K", "R H"] }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["R K", "R H"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["R H"] }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: sum, label: "Σ", typ: summe }
+
+  # === Aufbau FRONTAL: Tor-Positionen (Blick von vorne, ungedreht) ===
+  # Gleiche Bojen, aber andere Spaltenreihenfolge; reduzierte Disqualifikationen.
   - id: frontal135
-    titel: "Frontal 1 / 3 / 5"
-    menue: "Beispiel: Frontal Tore 1 / 3 / 5"
+    titel: "Tor 1 / 3 / 5"
+    menue: "Tore 1 / 3 / 5 (frontal)"
     ausrichtung: hoch
     bild: alcatraz_Parcours
     summeSpalte: sum
@@ -174,18 +181,21 @@ positionen:
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
 
-  # Seitenposition nur für Tor 5 (Wende). Nutzt denselben Tor-5-Katalog,
-  # aber nur wenige Disqualifikationen.
-  - id: seite5
-    titel: "Seite Tor 5"
-    menue: "Beispiel: Seitenposition Tor 5"
+  - id: frontal245
+    titel: "Tor 2 / 4 / 5"
+    menue: "Tore 2 / 4 / 5 (frontal)"
     ausrichtung: hoch
     bild: alcatraz_Parcours
     summeSpalte: sum
-    disq: [B, C, G, J, X]
-    katalog: tor5
+    disq: [A, B, G, H, I, J, X]
+    hinweis: blickrichtung
     spalten:
-      - { key: fehler, label: "Fehler", typ: code, punkteSpalte: sum, breite: 1 }
-      - { key: sum, label: "Σ", typ: summe }
+      - { key: start, label: "Start", typ: boje, sub: ["H H"] }
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["H H", "H K"] }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["H H", "H K"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["R H", "H H"] }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["R H", "R K"] }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["R H", "R K"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["R H"] }
       - { key: disq, label: "Disq.", typ: disq }
-      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 3 }
+      - { key: sum, label: "Σ", typ: summe }
