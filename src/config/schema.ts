@@ -66,6 +66,13 @@ export interface RawPosition {
   bild?: string
   /** Bild-Drehung in Grad: 0 | 90 | -90 | 180. */
   bildDrehung?: number
+  /**
+   * Diese Position wird von der Gegenseite betrachtet (z. B. Alcatraz von
+   * hinten). Bei räumlichen Schemata (Pfeile) werden die Bojen-Seiten dann
+   * gespiegelt, damit die Pfeile in dieselbe Bildrichtung zeigen wie im
+   * Frontal-Aufbau - auch wenn sie eine andere Boje meinen.
+   */
+  pfeileSpiegeln?: boolean
   /** Verweis auf hinweise.<id> (oder direkter Text, falls kein Treffer). */
   hinweis?: string
   /** Verweis auf fehlerpunkte.kataloge.<id> (Fehlercodes → Punkte). */
@@ -87,6 +94,13 @@ export interface RawBeschriftung {
   id: string
   name: string
   tokens: Record<string, string>
+  /**
+   * Räumliches Schema (z. B. Pfeile →/←): die Kürzel zeigen eine Blickrichtung
+   * und müssen daher an "von hinten" betrachteten Positionen gespiegelt werden
+   * (siehe RawPosition.pfeileSpiegeln). Bei Buchstaben-Schemata (R/L, L/S …)
+   * sind die Kürzel Namen und werden nicht gespiegelt.
+   */
+  raeumlich?: boolean
 }
 
 /** Ein Aufbau (Setup) bündelt die bei einem Wettkampf genutzten Positionen. */

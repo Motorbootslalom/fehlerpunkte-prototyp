@@ -16,6 +16,8 @@ export interface BeschriftungScheme {
   id: string
   name: string
   tokens: Record<string, string>
+  /** Räumliches Schema (Pfeile): an "von hinten" betrachteten Positionen spiegeln. */
+  raeumlich: boolean
 }
 
 export interface ResolvedConfig {
@@ -90,7 +92,7 @@ function resolveDisq(pos: RawPosition, all: DisqDef[]): DisqDef[] | undefined {
   return all.filter((d) => set.has(d.code))
 }
 
-export function buildConfig(raw: RawConfig): ResolvedConfig {
+export function buildConfig(raw: RawConfig, opts?: { raeumlich?: boolean }): ResolvedConfig {
   const allDisqs: DisqDef[] = (raw.disqualifikationen ?? []).map((d) => ({
     code: String(d.code),
     text: d.text,
@@ -98,16 +100,24 @@ export function buildConfig(raw: RawConfig): ResolvedConfig {
   const kataloge = raw.kataloge ?? {}
   const hinweise = raw.hinweise ?? {}
   const tokens = raw.bezeichnungen ?? {}
+  const raeumlich = opts?.raeumlich ?? false
 
   const positions: SheetDef[] = (raw.positionen ?? []).map((pos) => {
     const disqTable = resolveDisq(pos, allDisqs)
     const kat = pos.katalog ? kataloge[pos.katalog] : undefined
+    // Räumliches Schema (Pfeile) + Position von hinten betrachtet → Bojen-Seiten
+    // spiegeln (Rechts erscheint dann links im Bild). Nur die Anzeige-Kürzel
+    // werden getauscht, nicht die Langnamen (seiteAlang bleibt "Rechts").
+    const posTokens =
+      raeumlich && pos.pfeileSpiegeln
+        ? { ...tokens, seiteA: tokens.seiteB ?? '', seiteB: tokens.seiteA ?? '' }
+        : tokens
     // Hinweis per Verweis (ID), sonst direkt als Text; Tokens einsetzen.
     const noteRaw = pos.hinweis ? (hinweise[pos.hinweis] ?? pos.hinweis) : undefined
     // Nach dem Ersetzen leere Zeilen entfernen (z. B. wenn der iahinweis-Token
     // außerhalb des Innen/Außen-Schemas leer ist).
     const legendNote = noteRaw
-      ? resolveTokens(noteRaw, tokens)
+      ? resolveTokens(noteRaw, posTokens)
           .split('\n')
           .filter((l) => l.trim() !== '')
           .join('\n')
@@ -128,7 +138,7 @@ export function buildConfig(raw: RawConfig): ResolvedConfig {
       menuLabel: pos.menue ?? pos.titel,
       orientation: pos.ausrichtung === 'quer' ? 'landscape' : 'portrait',
       showLauf: pos.lauf !== false,
-      columns: pos.spalten.map((sp) => toColumn(sp, tokens, kataloge)),
+      columns: pos.spalten.map((sp) => toColumn(sp, posTokens, kataloge)),
       sumColumnKey: pos.summeSpalte,
       errorTable: katalogRows(kat),
       errorTableTitle: kat?.titel,
@@ -156,6 +166,7 @@ export function buildConfig(raw: RawConfig): ResolvedConfig {
     id: b.id,
     name: b.name,
     tokens: b.tokens ?? {},
+    raeumlich: b.raeumlich ?? false,
   }))
 
   return { positions, aufbauten, allDisqs, beschriftungen }

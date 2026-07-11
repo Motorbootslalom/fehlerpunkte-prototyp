@@ -52,6 +52,7 @@ beschriftungen:
     tokens: { seiteA: "K", seiteB: "H", seiteAlang: "Kai", seiteBlang: "Hafen" }
   - id: pfeile
     name: "Pfeile (→ / ←)"
+    raeumlich: true   # Pfeile zeigen eine Bildrichtung → an "von hinten"-Positionen spiegeln
     tokens: { seiteA: "→", seiteB: "←", seiteAlang: "Rechts", seiteBlang: "Links" }
   # Innen/Außen ist TOR-relativ: die Tore 1-4 tragen ihre innen/aussen-Kürzel
   # (aus der `innen`-Markierung der Spalten), Tor 5/Start/Ziel bleiben bei R/L.
@@ -178,6 +179,7 @@ positionen:
     ausrichtung: hoch
     bild: alcatraz_I
     bildDrehung: 90
+    pfeileSpiegeln: true   # Alcatraz = Blick von hinten (Pfeile spiegeln)
     summeSpalte: sum
     disq: alle
     hinweis: blickrichtung
@@ -198,6 +200,7 @@ positionen:
     ausrichtung: hoch
     bild: alcatraz_II
     bildDrehung: 90
+    pfeileSpiegeln: true   # Alcatraz = Blick von hinten (Pfeile spiegeln)
     summeSpalte: sum
     disq: alle
     hinweis: blickrichtung

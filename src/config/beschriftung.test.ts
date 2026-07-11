@@ -20,10 +20,16 @@ describe('Bezeichnungs-Schemata (live umschaltbar)', () => {
     expect(getBeschriftungen().map((b) => b.id)).toEqual(['rl', 'ls', 'sl', 'kh', 'pfeile', 'ia'])
   })
 
-  it('Pfeile-Schema: Seiten als → (Rechts) / ← (Links)', () => {
+  it('Pfeile zeigen in Alcatraz und Frontal dieselbe Bildrichtung (andere Boje)', () => {
     applyBeschriftung('pfeile')
-    expect(colSub('gate135', 't1a')).toEqual(['H →', 'H ←']) // seiteA →, seiteB ←
-    expect(colSub('gate135', 'start')).toEqual(['H →'])
+    // Räumliches Schema: Pfeile zeigen die Bildrichtung. Alcatraz (von hinten)
+    // wird gespiegelt, damit beide Aufbauten gleich aussehen (← dann →) -
+    // auch wenn die linke Spalte je Aufbau eine andere Boje meint.
+    expect(colSub('gate135', 't1a')).toEqual(['H ←', 'H →']) // Alcatraz: seiteA=Rechts links im Bild
+    expect(colSub('frontal135', 't1a')).toEqual(['H ←', 'H →']) // Frontal: seiteB=Links links im Bild
+    // Einzelne Boje (Tor 5 = dieselbe Boje hin+zurück): gleicher Pfeil
+    expect(colSub('gate135', 't5')).toEqual(['H ←', 'R ←'])
+    expect(colSub('gate135', 'start')).toEqual(['H ←'])
   })
 
   it('Standard Rechts/Links: Tor-Spalten tragen R und L', () => {

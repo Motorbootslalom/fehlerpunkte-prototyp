@@ -88,5 +88,5 @@ export function applyBeschriftung(id: string): void {
     ...rawActive,
     bezeichnungen: { ...(rawActive.bezeichnungen ?? {}), ...(scheme.tokens ?? {}) },
   }
-  active = buildConfig(merged)
+  active = buildConfig(merged, { raeumlich: scheme.raeumlich })
 }
