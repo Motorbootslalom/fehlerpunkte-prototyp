@@ -237,8 +237,12 @@ function Header({ state, bogen, def }: { state: AppState; bogen: Bogen; def: She
       <View style={s.headerBody}>
         <View style={s.headerLeft}>
           <Text style={[s.hlCell, s.hlTitle]}>{def.title}</Text>
-          <Text style={s.hlCell}>Klasse {bogen.klasse}</Text>
-          <Text style={[s.hlCell, { borderBottomWidth: 0 }]}>{bogen.lauf}. Lauf</Text>
+          <Text style={[s.hlCell, def.showLauf === false ? { borderBottomWidth: 0 } : {}]}>
+            Klasse {bogen.klasse}
+          </Text>
+          {def.showLauf !== false && (
+            <Text style={[s.hlCell, { borderBottomWidth: 0 }]}>{bogen.lauf}. Lauf</Text>
+          )}
         </View>
         <View style={s.wkrBox}>
           <Text style={s.wkrLabel}>WKR: {state.wkr[bogen.id] ?? ''}</Text>

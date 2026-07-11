@@ -62,6 +62,8 @@ export interface SheetDef {
   /** Ausführlicher Name für Auswahl-Menüs. */
   menuLabel: string
   orientation: 'portrait' | 'landscape'
+  /** Lauf im Kopf anzeigen (Default true; false z. B. bei Knoten). */
+  showLauf?: boolean
   columns: Column[]
   /** Schlüssel der Spalte, die die berechnete Σ zeigt (falls vorhanden). */
   sumColumnKey?: string

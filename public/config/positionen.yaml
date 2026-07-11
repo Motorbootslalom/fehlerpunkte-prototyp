@@ -50,7 +50,9 @@ aufbauten:
   - id: frontal
     name: Frontal
     positionen: [zeit, steg, frontal135, frontal245, tor5, mueb, parcours, knoten]
-
+  - id: parallel
+    name: Parallelslalom
+    positionen: [zeit, steg, parallelparcours]
 # ---- Positionen (von den Aufbauten per ID referenziert) ------------
 positionen:
   # === Gemeinsame Positionen (in jedem Aufbau gleich) ===
@@ -120,12 +122,13 @@ positionen:
     titel: "Knoten"
     menue: "Knoten"
     ausrichtung: quer
+    lauf: false          # Knoten werden nur einmal abgenommen (kein Lauf)
     summeSpalte: sum
     hinweis: knoten
     spalten:
       - { key: webleinstek, label: "Webleinstek", typ: boje, breite: 1 }
       - { key: schotstek, label: "Schotstek", typ: boje, breite: 1 }
-      - { key: palsteg, label: "Palsteg", typ: boje, breite: 1 }
+      - { key: palstek, label: "Palstek", typ: boje, breite: 1 }
       - { key: kreuzknoten, label: "Kreuzknoten", typ: boje, breite: 1 }
       - { key: klampe, label: "Klampe", typ: boje, breite: 1 }
       - { key: stern, label: "*", typ: boje, breite: 1 }
@@ -211,3 +214,22 @@ positionen:
       - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
+
+  - id: parallelparcours
+    titel: "Parallelslalom"
+    menue: "Parallelslalom (nur Fahrweg)"
+    disq: alle
+    spalten:
+      - { key: start, label: "Start", typ: boje, sub: ["seiteB seiteA"] }
+      - { key: b1a, label: "Boje 1", typ: boje }
+      - { key: b2a, label: "Boje 2", typ: boje }
+      - { key: b3a, label: "Boje 3", typ: boje }
+      - { key: b4a, label: "Boje 4", typ: boje }
+      - { key: b5, label: "Boje 5", typ: boje }
+      - { key: b4b, label: "Boje 4", typ: boje }
+      - { key: b3b, label: "Boje 3", typ: boje }
+      - { key: b2b, label: "Boje 2", typ: boje }
+      - { key: b1b, label: "Boje 1", typ: boje }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["seiteB seiteA"] }
+      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 4 }
+      - { key: disq, label: "Disq.", typ: disq }

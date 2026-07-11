@@ -47,6 +47,8 @@ export interface RawPosition {
   titel: string
   menue?: string
   ausrichtung?: 'hoch' | 'quer'
+  /** Lauf im Kopf zeigen? false z. B. bei Knoten (nur einmal abgenommen). */
+  lauf?: boolean
   /** Bild-Ordner unter public/parcours (z. B. alcatraz_Parcours). */
   bild?: string
   /** Bild-Drehung in Grad: 0 | 90 | -90 | 180. */

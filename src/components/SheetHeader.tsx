@@ -26,7 +26,7 @@ export function SheetHeader({
         <div className="header-left">
           <div className="hl-cell hl-title">{def.title}</div>
           <div className="hl-cell">Klasse {bogen.klasse}</div>
-          <div className="hl-cell">{bogen.lauf}. Lauf</div>
+          {def.showLauf !== false && <div className="hl-cell">{bogen.lauf}. Lauf</div>}
         </div>
         <label className="wkr-box">
           <span className="wkr-label">WKR:</span>

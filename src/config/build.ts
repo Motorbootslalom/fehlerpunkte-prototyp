@@ -80,6 +80,7 @@ export function buildConfig(raw: RawConfig): ResolvedConfig {
       title: pos.titel,
       menuLabel: pos.menue ?? pos.titel,
       orientation: pos.ausrichtung === 'quer' ? 'landscape' : 'portrait',
+      showLauf: pos.lauf !== false,
       columns: pos.spalten.map((sp) => toColumn(sp, tokens)),
       sumColumnKey: pos.summeSpalte,
       errorTable: kat?.fehler.map((f) => ({ code: String(f.code), text: f.text, punkte: f.punkte })),
