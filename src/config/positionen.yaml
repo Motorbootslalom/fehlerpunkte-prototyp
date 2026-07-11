@@ -24,10 +24,10 @@
 # So wird aus "hin seiteA" -> "H R". Alternativen:
 #   Hafen/Kai:    seiteA: H,  seiteB: K
 #   Land/See:     seiteA: L,  seiteB: S
-#   Rechts/Links: seiteA: R,  seiteB: L   (Standard; darum Rückfahrt = Z)
+#   Rechts/Links: seiteA: R,  seiteB: L   (Standard)
 bezeichnungen:
   hin: "H"           # 1. Zeichen: Hinfahrt
-  rueck: "Z"         # 1. Zeichen: Rückfahrt (Z = Zurück, kein Konflikt mit R)
+  rueck: "R"         # 1. Zeichen: Rückfahrt (R = Rückfahrt; "R R" = Rück + Rechts ist ok)
   seiteA: "R"        # 2. Zeichen: eine Bojen-Seite (Standard: Rechts)
   seiteB: "L"        # 2. Zeichen: andere Bojen-Seite (Standard: Links)
   seiteAlang: "Rechts"  # Langname (für den Hinweis-Text)
@@ -50,6 +50,9 @@ beschriftungen:
   - id: kh
     name: "Kai / Hafen (K/H)"
     tokens: { seiteA: "K", seiteB: "H", seiteAlang: "Kai", seiteBlang: "Hafen" }
+  - id: pfeile
+    name: "Pfeile (→ / ←)"
+    tokens: { seiteA: "→", seiteB: "←", seiteAlang: "Rechts", seiteBlang: "Links" }
   # Innen/Außen ist TOR-relativ: die Tore 1-4 tragen ihre innen/aussen-Kürzel
   # (aus der `innen`-Markierung der Spalten), Tor 5/Start/Ziel bleiben bei R/L.
   - id: ia
