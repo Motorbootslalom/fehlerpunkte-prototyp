@@ -224,10 +224,10 @@ positionen:
     titel: "Tor 1 / 3 / 5"
     menue: "Tore 1 / 3 / 5 (frontal)"
     ausrichtung: hoch
-    bild: alcatraz_Parcours
-    bildDrehung: 180   # frontaler Blick = Parcours um 180° gedreht
+    bild: alcatraz_I
+    bildDrehung: -90   # wie Alcatraz (90°), aber vom Gegenüber → +180° = -90° (Hochformat)
     summeSpalte: sum
-    disq: [A, B, G, H, I, J, X]
+    disq: alle
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
@@ -244,10 +244,10 @@ positionen:
     titel: "Tor 2 / 4 / 5"
     menue: "Tore 2 / 4 / 5 (frontal)"
     ausrichtung: hoch
-    bild: alcatraz_Parcours
-    bildDrehung: 180   # frontaler Blick = Parcours um 180° gedreht
+    bild: alcatraz_II
+    bildDrehung: -90   # wie Alcatraz (90°), aber vom Gegenüber → +180° = -90° (Hochformat)
     summeSpalte: sum
-    disq: [A, B, G, H, I, J, X]
+    disq: alle
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
