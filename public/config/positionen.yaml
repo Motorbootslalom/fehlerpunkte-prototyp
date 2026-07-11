@@ -180,11 +180,11 @@ positionen:
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteA"] }
-      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteA }
-      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteA }
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteB }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteB }
       - { key: t5, label: "Tor 5", typ: boje, sub: ["hin seiteA", "rueck seiteA"] }
-      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteA }
-      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteA }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteB }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteB }
       - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteA"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
@@ -200,11 +200,11 @@ positionen:
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
-      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteB }
-      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteB }
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteA }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteA }
       - { key: t5, label: "Tor 5", typ: boje, sub: ["hin seiteB", "rueck seiteB"] }
-      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteB }
-      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteB }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteA }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteA }
       - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
@@ -222,11 +222,11 @@ positionen:
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
-      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteA }
-      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteA }
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteB }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteB }
       - { key: t5, label: "Tor 5", typ: boje, sub: ["rueck seiteA", "hin seiteA"] }
-      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteA }
-      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteA }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteB }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteB }
       - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
@@ -242,11 +242,11 @@ positionen:
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
-      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteB }
-      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteB }
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteA }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteA }
       - { key: t5, label: "Tor 5", typ: boje, sub: ["rueck seiteB", "hin seiteB"] }
-      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteB }
-      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteB }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteA }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteA }
       - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }

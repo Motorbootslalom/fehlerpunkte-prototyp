@@ -42,12 +42,15 @@ describe('Bezeichnungs-Schemata (live umschaltbar)', () => {
     expect(t).not.toMatch(/\bS\b/)
   })
 
-  it('Innen/Außen ist tor-relativ: Tor 1/3 Innen-Außen, Tor 2/4 Außen-Innen', () => {
+  it('Innen/Außen ist tor-relativ und je Blickrichtung gespiegelt', () => {
     applyBeschriftung('ia')
-    // Alcatraz: Spaltenreihenfolge seiteA, seiteB
-    expect(colSub('gate135', 't1a')).toEqual(['H I', 'H A']) // Tor 1: Innen, Außen
-    expect(colSub('gate135', 't3b')).toEqual(['Z I', 'Z A']) // Tor 3 Rückfahrt
-    expect(colSub('gate245', 't2a')).toEqual(['H A', 'H I']) // Tor 2: Außen, Innen
+    // Alcatraz (Blick von hinten): Tor 1 = Außen/Innen, Tor 2 = Innen/Außen
+    expect(colSub('gate135', 't1a')).toEqual(['H A', 'H I'])
+    expect(colSub('gate135', 't3b')).toEqual(['Z A', 'Z I'])
+    expect(colSub('gate245', 't2a')).toEqual(['H I', 'H A'])
+    // Frontal (Blick vom Start/Ziel): gespiegelt → Tor 1 = Innen/Außen
+    expect(colSub('frontal135', 't1a')).toEqual(['H I', 'H A'])
+    expect(colSub('frontal245', 't2a')).toEqual(['H A', 'H I'])
     // Tor 5, Start, Ziel bleiben physisch (Rechts/Links)
     expect(colSub('gate135', 't5')).toEqual(['H R', 'Z R'])
     expect(colSub('gate135', 'start')).toEqual(['H R'])
