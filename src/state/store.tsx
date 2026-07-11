@@ -1,6 +1,12 @@
 import { createContext, useContext, useEffect, useReducer, type ReactNode } from 'react'
-import type { AppState, Bogen, ClassId, Lauf, SheetTypeId } from '../types'
-import { applyBeschriftung, defaultAufbauId, defaultBeschriftungId, getAufbau } from '../config/active'
+import { CLASS_IDS, type AppState, type Bogen, type ClassId, type Lauf, type SheetTypeId } from '../types'
+import {
+  applyBeschriftung,
+  defaultAufbauId,
+  defaultBeschriftungId,
+  getAufbau,
+  positionAllowsClass,
+} from '../config/active'
 import { allDemoNumbers } from '../lib/demo'
 import { cellKey } from '../lib/scoring'
 import { clearState, loadState, saveState } from '../lib/storage'
@@ -9,9 +15,16 @@ function uid(prefix: string): string {
   return prefix + '_' + Math.random().toString(36).slice(2, 9)
 }
 
-/** Standard-Zusammenstellung: je ein Bogen pro Position des Aufbaus (Klasse 3, Lauf 1). */
+/** Standard-Zusammenstellung: je ein Bogen pro Position des Aufbaus (Lauf 1). */
 function defaultBoegen(aufbau: string): Bogen[] {
-  return getAufbau(aufbau).order.map((t) => ({ id: uid('bg'), typeId: t, klasse: '3', lauf: 1 }))
+  return getAufbau(aufbau).order.map((t) => {
+    // Klasse 3, außer die Position gilt nicht dafür (z. B. MüB ab Kl. 4) →
+    // dann die erste gültige Klasse.
+    const klasse: ClassId = positionAllowsClass(t, '3')
+      ? '3'
+      : (CLASS_IDS.find((c) => positionAllowsClass(t, c)) ?? '3')
+    return { id: uid('bg'), typeId: t, klasse, lauf: 1 }
+  })
 }
 
 // Lazy erzeugt (nicht als Modul-Konstante), damit die geladene Konfiguration

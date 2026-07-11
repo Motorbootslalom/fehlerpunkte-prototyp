@@ -85,6 +85,12 @@ export interface RawPosition {
   katalog?: string
   /** Welche Disqualifikationen: 'alle', 'keine' oder Liste von Codes. */
   disq?: 'alle' | 'keine' | string[]
+  /**
+   * Für welche Klassen diese Position (das ganze Blatt) genutzt wird, z. B.
+   * Mann-über-Bord [4, 5, 6, 7]. Fehlt die Angabe → alle Klassen. Beim Erzeugen
+   * der Bögen (Schnellauswahl) werden nicht passende Klassen übersprungen.
+   */
+  klassen?: Array<string | number>
   /** Schlüssel der Spalte, die die Zeilensumme (Σ) berechnet zeigt. */
   summeSpalte?: string
   spalten: RawSpalte[]

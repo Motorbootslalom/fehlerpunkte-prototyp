@@ -46,6 +46,12 @@ export function getPositions(): SheetDef[] {
   return cfg().positions
 }
 
+/** Gilt diese Position (das ganze Blatt) für diese Klasse? (z. B. MüB ab Kl. 4) */
+export function positionAllowsClass(typeId: string, klasse: string): boolean {
+  const d = cfg().positions.find((p) => p.typeId === typeId)
+  return !d?.klassen || d.klassen.length === 0 || d.klassen.includes(klasse)
+}
+
 export function getAufbauten(): ResolvedAufbau[] {
   return cfg().aufbauten
 }

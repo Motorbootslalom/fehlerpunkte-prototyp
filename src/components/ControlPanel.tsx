@@ -1,5 +1,11 @@
 import { useState } from 'react'
-import { getAufbau, getAufbauten, getBeschriftungen, getSheetDef } from '../config/active'
+import {
+  getAufbau,
+  getAufbauten,
+  getBeschriftungen,
+  getSheetDef,
+  positionAllowsClass,
+} from '../config/active'
 import { extendNumbers, formatNumbers, parseNumbers, shrinkNumbers } from '../lib/demo'
 import { exportSheetsToPdf } from '../lib/exportPdf'
 import { describeBoegen, exportBaseName, printWithFilename } from '../lib/print'
@@ -23,7 +29,11 @@ export function ControlPanel() {
   const addType = order.includes(addTypeRaw) ? addTypeRaw : (order[0] ?? '')
 
   const bulk = (items: { typeId: SheetTypeId; klasse: ClassId; lauf: Lauf }[]) =>
-    dispatch({ type: 'ADD_BOEGEN_BULK', items })
+    // Nicht passende Klassen je Position auslassen (z. B. MüB erst ab Klasse 4).
+    dispatch({
+      type: 'ADD_BOEGEN_BULK',
+      items: items.filter((it) => positionAllowsClass(it.typeId, it.klasse)),
+    })
 
   // Beschreibung aus der aktuellen Bogen-Auswahl: Position/Klasse/Lauf, aber nur
   // wenn eindeutig (alle Bögen teilen denselben Wert).

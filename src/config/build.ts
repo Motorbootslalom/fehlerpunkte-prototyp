@@ -139,6 +139,7 @@ export function buildConfig(raw: RawConfig, opts?: { raeumlich?: boolean }): Res
       menuLabel: pos.menue ?? pos.titel,
       orientation: pos.ausrichtung === 'quer' ? 'landscape' : 'portrait',
       showLauf: pos.lauf !== false,
+      klassen: pos.klassen?.map((k) => String(k)),
       columns: pos.spalten.map((sp) => toColumn(sp, posTokens, kataloge)),
       sumColumnKey: pos.summeSpalte,
       errorTable: katalogRows(kat),

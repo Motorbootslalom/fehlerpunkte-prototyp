@@ -82,6 +82,11 @@ export interface SheetDef {
   orientation: 'portrait' | 'landscape'
   /** Lauf im Kopf anzeigen (Default true; false z. B. bei Knoten). */
   showLauf?: boolean
+  /**
+   * Klassen, für die dieses Blatt genutzt wird (z. B. MüB [4,5,6,7]). Leer =
+   * alle. Steuert die Bogen-Erzeugung (nicht passende Klassen werden ausgelassen).
+   */
+  klassen?: string[]
   columns: Column[]
   /** Schlüssel der Spalte, die die berechnete Σ zeigt (falls vorhanden). */
   sumColumnKey?: string

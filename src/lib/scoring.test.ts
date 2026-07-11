@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getSheetDef } from '../config/active'
+import { getSheetDef, positionAllowsClass } from '../config/active'
 import { cellKey, columnsForClass, scoreRow } from './scoring'
 
 function getter(values: Record<string, string>) {
@@ -106,6 +106,16 @@ describe('columnsForClass - Speed/MüB je Klasse, Tor-Bojen immer', () => {
   it('Tor-Bojen bleiben in jeder Klasse (auch E)', () => {
     expect(keys('blinks', 'E')).toEqual(expect.arrayContaining(['t2a', 't4a', 't5', 't2b']))
     expect(keys('brechts', 'E')).toEqual(expect.arrayContaining(['t1a', 't3a', 't1b']))
+  })
+
+  it('positionAllowsClass: MüB-Blatt erst ab Klasse 4', () => {
+    expect(positionAllowsClass('mueb', 'E')).toBe(false)
+    expect(positionAllowsClass('mueb', '3')).toBe(false)
+    expect(positionAllowsClass('mueb', '4')).toBe(true)
+    expect(positionAllowsClass('mueb', '7')).toBe(true)
+    // Positionen ohne klassen gelten für alle
+    expect(positionAllowsClass('zeit', 'E')).toBe(true)
+    expect(positionAllowsClass('steg', '3')).toBe(true)
   })
 })
 
