@@ -32,6 +32,7 @@ bezeichnungen:
   seiteB: "L"        # 2. Zeichen: andere Bojen-Seite (Standard: Links)
   seiteAlang: "Rechts"  # Langname (für den Hinweis-Text)
   seiteBlang: "Links"
+  iahinweis: ""         # nur im Schema "Innen/Außen" mit Text gefüllt
 
 # ---- Auf der Seite umschaltbare Beschriftung (Bojen-Seiten) ---------
 # Wird eines gewählt, überschreiben seine tokens die bezeichnungen oben und
@@ -53,7 +54,14 @@ beschriftungen:
   # (aus der `innen`-Markierung der Spalten), Tor 5/Start/Ziel bleiben bei R/L.
   - id: ia
     name: "Innen / Außen (I/A)"
-    tokens: { seiteA: "R", seiteB: "L", seiteAlang: "Rechts", seiteBlang: "Links", innen: "I", aussen: "A" }
+    tokens:
+      seiteA: "R"
+      seiteB: "L"
+      seiteAlang: "Rechts"
+      seiteBlang: "Links"
+      innen: "I"
+      aussen: "A"
+      iahinweis: "Tore 1-4: I = Innen, A = Außen (statt R/L; Tor 5/Start/Ziel bleiben R/L)"
 
 # ---- Wiederverwendbare Hinweise (Bojen-Bezeichnungen) --------------
 hinweise:
@@ -61,6 +69,7 @@ hinweise:
     Bojen-Bezeichnung (eindeutig):
     1. Zeichen = Fahrtrichtung: hin = Hinfahrt, rueck = Rückfahrt
     2. Zeichen = Seite: seiteA = seiteAlang, seiteB = seiteBlang
+    iahinweis
     Start = Berührung Einfahrt-Bojentor · Ziel = Berührung Ausfahrt-Bojentor
     Fehler: pro berührter Boje (auch außerhalb des Manövers) = 5
   knoten: "Fehler: 5 pro fehlerhafter Knoten"

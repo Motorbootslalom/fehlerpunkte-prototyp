@@ -52,4 +52,14 @@ describe('Bezeichnungs-Schemata (live umschaltbar)', () => {
     expect(colSub('gate135', 't5')).toEqual(['H R', 'Z R'])
     expect(colSub('gate135', 'start')).toEqual(['H R'])
   })
+
+  it('Legendenhinweis erklärt I/A nur im Innen/Außen-Schema (ohne Leerzeilen)', () => {
+    applyBeschriftung('rl')
+    expect(getSheetDef('gate135').legendNote ?? '').not.toContain('Innen')
+    applyBeschriftung('ia')
+    const note = getSheetDef('gate135').legendNote ?? ''
+    expect(note).toContain('I = Innen')
+    expect(note).toContain('A = Außen')
+    expect(note.split('\n').some((l) => l.trim() === '')).toBe(false) // keine Leerzeilen
+  })
 })

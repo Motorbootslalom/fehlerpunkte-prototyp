@@ -104,7 +104,14 @@ export function buildConfig(raw: RawConfig): ResolvedConfig {
     const kat = pos.katalog ? kataloge[pos.katalog] : undefined
     // Hinweis per Verweis (ID), sonst direkt als Text; Tokens einsetzen.
     const noteRaw = pos.hinweis ? (hinweise[pos.hinweis] ?? pos.hinweis) : undefined
-    const legendNote = noteRaw ? resolveTokens(noteRaw, tokens) : undefined
+    // Nach dem Ersetzen leere Zeilen entfernen (z. B. wenn der iahinweis-Token
+    // außerhalb des Innen/Außen-Schemas leer ist).
+    const legendNote = noteRaw
+      ? resolveTokens(noteRaw, tokens)
+          .split('\n')
+          .filter((l) => l.trim() !== '')
+          .join('\n')
+      : undefined
     // Spalten-eigene Kataloge (in Reihenfolge, ohne Dubletten) → Legende zeigt
     // die Blöcke nebeneinander (z. B. Steg Ablegen / Anlegen).
     const groupIds: string[] = []
