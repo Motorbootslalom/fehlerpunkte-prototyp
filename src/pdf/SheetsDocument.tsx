@@ -1,7 +1,7 @@
 import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 import type { Style } from '@react-pdf/types'
 import { getSheetDef } from '../config/active'
-import { cellKey, scoreRow } from '../lib/scoring'
+import { cellKey, columnsForClass, scoreRow } from '../lib/scoring'
 import { formatTimeDisplay, parseTime } from '../lib/time'
 import { bogenPayload } from '../lib/qr'
 import type { AppState, Bogen, CellKind, Column, SheetDef } from '../types'
@@ -170,7 +170,10 @@ function SheetPage({
   for (let i = 0; i < state.emptyRows; i++) rows.push({ id: `_x${i}`, nr: '', fixed: false, shaded: false })
   rows.forEach((r, i) => (r.shaded = (i + 1) % 5 === 0))
 
-  const leaves = toLeaves(def.columns)
+  // Nur die für diese Klasse gültigen Spalten (z. B. Speed/MüB je Klasse).
+  const cols = columnsForClass(def.columns, bogen.klasse)
+  const viewDef = { ...def, columns: cols }
+  const leaves = toLeaves(cols)
 
   return (
     <Page size="A4" orientation={def.orientation} style={s.page}>
@@ -178,14 +181,14 @@ function SheetPage({
       <View fixed>
         <Header state={state} bogen={bogen} def={def} />
         <View style={[s.table, { borderBottomWidth: 0 }]}>
-          <HeaderRows def={def} />
+          <HeaderRows def={viewDef} />
         </View>
       </View>
 
       <View style={[s.table, { borderTopWidth: 0 }]}>
         {rows.map((row) => {
           const rowKey = row.fixed ? row.nr : row.id
-          const score = scoreRow(def, rowKey, get)
+          const score = scoreRow(viewDef, rowKey, get)
           const autoDisq = Array.from(
             new Set(score.disqs.filter((d) => d.where !== 'Disq.').map((d) => d.code)),
           ).join(', ')
@@ -197,7 +200,7 @@ function SheetPage({
                 <DataCell
                   key={li}
                   leaf={leaf}
-                  col={def.columns.find((c) => c.key === leaf.colKey)!}
+                  col={cols.find((c) => c.key === leaf.colKey)!}
                   rowKey={rowKey}
                   get={get}
                   score={score}

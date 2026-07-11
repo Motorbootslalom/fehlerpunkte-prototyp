@@ -3,7 +3,7 @@ import { getSheetDef } from '../config/active'
 import { gridNavKeyDown } from '../lib/gridnav'
 import { normalizeCodeCell } from '../lib/codes'
 import { allowedSet, sanitizeBuoy, sanitizeCodeInput, sanitizeDisq } from '../lib/disq'
-import { cellKey, formatDisqs, scoreRow } from '../lib/scoring'
+import { cellKey, columnsForClass, formatDisqs, scoreRow } from '../lib/scoring'
 import { useCell, useStore } from '../state/store'
 import type { Bogen, CellKind, Column } from '../types'
 import { Legend } from './Legend'
@@ -77,8 +77,11 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
     r.shaded = (i + 1) % 5 === 0
   })
 
-  const leaves = toLeaves(def.columns)
-  const twoRow = def.columns.some((c) => c.sub && c.sub.length > 0)
+  // Nur die für diese Klasse gültigen Spalten (z. B. Speed/MüB je Klasse).
+  const cols = columnsForClass(def.columns, bogen.klasse)
+  const viewDef = { ...def, columns: cols }
+  const leaves = toLeaves(cols)
+  const twoRow = cols.some((c) => c.sub && c.sub.length > 0)
 
   const hl = (rowIdx: number, colIdx: number): string => {
     if (!focus) return ''
@@ -137,11 +140,11 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
             <th className="col-nr" rowSpan={twoRow ? 2 : 1}>
               Nr.
             </th>
-            {def.columns.map((col) => renderHeadTop(col, twoRow))}
+            {cols.map((col) => renderHeadTop(col, twoRow))}
           </tr>
           {twoRow && (
             <tr>
-              {def.columns.flatMap((col) =>
+              {cols.flatMap((col) =>
                 col.sub && col.sub.length > 0
                   ? col.sub.map((s, i) => (
                       <th key={`${col.key}-${i}`} className="col-sub">
@@ -201,7 +204,7 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
         <tbody>
           {rows.map((row, rowIdx) => {
             const rowKey = row.fixed ? row.nr : row.id
-            const score = scoreRow(def, rowKey, (k) => cell.getByKey(k))
+            const score = scoreRow(viewDef, rowKey, (k) => cell.getByKey(k))
             const disqTitle = score.disqs.length ? formatDisqs(score.disqs) : undefined
             // Disq-Buchstaben aus den Tor-/Bojen-Zellen (nicht aus der Disq-Spalte selbst).
             const autoDisq = Array.from(

@@ -53,6 +53,12 @@ export interface RawSpalte {
   katalog?: string
   /** Relative Breite (Flex-Anteil). */
   breite?: number
+  /**
+   * Nur für diese Klassen anzeigen (z. B. [5, 6, 7] für Speed 1, [7] für
+   * Speed 2, [4, 5, 6, 7] für Mann-über-Bord). Fehlt die Angabe → alle Klassen.
+   * Ein Bogen gilt genau einer Klasse, daher kann die Spalte je Blatt entfallen.
+   */
+  klassen?: Array<string | number>
 }
 
 export interface RawPosition {

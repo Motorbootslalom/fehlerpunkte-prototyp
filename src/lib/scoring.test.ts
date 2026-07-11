@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { getSheetDef } from '../config/active'
-import { cellKey, scoreRow } from './scoring'
+import { cellKey, columnsForClass, scoreRow } from './scoring'
 
 function getter(values: Record<string, string>) {
   return (key: string) => values[key] ?? ''
@@ -83,6 +83,29 @@ describe('scoreRow - Steg (zwei Fehlergruppen, unterschiedliche Gewichte)', () =
     expect(r.sum).toBe(10) // nur Code 9 gibt Punkte
     expect(r.disqs.map((d) => d.code)).toContain('K')
     expect(r.disqs[0].where).toContain('Fehler AN')
+  })
+})
+
+describe('columnsForClass - Speed/MüB je Klasse, Tor-Bojen immer', () => {
+  const keys = (id: string, kl: string) =>
+    columnsForClass(getSheetDef(id).columns, kl).map((c) => c.key)
+
+  it('Berlin Links: Speed 0 (Kl 3) / 1 (Kl 5, 6) / 2 (Kl 7)', () => {
+    expect(keys('blinks', '3')).not.toContain('speed1')
+    expect(keys('blinks', '5')).toContain('speed1')
+    expect(keys('blinks', '5')).not.toContain('speed2')
+    expect(keys('blinks', '6')).toContain('speed1')
+    expect(keys('blinks', '7')).toContain('speed2')
+  })
+
+  it('Berlin Rechts: MüB erst ab Klasse 4', () => {
+    expect(keys('brechts', '3')).not.toContain('mueb')
+    expect(keys('brechts', '4')).toContain('mueb')
+  })
+
+  it('Tor-Bojen bleiben in jeder Klasse (auch E)', () => {
+    expect(keys('blinks', 'E')).toEqual(expect.arrayContaining(['t2a', 't4a', 't5', 't2b']))
+    expect(keys('brechts', 'E')).toEqual(expect.arrayContaining(['t1a', 't3a', 't1b']))
   })
 })
 

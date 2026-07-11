@@ -35,6 +35,15 @@ export function cellKey(nr: string, colKey: string, subIndex?: number): string {
   return subIndex === undefined ? `${nr}:${colKey}` : `${nr}:${colKey}#${subIndex}`
 }
 
+/**
+ * Spalten, die für eine Klasse sichtbar sind. Spalten ohne `klassen` gelten für
+ * alle; sonst nur, wenn die Klasse enthalten ist (z. B. Speed/MüB je Klasse).
+ * Ein Blatt gilt genau einer Klasse, daher kann so pro Blatt gefiltert werden.
+ */
+export function columnsForClass(columns: Column[], klasse: string): Column[] {
+  return columns.filter((c) => !c.klassen || c.klassen.length === 0 || c.klassen.includes(klasse))
+}
+
 /** Alle Zellschlüssel, die eine Spalte in einer Zeile erzeugt. */
 export function columnCellKeys(nr: string, col: Column): string[] {
   if (col.sub && col.sub.length > 0) {

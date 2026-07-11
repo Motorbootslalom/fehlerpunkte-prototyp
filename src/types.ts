@@ -48,6 +48,12 @@ export interface Column {
   errorTable?: ErrorDef[]
   /** Relative Spaltenbreite (CSS-Flexbasis-artig, nur grobe Steuerung). */
   grow?: number
+  /**
+   * Klassen, für die diese Spalte erscheint (z. B. Speed/MüB). Leer/undefiniert
+   * = alle Klassen. Ein Blatt gilt genau einer Klasse, daher entfällt die
+   * Spalte klassenabhängig.
+   */
+  klassen?: string[]
 }
 
 /** Ein benannter Fehlerblock in der Legende (z. B. Ablegen / Anlegen). */

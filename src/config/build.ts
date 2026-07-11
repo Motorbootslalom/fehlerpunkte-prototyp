@@ -82,6 +82,7 @@ function toColumn(
     pointsCol: sp.punkteSpalte,
     errorTable: sp.katalog ? katalogRows(kataloge[sp.katalog]) : undefined,
     grow: sp.breite,
+    klassen: sp.klassen?.map((k) => String(k)),
   }
 }
 

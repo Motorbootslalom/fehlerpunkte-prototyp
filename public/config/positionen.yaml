@@ -284,7 +284,7 @@ positionen:
   - id: bstartziel
     titel: "Start/Ziel"
     menue: "Start/Ziel (Zeitnahme + Start-/Zieltor-Bojen)"
-    ausrichtung: quer   # Querformat: breites Parcoursbild mit allen Toren
+    ausrichtung: hoch
     bild: alcatraz_Parcours
     summeSpalte: sum
     disq: alle
@@ -301,7 +301,7 @@ positionen:
   - id: brechts
     titel: "Rechts"
     menue: "Rechts (Tor 1 / 3 + Mann-über-Bord)"
-    ausrichtung: quer   # Querformat: breites Parcoursbild mit allen Toren
+    ausrichtung: hoch
     bild: alcatraz_Parcours
     summeSpalte: sum
     disq: alle
@@ -312,15 +312,16 @@ positionen:
       - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
       - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
       - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
-      - { key: mueb, label: "MüB", typ: code, punkteSpalte: mp, breite: 1 }
-      - { key: mp, label: "MüB-Pkt.", typ: summe }
+      # Mann-über-Bord erst ab Klasse 4.
+      - { key: mueb, label: "MüB", typ: code, punkteSpalte: mp, breite: 1, klassen: [4, 5, 6, 7] }
+      - { key: mp, label: "MüB-Pkt.", typ: summe, klassen: [4, 5, 6, 7] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
 
   - id: blinks
     titel: "Links"
     menue: "Links (Tor 2 / 4 / 5 + Speedbojen)"
-    ausrichtung: quer   # Querformat: breites Parcoursbild mit allen Toren
+    ausrichtung: hoch
     bild: alcatraz_Parcours
     summeSpalte: sum
     disq: alle
@@ -331,7 +332,8 @@ positionen:
       - { key: t5, label: "Tor 5", typ: boje, sub: ["hin seiteA", "rueck seiteA"] }
       - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
       - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
-      - { key: speed1, label: "Speed 1", typ: boje }
-      - { key: speed2, label: "Speed 2", typ: boje }
+      # Speed nur je Klasse: Klasse 5/6 eine Boje, Klasse 7 zwei, darunter keine.
+      - { key: speed1, label: "Speed 1", typ: boje, klassen: [5, 6, 7] }
+      - { key: speed2, label: "Speed 2", typ: boje, klassen: [7] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
