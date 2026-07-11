@@ -87,6 +87,9 @@ aufbauten:
   - id: frontal
     name: Frontal
     positionen: [zeit, steg, frontal135, frontal245, tor5, mueb, parcours, knoten]
+  - id: berlin
+    name: Berlin
+    positionen: [steg, bstartziel, brechts, blinks]
   - id: parallel
     name: Parallelslalom
     positionen: [zeit, steg, parallelparcours]
@@ -274,3 +277,61 @@ positionen:
       - { key: b1b, label: "Boje 1", typ: boje }
       - { key: ziel, label: "Ziel", typ: boje, sub: ["seiteB seiteA"] }
       - { key: disq, label: "Disq.", typ: disq }
+
+  # === Aufbau BERLIN: vier feste WKR-Positionen rund um den Kurs ===
+  # Andere Zusammenstellung (z. B. Berlin): jede Position zeigt das GANZE
+  # Parcoursbild mit allen Toren. Entwurf - Spalten/Bojen bitte prüfen.
+  - id: bstartziel
+    titel: "Start/Ziel"
+    menue: "Start/Ziel (Zeitnahme + Start-/Zieltor-Bojen)"
+    ausrichtung: hoch
+    bild: alcatraz_Parcours
+    summeSpalte: sum
+    disq: alle
+    hinweis: blickrichtung
+    spalten:
+      - { key: zeit1, label: "Zeit 1", typ: zeit }
+      - { key: zeit2, label: "Zeit 2", typ: zeit }
+      - { key: zeit3, label: "Zeit 3", typ: zeit }
+      - { key: start, label: "Start", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: sum, label: "Σ", typ: summe }
+
+  - id: brechts
+    titel: "Rechts"
+    menue: "Rechts (Tor 1 / 3 + Mann-über-Bord)"
+    ausrichtung: hoch
+    bild: alcatraz_Parcours
+    summeSpalte: sum
+    disq: alle
+    katalog: mueb
+    hinweis: blickrichtung
+    spalten:
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: mueb, label: "MüB", typ: code, punkteSpalte: mp, breite: 1 }
+      - { key: mp, label: "MüB-Pkt.", typ: summe }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: sum, label: "Σ", typ: summe }
+
+  - id: blinks
+    titel: "Links"
+    menue: "Links (Tor 2 / 4 / 5 + Speedbojen)"
+    ausrichtung: hoch
+    bild: alcatraz_Parcours
+    summeSpalte: sum
+    disq: alle
+    hinweis: blickrichtung
+    spalten:
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t5, label: "Tor 5", typ: boje, sub: ["hin seiteA", "rueck seiteA"] }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: speed1, label: "Speed 1", typ: boje }
+      - { key: speed2, label: "Speed 2", typ: boje }
+      - { key: disq, label: "Disq.", typ: disq }
+      - { key: sum, label: "Σ", typ: summe }
