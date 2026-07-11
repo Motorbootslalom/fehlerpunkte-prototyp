@@ -70,12 +70,13 @@ positionen:
     menue: "Steg (Ablegen / Anlegen)"
     ausrichtung: hoch
     disq: alle
-    katalog: steg
+    # Zwei getrennte Fehler-Spalten mit je eigenem Katalog (per-Spalte statt
+    # position-weit). Jede Spalte lässt nur ihre Codes + Disqualifikationen zu.
     spalten:
-      - { key: fehlerAB, label: "Fehler AB", typ: code, punkteSpalte: fpab, breite: 1 }
-      - { key: fpab, label: "F-punkte", typ: summe }
-      - { key: fehlerAN, label: "Fehler AN", typ: code, punkteSpalte: fpan, breite: 1 }
-      - { key: fpan, label: "F-Punkte", typ: summe }
+      - { key: fehlerAB, label: "Fehler AB", typ: code, punkteSpalte: fpab, katalog: stegAblegen, breite: 1 }
+      - { key: fpab, label: "F-Pkt. AB", typ: summe }
+      - { key: fehlerAN, label: "Fehler AN", typ: code, punkteSpalte: fpan, katalog: stegAnlegen, breite: 1 }
+      - { key: fpan, label: "F-Pkt. AN", typ: summe }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: bemerkung, label: "Bemerkung", typ: text, breite: 2 }
 
@@ -220,5 +221,15 @@ positionen:
     menue: "Parallelslalom (nur Fahrweg)"
     disq: alle
     spalten:
-      - { key: bemerkung, label: "Bemerkung", typ: text, breite: 4 }
+      - { key: start, label: "Start", typ: boje, sub: ["seiteB seiteA"] }
+      - { key: b1a, label: "Boje 1", typ: boje }
+      - { key: b2a, label: "Boje 2", typ: boje }
+      - { key: b3a, label: "Boje 3", typ: boje }
+      - { key: b4a, label: "Boje 4", typ: boje }
+      - { key: b5, label: "Boje 5", typ: boje }
+      - { key: b4b, label: "Boje 4", typ: boje }
+      - { key: b3b, label: "Boje 3", typ: boje }
+      - { key: b2b, label: "Boje 2", typ: boje }
+      - { key: b1b, label: "Boje 1", typ: boje }
+      - { key: ziel, label: "Ziel", typ: boje, sub: ["seiteB seiteA"] }
       - { key: disq, label: "Disq.", typ: disq }

@@ -1,5 +1,5 @@
-import type { CellKind, Column, DisqDef, SheetDef } from '../types'
-import type { RawConfig, RawPosition, RawSpalte } from './schema'
+import type { CellKind, Column, DisqDef, ErrorDef, ErrorGroup, SheetDef } from '../types'
+import type { RawConfig, RawKatalog, RawPosition, RawSpalte } from './schema'
 
 // Wandelt die geparste (zusammengeführte) YAML-Konfiguration in die interne
 // Darstellung um. Positionen binden Fehler-Kataloge und Hinweise per Verweis ein.
@@ -42,13 +42,22 @@ function resolveTokens(text: string, tokens: Record<string, string>): string {
   return text.replace(re, (m) => tokens[m] ?? m)
 }
 
-function toColumn(sp: RawSpalte, tokens: Record<string, string>): Column {
+function katalogRows(kat: RawKatalog | undefined): ErrorDef[] | undefined {
+  return kat?.fehler.map((f) => ({ code: String(f.code), text: f.text, punkte: f.punkte }))
+}
+
+function toColumn(
+  sp: RawSpalte,
+  tokens: Record<string, string>,
+  kataloge: Record<string, RawKatalog>,
+): Column {
   return {
     key: sp.key,
     label: sp.label,
     kind: TYP_TO_KIND[sp.typ],
     sub: sp.sub?.map((x) => resolveTokens(x, tokens)),
     pointsCol: sp.punkteSpalte,
+    errorTable: sp.katalog ? katalogRows(kataloge[sp.katalog]) : undefined,
     grow: sp.breite,
   }
 }
@@ -75,16 +84,27 @@ export function buildConfig(raw: RawConfig): ResolvedConfig {
     // Hinweis per Verweis (ID), sonst direkt als Text; Tokens einsetzen.
     const noteRaw = pos.hinweis ? (hinweise[pos.hinweis] ?? pos.hinweis) : undefined
     const legendNote = noteRaw ? resolveTokens(noteRaw, tokens) : undefined
+    // Spalten-eigene Kataloge (in Reihenfolge, ohne Dubletten) → Legende zeigt
+    // die Blöcke nebeneinander (z. B. Steg Ablegen / Anlegen).
+    const groupIds: string[] = []
+    for (const sp of pos.spalten) {
+      if (sp.katalog && kataloge[sp.katalog] && !groupIds.includes(sp.katalog)) groupIds.push(sp.katalog)
+    }
+    const errorGroups: ErrorGroup[] | undefined =
+      groupIds.length > 0
+        ? groupIds.map((id) => ({ title: kataloge[id].titel, rows: katalogRows(kataloge[id]) ?? [] }))
+        : undefined
     return {
       typeId: pos.id,
       title: pos.titel,
       menuLabel: pos.menue ?? pos.titel,
       orientation: pos.ausrichtung === 'quer' ? 'landscape' : 'portrait',
       showLauf: pos.lauf !== false,
-      columns: pos.spalten.map((sp) => toColumn(sp, tokens)),
+      columns: pos.spalten.map((sp) => toColumn(sp, tokens, kataloge)),
       sumColumnKey: pos.summeSpalte,
-      errorTable: kat?.fehler.map((f) => ({ code: String(f.code), text: f.text, punkte: f.punkte })),
+      errorTable: katalogRows(kat),
       errorTableTitle: kat?.titel,
+      errorGroups,
       disqTable,
       showDisqTable: !!disqTable && disqTable.length > 0,
       legendNote,

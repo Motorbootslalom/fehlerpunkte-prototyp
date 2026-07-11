@@ -22,6 +22,15 @@ export function sanitizeDisq(raw: string, allowed: Set<string>): string {
 }
 
 /**
+ * Live-Bereinigung einer Fehler-Spalte während der Eingabe: Buchstaben
+ * groß, nur Ziffern/Buchstaben/Trenner behalten. Die eigentliche Prüfung auf
+ * gültige Codes/Disqualifikationen erfolgt beim Verlassen (normalizeCodeCell).
+ */
+export function sanitizeCodeInput(raw: string): string {
+  return raw.toUpperCase().replace(/[^0-9A-Z ,;/]/g, '')
+}
+
+/**
  * Bereinigt eine Bojen-/Tor-Zelle: entweder Punkte (Ziffern) ODER ein einzelner
  * erlaubter Disq-Buchstabe (großgeschrieben).
  */

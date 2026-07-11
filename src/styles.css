@@ -587,6 +587,25 @@ body {
   width: 30px;
 }
 
+/* Getrennte Fehlerblöcke (Steg Ablegen | Anlegen) nebeneinander */
+.legend-grouped {
+  width: 100%;
+  table-layout: auto;
+}
+
+.legend-grouped .lc-grouptitle {
+  font-weight: 700;
+  text-decoration: underline;
+  text-align: left;
+  padding: 0 6px 2px 0;
+}
+
+/* Schmale Puffer-Spalte zwischen den Blöcken (optische Trennung) */
+.legend-grouped .lc-buffer {
+  width: 18px;
+  border: none;
+}
+
 .legend-note {
   font-style: italic;
   line-height: 1.4;

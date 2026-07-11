@@ -38,6 +38,12 @@ export interface RawSpalte {
   sub?: string[]
   /** Nur 'code': Schlüssel der 'summe'-Spalte, in der die Punkte erscheinen. */
   punkteSpalte?: string
+  /**
+   * Nur 'code': eigener Fehler-Katalog dieser Spalte (Verweis auf
+   * fehlerpunkte.kataloge.<id>). Ohne Angabe gilt der positionsweite `katalog`.
+   * Damit lassen die Spalten Steg AB/AN je nur ihre eigenen Codes zu.
+   */
+  katalog?: string
   /** Relative Breite (Flex-Anteil). */
   breite?: number
 }

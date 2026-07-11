@@ -383,17 +383,35 @@ function Legend({ def, descWidth }: { def: SheetDef; descWidth?: number }) {
     : 0
   return (
     <View style={s.legend}>
-      {def.errorTable && (
-        <View>
-          <Text style={s.legendTitle}>{def.errorTableTitle ?? 'Fehler:'}</Text>
-          {def.errorTable.map((e) => (
-            <View key={e.code} style={s.legendRow}>
-              <Text style={s.lcCode}>{e.code}</Text>
-              <Text style={[s.lcText, { width: w }]}>{e.text}</Text>
-              <Text style={s.lcPts}>{e.punkte}</Text>
+      {def.errorGroups && def.errorGroups.length > 0 ? (
+        // Getrennte Fehlerblöcke (Steg Ablegen | Anlegen) nebeneinander.
+        <View style={{ flexDirection: 'row' }}>
+          {def.errorGroups.map((g, gi) => (
+            <View key={gi} style={{ flex: 1, marginLeft: gi > 0 ? 12 : 0 }}>
+              <Text style={s.legendTitle}>{g.title ?? 'Fehler:'}</Text>
+              {g.rows.map((e) => (
+                <View key={e.code} style={s.legendRow}>
+                  <Text style={s.lcCode}>{e.code}</Text>
+                  <Text style={[s.lcText, { flexGrow: 1, flexBasis: 0 }]}>{e.text}</Text>
+                  <Text style={s.lcPts}>{e.punkte}</Text>
+                </View>
+              ))}
             </View>
           ))}
         </View>
+      ) : (
+        def.errorTable && (
+          <View>
+            <Text style={s.legendTitle}>{def.errorTableTitle ?? 'Fehler:'}</Text>
+            {def.errorTable.map((e) => (
+              <View key={e.code} style={s.legendRow}>
+                <Text style={s.lcCode}>{e.code}</Text>
+                <Text style={[s.lcText, { width: w }]}>{e.text}</Text>
+                <Text style={s.lcPts}>{e.punkte}</Text>
+              </View>
+            ))}
+          </View>
+        )
       )}
 
       {def.legendNote && <Text style={s.note}>{def.legendNote}</Text>}

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { getSheetDef } from '../config/active'
 import { gridNavKeyDown } from '../lib/gridnav'
-import { formatCodes } from '../lib/codes'
-import { allowedSet, sanitizeBuoy, sanitizeDisq } from '../lib/disq'
+import { normalizeCodeCell } from '../lib/codes'
+import { allowedSet, sanitizeBuoy, sanitizeCodeInput, sanitizeDisq } from '../lib/disq'
 import { cellKey, formatDisqs, scoreRow } from '../lib/scoring'
 import { useCell, useStore } from '../state/store'
 import type { Bogen, CellKind, Column } from '../types'
@@ -24,20 +24,25 @@ interface Leaf {
   kind: CellKind
   label: string
   grow?: number
+  /** Nur 'code': erlaubte Codes dieser Spalte (eigener Katalog), sonst undefined. */
+  codes?: Set<string>
 }
 
 function toLeaves(columns: Column[]): Leaf[] {
-  return columns.flatMap((col) =>
-    col.sub && col.sub.length > 0
+  return columns.flatMap((col) => {
+    const codes =
+      col.kind === 'code' && col.errorTable ? new Set(col.errorTable.map((e) => e.code)) : undefined
+    return col.sub && col.sub.length > 0
       ? col.sub.map((s, i) => ({
           colKey: col.key,
           subIndex: i,
           kind: col.kind,
           label: `${col.label} ${s}`,
           grow: col.grow,
+          codes,
         }))
-      : [{ colKey: col.key, kind: col.kind, label: col.label, grow: col.grow }],
-  )
+      : [{ colKey: col.key, kind: col.kind, label: col.label, grow: col.grow, codes }]
+  })
 }
 
 /**
@@ -99,6 +104,8 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
   const totalCols = 1 + leaves.length
   // Erlaubte Disq-Codes dieser Position (für Eingabe-Validierung).
   const allowed = allowedSet(def.disqTable)
+  // Positionsweite Fehlercodes (Fallback für Spalten ohne eigenen Katalog).
+  const defCodes = new Set((def.errorTable ?? []).map((e) => e.code))
   // Bild um ±90° gedreht → Hochformat neben der Legende.
   const drehung = def.bildDrehung ?? 0
   const gedreht = Math.abs(drehung) === 90
@@ -224,6 +231,7 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
                     autoDisq,
                     hl(rowIdx, li + 1),
                     allowed,
+                    defCodes,
                   ),
                 )}
               </tr>
@@ -259,6 +267,7 @@ function renderLeafCell(
   autoDisq: string,
   hlCls: string,
   allowed: Set<string>,
+  defCodes: Set<string>,
 ) {
   const ck = cellKey(rowKey, leaf.colKey, leaf.subIndex)
   const key = leaf.subIndex === undefined ? leaf.colKey : `${leaf.colKey}#${leaf.subIndex}`
@@ -298,13 +307,20 @@ function renderLeafCell(
   }
 
   const cls = leaf.kind === 'text' ? 'text-input' : leaf.kind === 'buoy' ? 'buoy-input' : 'code-input'
+  // Erlaubte Codes: eigener Spalten-Katalog, sonst positionsweiter Fallback.
+  const codeSet = leaf.codes ?? defCodes
   const sanitize =
-    leaf.kind === 'buoy' ? (v: string) => sanitizeBuoy(v, allowed) : undefined
-  // Fehlercode-Felder beim Verlassen numerisch sortieren und mit ", " trennen.
+    leaf.kind === 'buoy'
+      ? (v: string) => sanitizeBuoy(v, allowed)
+      : leaf.kind === 'code'
+        ? (v: string) => sanitizeCodeInput(v)
+        : undefined
+  // Fehler-Felder beim Verlassen auf gültige Codes + Disqualifikationen
+  // reduzieren, numerisch sortieren und mit ", " trennen.
   const onBlur =
     leaf.kind === 'code'
       ? (e: React.FocusEvent<HTMLInputElement>) => {
-          const f = formatCodes(e.target.value)
+          const f = normalizeCodeCell(e.target.value, codeSet, allowed)
           if (f !== e.target.value) cell.set(ck, f)
         }
       : undefined

@@ -40,8 +40,20 @@ export interface Column {
    * Codes berechneten Punkte (read-only) angezeigt werden.
    */
   pointsCol?: string
+  /**
+   * Nur für 'code'-Zellen: eigener Fehler-Katalog dieser Spalte. Ist er gesetzt,
+   * gelten für Bewertung und Eingabe nur diese Codes (statt des positionsweiten
+   * SheetDef.errorTable). Beispiel: Steg "Fehler AB" vs. "Fehler AN".
+   */
+  errorTable?: ErrorDef[]
   /** Relative Spaltenbreite (CSS-Flexbasis-artig, nur grobe Steuerung). */
   grow?: number
+}
+
+/** Ein benannter Fehlerblock in der Legende (z. B. Ablegen / Anlegen). */
+export interface ErrorGroup {
+  title?: string
+  rows: ErrorDef[]
 }
 
 export interface ErrorDef {
@@ -71,6 +83,12 @@ export interface SheetDef {
   errorTable?: ErrorDef[]
   /** Überschrift über der errorTable-Legende. */
   errorTableTitle?: string
+  /**
+   * Getrennte Fehlerblöcke (je Spalte ein eigener Katalog), z. B. Steg
+   * Ablegen/Anlegen. Ist dies gesetzt, zeigt die Legende die Blöcke
+   * nebeneinander (statt der einzelnen errorTable).
+   */
+  errorGroups?: ErrorGroup[]
   /** Für diese Position gültige Disqualifikationen (bereits gefiltert). */
   disqTable?: DisqDef[]
   /** Zeigt die Disqualifikations-Tabelle in der Legende (= disqTable vorhanden). */

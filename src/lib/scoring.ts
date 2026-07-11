@@ -1,4 +1,4 @@
-import type { Column, SheetDef } from '../types'
+import type { Column, ErrorDef, SheetDef } from '../types'
 
 // Berechnet die Zeilen-Ergebnisse eines Bogens aus den Zellwerten.
 //
@@ -45,13 +45,13 @@ export function columnCellKeys(nr: string, col: Column): string[] {
 
 const LETTER = /^[A-Za-z]$/
 
-function errorPoints(def: SheetDef, raw: string): number {
-  if (!def.errorTable) return 0
+function errorPoints(table: ErrorDef[] | undefined, raw: string): number {
+  if (!table) return 0
   let total = 0
   for (const token of raw.split(/[\s,;/]+/)) {
     const t = token.trim()
     if (t === '') continue
-    const found = def.errorTable.find((e) => e.code === t)
+    const found = table.find((e) => e.code === t)
     if (found) total += found.punkte
   }
   return total
@@ -75,10 +75,17 @@ export function scoreRow(
           })
         : handleBuoy(get(keys[0]), col.label)
     } else if (col.kind === 'code') {
+      // Eigener Spalten-Katalog (Steg AB/AN) hat Vorrang vor dem positionsweiten.
       const raw = get(cellKey(nr, col.key))
-      const pts = errorPoints(def, raw)
+      const pts = errorPoints(col.errorTable ?? def.errorTable, raw)
       sum += pts
       if (col.pointsCol) computedCols[col.pointsCol] = (computedCols[col.pointsCol] ?? 0) + pts
+      // Ein Disq-Buchstabe in einer Fehler-Spalte markiert die Disqualifikation
+      // an dieser Stelle (wie in den Bojen-Zellen).
+      for (const token of raw.split(/[\s,;/]+/)) {
+        const c = token.trim().toUpperCase()
+        if (LETTER.test(c)) disqs.push({ where: col.label, code: c })
+      }
     } else if (col.kind === 'points') {
       const v = parseInt(get(cellKey(nr, col.key)), 10)
       if (!Number.isNaN(v)) sum += v

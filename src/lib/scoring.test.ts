@@ -66,6 +66,23 @@ describe('scoreRow - Steg (zwei Fehlergruppen, unterschiedliche Gewichte)', () =
     const r = scoreRow(def, nr, getter(values))
     expect(r.computedCols['fpab']).toBe(5)
     expect(r.computedCols['fpan']).toBe(20)
+    expect(r.sum).toBe(25)
+  })
+
+  it('wertet nur den eigenen Spalten-Katalog: AN-Code in AB zählt nicht', () => {
+    const nr = '304'
+    // 12 gehört zu Anlegen; in der Ablegen-Spalte darf es keine Punkte geben.
+    const r = scoreRow(def, nr, getter({ [cellKey(nr, 'fehlerAB')]: '12' }))
+    expect(r.computedCols['fpab'] ?? 0).toBe(0)
+    expect(r.sum).toBe(0)
+  })
+
+  it('erkennt einen Disqualifikations-Buchstaben in einer Fehler-Spalte', () => {
+    const nr = '306'
+    const r = scoreRow(def, nr, getter({ [cellKey(nr, 'fehlerAN')]: '9, K' }))
+    expect(r.sum).toBe(10) // nur Code 9 gibt Punkte
+    expect(r.disqs.map((d) => d.code)).toContain('K')
+    expect(r.disqs[0].where).toContain('Fehler AN')
   })
 })
 

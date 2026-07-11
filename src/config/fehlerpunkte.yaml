@@ -40,12 +40,18 @@ kataloge:
       - { code: 18, text: "Rettungsring geworfen oder fallengelassen", punkte: 5 }
       - { code: 19, text: "2. und 3. Versuch des Elementes", punkte: 5 }
 
-  steg:
-    titel: "Ablegen (AB): 3-5 · Anlegen (AN): 7-12"
+  # Steg getrennt nach Ablegen (AB) und Anlegen (AN) - jede Spalte lässt nur
+  # ihre eigenen Codes (und Disqualifikationen) zu.
+  stegAblegen:
+    titel: "Ablegen (AB)"
     fehler:
       - { code: 3, text: "erneute Stegberührung", punkte: 5 }
       - { code: 4, text: "Treten auf den Schlauch / ab Klasse 3", punkte: 5 }
       - { code: 5, text: "Durchreißen der Schaltung / erst ab Klasse 5", punkte: 5 }
+
+  stegAnlegen:
+    titel: "Anlegen (AN)"
+    fehler:
       - { code: 7, text: "2. und 3. Versuch des Elementes", punkte: 5 }
       - { code: 8, text: "Festmacherleine nicht im Anlegebereich", punkte: 5 }
       - { code: 9, text: "Massive Stegberührung", punkte: 10 }
