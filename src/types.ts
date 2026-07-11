@@ -116,6 +116,8 @@ export interface AppState {
   eventName: string
   /** Gewählter Aufbau (Setup), z. B. "alcatraz" oder "frontal". */
   aufbau: string
+  /** Gewähltes Bezeichnungs-Schema (Bojen-Kürzel), z. B. "rl" oder "ls". */
+  beschriftung: string
   /** Anzahl leerer Zeilen, die nach den Startnummern angehängt werden. */
   emptyRows: number
   /** Startnummern je Klasse (Reihenfolge = Startreihenfolge). */

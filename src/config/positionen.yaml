@@ -26,17 +26,36 @@
 #   Land/See:     seiteA: L,  seiteB: S
 #   Rechts/Links: seiteA: R,  seiteB: L   (Standard; darum Rückfahrt = Z)
 bezeichnungen:
-  hin: "H"      # 1. Zeichen: Hinfahrt
-  rueck: "Z"    # 1. Zeichen: Rückfahrt (Z = Zurück, kein Konflikt mit R)
-  seiteA: "R"   # 2. Zeichen: eine Bojen-Seite (Standard: Rechts)
-  seiteB: "L"   # 2. Zeichen: andere Bojen-Seite (Standard: Links)
+  hin: "H"           # 1. Zeichen: Hinfahrt
+  rueck: "Z"         # 1. Zeichen: Rückfahrt (Z = Zurück, kein Konflikt mit R)
+  seiteA: "R"        # 2. Zeichen: eine Bojen-Seite (Standard: Rechts)
+  seiteB: "L"        # 2. Zeichen: andere Bojen-Seite (Standard: Links)
+  seiteAlang: "Rechts"  # Langname (für den Hinweis-Text)
+  seiteBlang: "Links"
+
+# ---- Auf der Seite umschaltbare Beschriftung (Bojen-Seiten) ---------
+# Wird eines gewählt, überschreiben seine tokens die bezeichnungen oben und
+# alle Listen werden neu beschriftet. Das erste ist der Standard.
+beschriftungen:
+  - id: rl
+    name: "Rechts / Links (R/L)"
+    tokens: { seiteA: "R", seiteB: "L", seiteAlang: "Rechts", seiteBlang: "Links" }
+  - id: ls
+    name: "Land / See (L/S)"
+    tokens: { seiteA: "L", seiteB: "S", seiteAlang: "Land", seiteBlang: "See" }
+  - id: sl
+    name: "See / Land (S/L)"
+    tokens: { seiteA: "S", seiteB: "L", seiteAlang: "See", seiteBlang: "Land" }
+  - id: kh
+    name: "Kai / Hafen (K/H)"
+    tokens: { seiteA: "K", seiteB: "H", seiteAlang: "Kai", seiteBlang: "Hafen" }
 
 # ---- Wiederverwendbare Hinweise (Bojen-Bezeichnungen) --------------
 hinweise:
   blickrichtung: |-
     Bojen-Bezeichnung (eindeutig):
     1. Zeichen = Fahrtrichtung: hin = Hinfahrt, rueck = Rückfahrt
-    2. Zeichen = Seite: seiteA = Rechts, seiteB = Links
+    2. Zeichen = Seite: seiteA = seiteAlang, seiteB = seiteBlang
     Start = Berührung Einfahrt-Bojentor · Ziel = Berührung Ausfahrt-Bojentor
     Fehler: pro berührter Boje (auch außerhalb des Manövers) = 5
   knoten: "Fehler: 5 pro fehlerhafter Knoten"

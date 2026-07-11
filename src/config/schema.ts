@@ -70,6 +70,18 @@ export interface RawPosition {
   spalten: RawSpalte[]
 }
 
+/**
+ * Ein auf der Seite umschaltbares Bezeichnungs-Schema (z. B. Rechts/Links,
+ * Land/See, Hafen/Kai). `tokens` überschreibt die globalen `bezeichnungen`
+ * (typischerweise seiteA/seiteB) - so lässt sich die Bojen-Beschriftung ohne
+ * YAML-Änderung live umstellen.
+ */
+export interface RawBeschriftung {
+  id: string
+  name: string
+  tokens: Record<string, string>
+}
+
 /** Ein Aufbau (Setup) bündelt die bei einem Wettkampf genutzten Positionen. */
 export interface RawAufbau {
   id: string
@@ -87,6 +99,12 @@ export interface RawPositionen {
    * Bezeichnungen (R/L, L/S, H/K …) an einer Stelle umstellen.
    */
   bezeichnungen?: Record<string, string>
+  /**
+   * Auf der Seite umschaltbare Bezeichnungs-Schemata. Das erste ist der
+   * Standard; wird eines gewählt, überschreiben seine `tokens` die
+   * `bezeichnungen` und die Konfiguration wird neu gebaut.
+   */
+  beschriftungen?: RawBeschriftung[]
   /** Wiederverwendbare Hinweistexte (Bojen-Bezeichnungen). */
   hinweise?: Record<string, string>
   /** Aufbauten (Setups); der erste ist der Standard. */

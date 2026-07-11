@@ -11,12 +11,21 @@ export interface ResolvedAufbau {
   order: string[]
 }
 
+/** Umschaltbares Bezeichnungs-Schema (Bojen-Kürzel), z. B. Rechts/Links. */
+export interface BeschriftungScheme {
+  id: string
+  name: string
+  tokens: Record<string, string>
+}
+
 export interface ResolvedConfig {
   positions: SheetDef[]
   /** Aufbauten (Setups); der erste ist der Standard. */
   aufbauten: ResolvedAufbau[]
   /** Alle konfigurierten Disqualifikationen. */
   allDisqs: DisqDef[]
+  /** Auf der Seite umschaltbare Bezeichnungs-Schemata (der erste ist Standard). */
+  beschriftungen: BeschriftungScheme[]
 }
 
 const TYP_TO_KIND: Record<RawSpalte['typ'], CellKind> = {
@@ -124,5 +133,11 @@ export function buildConfig(raw: RawConfig): ResolvedConfig {
         }))
       : [{ id: 'standard', name: 'Standard', order: positions.map((p) => p.typeId) }]
 
-  return { positions, aufbauten, allDisqs }
+  const beschriftungen: BeschriftungScheme[] = (raw.beschriftungen ?? []).map((b) => ({
+    id: b.id,
+    name: b.name,
+    tokens: b.tokens ?? {},
+  }))
+
+  return { positions, aufbauten, allDisqs, beschriftungen }
 }

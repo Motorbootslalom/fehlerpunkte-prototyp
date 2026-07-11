@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, type ReactNode } from 'react'
 import type { AppState, Bogen, ClassId, Lauf, SheetTypeId } from '../types'
-import { defaultAufbauId, getAufbau } from '../config/active'
+import { applyBeschriftung, defaultAufbauId, defaultBeschriftungId, getAufbau } from '../config/active'
 import { allDemoNumbers } from '../lib/demo'
 import { cellKey } from '../lib/scoring'
 import { clearState, loadState, saveState } from '../lib/storage'
@@ -21,6 +21,7 @@ function defaultState(): AppState {
   return {
     eventName: '30. Möwepokal 2026',
     aufbau,
+    beschriftung: defaultBeschriftungId(),
     emptyRows: 3,
     numbers: allDemoNumbers(),
     wkr: {},
@@ -33,6 +34,7 @@ function defaultState(): AppState {
 export type Action =
   | { type: 'SET_EVENT'; eventName: string }
   | { type: 'SET_AUFBAU'; aufbau: string }
+  | { type: 'SET_BESCHRIFTUNG'; beschriftung: string }
   | { type: 'SET_EMPTY_ROWS'; emptyRows: number }
   | { type: 'SET_NUMBERS'; klasse: ClassId; numbers: number[] }
   | { type: 'SET_WKR'; bogenId: string; name: string }
@@ -55,6 +57,12 @@ function reducer(state: AppState, action: Action): AppState {
     case 'SET_AUFBAU':
       // Aufbau wechseln = neue Bogen-Grundausstattung dieses Setups (Klasse 3).
       return { ...state, aufbau: action.aufbau, boegen: defaultBoegen(action.aufbau) }
+
+    case 'SET_BESCHRIFTUNG':
+      // Bezeichnungs-Schema live umstellen: Konfiguration mit neuen Bojen-Kürzeln
+      // neu bauen (Seiteneffekt), dann State ändern → Neu-Render.
+      applyBeschriftung(action.beschriftung)
+      return { ...state, beschriftung: action.beschriftung }
 
     case 'SET_EMPTY_ROWS':
       return { ...state, emptyRows: Math.max(0, Math.min(30, action.emptyRows)) }
@@ -132,8 +140,11 @@ function reducer(state: AppState, action: Action): AppState {
 
 function init(): AppState {
   const loaded = loadState()
-  if (loaded) return { ...defaultState(), ...loaded }
-  return defaultState()
+  const state = loaded ? { ...defaultState(), ...loaded } : defaultState()
+  // Persistiertes Bezeichnungs-Schema auf die geladene Konfiguration anwenden,
+  // damit die Bojen-Kürzel zum gespeicherten Zustand passen.
+  if (state.beschriftung) applyBeschriftung(state.beschriftung)
+  return state
 }
 
 interface StoreContextValue {

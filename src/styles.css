@@ -522,9 +522,13 @@ body {
   color: #888;
 }
 
-.text-input,
-.code-input {
+.text-input {
   text-align: left;
+}
+
+/* Fehlercodes zentriert (kurze Einträge wie "3, 4" oder "9, K"). */
+.code-input {
+  text-align: center;
 }
 
 .buoy-input {

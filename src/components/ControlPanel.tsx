@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getAufbau, getAufbauten, getSheetDef } from '../config/active'
+import { getAufbau, getAufbauten, getBeschriftungen, getSheetDef } from '../config/active'
 import { extendNumbers, formatNumbers, parseNumbers, shrinkNumbers } from '../lib/demo'
 import { exportSheetsToPdf } from '../lib/exportPdf'
 import { describeBoegen, exportBaseName, printWithFilename } from '../lib/print'
@@ -18,6 +18,7 @@ export function ControlPanel() {
 
   // Positionen des gewählten Aufbaus (Setup).
   const order = getAufbau(state.aufbau).order
+  const beschriftungen = getBeschriftungen()
   const [addTypeRaw, setAddType] = useState<SheetTypeId>('')
   const addType = order.includes(addTypeRaw) ? addTypeRaw : (order[0] ?? '')
 
@@ -64,6 +65,22 @@ export function ControlPanel() {
             ))}
           </select>
         </label>
+        {beschriftungen.length > 0 && (
+          <label className="field" style={{ marginTop: 8 }}>
+            <span>Bezeichnung der Bojen-Seiten</span>
+            <select
+              value={state.beschriftung}
+              onChange={(e) => dispatch({ type: 'SET_BESCHRIFTUNG', beschriftung: e.target.value })}
+              title="Kürzel der Bojen-Seiten (Rechts/Links, Land/See …) - wirkt sofort auf alle Listen"
+            >
+              {beschriftungen.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <label className="field" style={{ marginTop: 8 }}>
           <span>Veranstaltung</span>
           <input

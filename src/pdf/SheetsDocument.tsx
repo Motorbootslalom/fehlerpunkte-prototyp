@@ -321,7 +321,8 @@ function DataCell({
     text = parsed ? formatTimeDisplay(parsed.centis) : ''
   } else {
     text = get(ck)
-    if (leaf.kind === 'text' || leaf.kind === 'code') extra = s.leftText
+    // Nur Freitext linksbündig; Fehlercodes bleiben zentriert (kurze Einträge).
+    if (leaf.kind === 'text') extra = s.leftText
   }
 
   return <Text style={[s.cell, flex, extra]}>{text}</Text>
