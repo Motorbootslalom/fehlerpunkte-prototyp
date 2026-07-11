@@ -60,11 +60,23 @@ function toColumn(
   tokens: Record<string, string>,
   kataloge: Record<string, RawKatalog>,
 ): Column {
+  // Innen/Außen-Modus: aktiv, sobald das Schema innen/aussen-Tokens liefert.
+  // Für eine Spalte mit `innen`-Markierung (Tore 1-4) werden die Bojen-Seiten
+  // dann relativ beschriftet - die innere Seite = innen, die andere = aussen.
+  // Spalten ohne Markierung (Tor 5/Start/Ziel) bleiben physisch (R/L).
+  let subTokens = tokens
+  if (sp.innen && tokens.innen !== undefined && tokens.aussen !== undefined) {
+    subTokens = {
+      ...tokens,
+      seiteA: sp.innen === 'seiteA' ? tokens.innen : tokens.aussen,
+      seiteB: sp.innen === 'seiteB' ? tokens.innen : tokens.aussen,
+    }
+  }
   return {
     key: sp.key,
     label: sp.label,
     kind: TYP_TO_KIND[sp.typ],
-    sub: sp.sub?.map((x) => resolveTokens(x, tokens)),
+    sub: sp.sub?.map((x) => resolveTokens(x, subTokens)),
     pointsCol: sp.punkteSpalte,
     errorTable: sp.katalog ? katalogRows(kataloge[sp.katalog]) : undefined,
     grow: sp.breite,

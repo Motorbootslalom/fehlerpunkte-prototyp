@@ -674,9 +674,14 @@ body {
 
 .course-svg {
   position: absolute;
-  inset: 4px; /* innerhalb des gestrichelten Rahmens */
-  width: auto;
-  height: auto;
+  top: 4px; /* innerhalb des gestrichelten Rahmens */
+  left: 4px;
+  /* Feste Maße (nicht auto): sonst nimmt das SVG die Höhe aus seinem
+     Seitenverhältnis und läuft unten aus der Box (overflow: hidden schneidet
+     es dann ab). Mit fixen Maßen + preserveAspectRatio="meet" passt es
+     vollständig hinein (bei Bedarf seitlich mit Rand). */
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
 }
 
 .sheet--rotated .signature {

@@ -49,6 +49,11 @@ beschriftungen:
   - id: kh
     name: "Kai / Hafen (K/H)"
     tokens: { seiteA: "K", seiteB: "H", seiteAlang: "Kai", seiteBlang: "Hafen" }
+  # Innen/Außen ist TOR-relativ: die Tore 1-4 tragen ihre innen/aussen-Kürzel
+  # (aus der `innen`-Markierung der Spalten), Tor 5/Start/Ziel bleiben bei R/L.
+  - id: ia
+    name: "Innen / Außen (I/A)"
+    tokens: { seiteA: "R", seiteB: "L", seiteAlang: "Rechts", seiteBlang: "Links", innen: "I", aussen: "A" }
 
 # ---- Wiederverwendbare Hinweise (Bojen-Bezeichnungen) --------------
 hinweise:
@@ -166,11 +171,11 @@ positionen:
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteA"] }
-      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
-      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteA }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteA }
       - { key: t5, label: "Tor 5", typ: boje, sub: ["hin seiteA", "rueck seiteA"] }
-      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
-      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteA }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteA }
       - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteA"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
@@ -186,11 +191,11 @@ positionen:
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
-      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
-      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteA", "hin seiteB"] }
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteB }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteA", "hin seiteB"], innen: seiteB }
       - { key: t5, label: "Tor 5", typ: boje, sub: ["hin seiteB", "rueck seiteB"] }
-      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
-      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteA", "rueck seiteB"] }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteB }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteA", "rueck seiteB"], innen: seiteB }
       - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
@@ -202,16 +207,17 @@ positionen:
     menue: "Tore 1 / 3 / 5 (frontal)"
     ausrichtung: hoch
     bild: alcatraz_Parcours
+    bildDrehung: 180   # frontaler Blick = Parcours um 180° gedreht
     summeSpalte: sum
     disq: [A, B, G, H, I, J, X]
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
-      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteB", "hin seiteA"] }
-      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteB", "hin seiteA"] }
+      - { key: t1a, label: "Tor 1", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteA }
+      - { key: t3a, label: "Tor 3", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteA }
       - { key: t5, label: "Tor 5", typ: boje, sub: ["rueck seiteA", "hin seiteA"] }
-      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteB", "rueck seiteA"] }
-      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteB", "rueck seiteA"] }
+      - { key: t3b, label: "Tor 3", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteA }
+      - { key: t1b, label: "Tor 1", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteA }
       - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }
@@ -221,16 +227,17 @@ positionen:
     menue: "Tore 2 / 4 / 5 (frontal)"
     ausrichtung: hoch
     bild: alcatraz_Parcours
+    bildDrehung: 180   # frontaler Blick = Parcours um 180° gedreht
     summeSpalte: sum
     disq: [A, B, G, H, I, J, X]
     hinweis: blickrichtung
     spalten:
       - { key: start, label: "Start", typ: boje, sub: ["hin seiteB"] }
-      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteB", "hin seiteA"] }
-      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteB", "hin seiteA"] }
+      - { key: t2a, label: "Tor 2", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteB }
+      - { key: t4a, label: "Tor 4", typ: boje, sub: ["hin seiteB", "hin seiteA"], innen: seiteB }
       - { key: t5, label: "Tor 5", typ: boje, sub: ["rueck seiteB", "hin seiteB"] }
-      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteB", "rueck seiteA"] }
-      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteB", "rueck seiteA"] }
+      - { key: t4b, label: "Tor 4", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteB }
+      - { key: t2b, label: "Tor 2", typ: boje, sub: ["rueck seiteB", "rueck seiteA"], innen: seiteB }
       - { key: ziel, label: "Ziel", typ: boje, sub: ["rueck seiteB"] }
       - { key: disq, label: "Disq.", typ: disq }
       - { key: sum, label: "Σ", typ: summe }

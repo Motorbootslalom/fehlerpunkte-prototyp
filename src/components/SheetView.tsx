@@ -182,6 +182,7 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
                       <img
                         src={`${import.meta.env.BASE_URL}parcours/${def.courseImageDir}/Klasse${bogen.klasse}.svg`}
                         alt={`Parcours Klasse ${bogen.klasse}`}
+                        style={drehung === 180 ? { transform: 'rotate(180deg)' } : undefined}
                         onError={(e) => {
                           ;(e.currentTarget as HTMLImageElement).style.display = 'none'
                         }}

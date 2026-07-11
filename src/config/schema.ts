@@ -36,6 +36,13 @@ export interface RawSpalte {
   typ: RawSpaltenTyp
   /** Unter-Spalten (z. B. Bojen-Bezeichnungen [H K, H H]) - nur bei 'boje'. */
   sub?: string[]
+  /**
+   * Welche physische Seite (seiteA/seiteB) an diesem Tor die INNERE Boje ist.
+   * Nur an den Toren 1-4 gesetzt. Wird das Schema "Innen/Außen" gewählt, werden
+   * die Bojen-Seiten dieser Spalte relativ (Innen/Außen) statt physisch (R/L)
+   * beschriftet. Tor 5/Start/Ziel bleiben ohne Angabe bei R/L.
+   */
+  innen?: 'seiteA' | 'seiteB'
   /** Nur 'code': Schlüssel der 'summe'-Spalte, in der die Punkte erscheinen. */
   punkteSpalte?: string
   /**
