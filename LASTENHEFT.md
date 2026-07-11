@@ -1,6 +1,6 @@
 # Lastenheft - Fehlerpunkte-Eingabemasken (Motorbootslalom)
 
-Version 0.1 · Konzept-Prototyp · Stand 2026-07
+Version 0.2 · Konzept-Prototyp · Stand 2026-07
 
 Dieses Dokument beschreibt die Anforderungen an die digitalen Eingabemasken
 für die Wettkampfrichter-Listen (WKR-Listen) beim Motorboot-/Schlauchboot­slalom.
@@ -49,28 +49,59 @@ Jeder Bogen ist eine A4-Seite (Knoten: Querformat) und besteht aus:
 - **Fuß:** Legende (Fehlercodes mit Punkten, Disqualifikations-Codes A-X),
   ggf. Parcoursbild, Unterschriftszeile „Unterschrift WKR“.
 
-## 4. Listentypen / Positionen (Stationen am Parcours)
+## 4. Aufbauten & Listentypen (Stationen am Parcours)
 
 > **Konfigurierbar:** Positionen, Spaltenreihenfolge und Fehlerpunkte sind
 > datengetrieben (YAML, siehe §12a). Fehlerpunkte/Disqualifikationen kommen aus
 > der Ausschreibung (`fehlerpunkte.yaml`, für alle gleich); die Positionen sind
-> orts-/personenabhängig (`positionen.yaml`). Die folgende Tabelle beschreibt die
-> mitgelieferten Alcatraz-Standard-Positionen.
+> orts-/personenabhängig (`positionen.yaml`).
+
+**Aufbauten (Setups)** bündeln die bei einem Wettkampf genutzten Positionen. Beim
+Start wird ein Aufbau gewählt:
+
+- **Alcatraz** (Standard, WKR-Blick von **hinten**): Zeit · Steg · Tore 1/3/5 ·
+  Tore 2/4/5 · Tor 5 · Mann-über-Bord · Parcours · Knoten.
+- **Frontal** (gleiche Bojen, Blick vom **Start/Ziel** = von vorne): wie Alcatraz,
+  aber Tor-Blätter gespiegelt; das Parcoursbild ist entsprechend gedreht.
+- **Berlin** (vier feste WKR-Positionen rund um den Kurs, jeweils das **ganze**
+  Parcoursbild): Steg · Start/Ziel (Zeitnahme + Start-/Zieltor-Bojen) ·
+  Rechts (Tor 1/3 + Mann-über-Bord) · Links (Tor 2/4/5 + Speedbojen).
+- **Parallelslalom** (Beispiel): Zeit · Steg · Parallel-Parcours.
+
+Mitgelieferte Positionen (Auszug, Aufbau Alcatraz):
 
 | Typ | Kopf-Titel | Spalten (nach Nr.) | Σ | Bild |
 | --- | ---------- | ------------------ | :-: | :-: |
-| Tore 1/3/5 | Tor 1 / 3 / 5 | Start · Tor 1 · Tor 3 · Tor 5 · Tor 3 · Tor 1 · Ziel (je Bojenspalten mit Blickrichtung) · Disq. · Σ | ✓ | alcatraz_I |
-| Tore 2/4/5 | Tor 2 / 4 / 5 | analog mit Toren 2/4/5 | ✓ | alcatraz_II |
+| Tore 1/3/5 | Tor 1 / 3 / 5 | Start · Tor 1 · Tor 3 · Tor 5 · Tor 3 · Tor 1 · Ziel (je Bojenspalten mit Fahrtrichtung/Seite) · Disq. · Σ | ✓ | alcatraz_I |
+| Tore 2/4/5 | Tor 2 / 4 / 5 | analog mit Toren 2/4/5, dazu **Speedbojen (je Klasse, §4a)** | ✓ | alcatraz_II |
 | Tor 5 | Tor 5 | Fehler · Σ · Disq. · Bemerkung | ✓ | alcatraz_Parcours |
-| Mann-über-Bord / Schikane | Mann-über-Bord | Fehler · Fehlerpunkte · **Σ (mittig)** · Disq. · Bemerkung | ✓ | - |
-| Steg | Steg | Fehler AB · F-punkte · Fehler AN · F-Punkte · Disq. · Bemerkung | (je Gruppe) | - |
+| Mann-über-Bord | Mann-über-Bord | Fehler · Fehlerpunkte · **Σ (mittig)** · Disq. · Bemerkung | ✓ | - |
+| Steg | Steg | Fehler AB · F-Pkt. AB · Fehler AN · F-Pkt. AN · Disq. · Bemerkung | (je Gruppe) | - |
 | Zeit | Zeit | Zeit 1 · Zeit 2 · Zeit 3 | - | - |
-| Knoten (quer) | Knoten | Webleinstek · Schotstek · Palsteg · Kreuzknoten · Klampe · * · Σ | ✓ | - |
+| Knoten (quer, **ohne Lauf**) | Knoten | Webleinstek · Schotstek · Palstek · Kreuzknoten · Klampe · * · Σ | ✓ | - |
 | Parcours einfach | Parcours | Bemerkung · Disq. | - | alcatraz_Parcours |
 
-**Blickrichtungen** an den Tor-Bojenspalten:
-`H H` = Hinfahrt Hafen/Links · `H K` = Hinfahrt Kai/Rechts ·
-`R H` = Rückfahrt Hafen/Links · `R K` = Rückfahrt Kai/Rechts.
+**Bojen-Beschriftung** an den Tor-Spalten: zwei Zeichen = **Fahrtrichtung**
+(`H` = Hinfahrt, `R` = Rückfahrt) + **Seite**. Die Seiten-Kürzel sind global und
+**auf der Seite umschaltbar** (§12a): R/L (Rechts/Links, Standard), L/S (Land/See),
+S/L, K/H (Kai/Hafen), **Pfeile** (→/←) oder **Innen/Außen** (I/A). Beispiel
+Standard: `H R` = Hinfahrt Rechts, `R L` = Rückfahrt Links.
+
+## 4a. Klassenabhängige Spalten & Blätter
+
+Umfang und Spalten der Listen hängen von **Klasse** (und Aufbau) ab:
+
+- **Speedbojen** (Tore 2/4/5 bzw. Berlin „Links"): keine bis Klasse 4, **eine**
+  bei Klasse 5/6, **zwei** bei Klasse 7.
+- **Mann-über-Bord:** erst **ab Klasse 4**. Als eigenes Blatt (Alcatraz) wird es
+  für Klasse E-3 gar nicht erzeugt; als Spalte (Berlin „Rechts") entfällt es dort.
+- **Tor-Bojen bleiben immer vollständig** (beide Bojen je Tor, in jeder Klasse).
+  In den Alt-Listen führte Klasse E nur die Außenbojen - im neuen System bleiben
+  bewusst beide erhalten (innere Berührungen werden dort vermerkt und gewertet).
+
+Technisch: Spalten und Positionen tragen optional `klassen: [...]` (fehlt = alle).
+Ein Bogen gilt genau einer Klasse, daher wird pro Blatt gefiltert; die
+Schnellauswahl lässt nicht passende Klassen aus.
 
 ## 5. Fehlerpunkt-Berechnung
 
@@ -80,7 +111,13 @@ Jeder Bogen ist eine A4-Seite (Knoten: Querformat) und besteht aus:
 - **Fehlercode-Spalten (MüB, Steg, Tor 5):** der WKR trägt die Fehlernummer(n)
   laut Legende ein (kommagetrennt möglich). Die Punkte werden automatisch aus der
   Fehlertabelle summiert und in die zugehörige Punkte-/Σ-Spalte geschrieben.
-  Beispiele: MüB „13, 17“ → 10 · Tor 5 „1“ → 20 · Steg „9, 12“ → 20.
+  Beispiele: MüB „13, 17“ → 10 · Tor 5 „1“ → 20 · Steg AN „9, 12“ → 20.
+- **Steg getrennt (Ablegen/Anlegen):** „Fehler AB“ und „Fehler AN“ haben je einen
+  eigenen Katalog und lassen **nur ihre eigenen Codes** zu (Ablegen 3-5, Anlegen
+  7-12); die Legende zeigt beide Blöcke sauber getrennt nebeneinander.
+- **Disqualifikation in einer Fehler-Spalte:** ein Disq-Buchstabe in einer
+  Fehlercode-Spalte zählt als Disqualifikation an dieser Stelle (wie in den
+  Bojenspalten) und wird in die Disq-Spalte übernommen.
 - **Σ** = Summe aller Bojen-, Code- und Punktebeiträge einer Zeile, laufend
   aktualisiert.
 
@@ -191,25 +228,40 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
   - `positionen.yaml` - wiederverwendbare `hinweise`, die `positionen`
     (Spalten/Reihenfolge, `katalog`- und `hinweis`-Verweis, `bild`,
     `bildDrehung: 0|90|-90|180`) und die `aufbauten` (Setups).
-- **Aufbauten (Setups):** Positionen sind zu Aufbauten gebündelt (z. B. Alcatraz,
-  Frontal). Bei einem Wettkampf wird ein Aufbau gewählt; er enthält alle Listen
-  (auch Zeit/Knoten). Gemeinsame Listen werden geteilt, nur die Tor-Positionen
-  unterscheiden sich je Aufbau (Blickrichtung/Spaltenreihenfolge).
+- **Aufbauten (Setups):** Positionen sind zu Aufbauten gebündelt - **Alcatraz**
+  (von hinten), **Frontal** (gleiche Bojen von vorne, Blätter gespiegelt),
+  **Berlin** (vier feste WKR-Positionen, ganzes Parcoursbild) und
+  **Parallelslalom** (Beispiel). Bei einem Wettkampf wird ein Aufbau gewählt; er
+  enthält alle Listen (auch Zeit/Knoten). Gemeinsame Listen werden geteilt, nur
+  die Tor-Positionen unterscheiden sich je Aufbau.
 - **Disqualifikationen pro Position ausblendbar** via `disq: alle | keine | [A,…]`.
+- **Klassenabhängigkeit** (`klassen: [...]` an Spalte oder Position; fehlt = alle,
+  siehe §4a): z. B. Speed 1 `[5,6,7]`, Speed 2 `[7]`, Mann-über-Bord `[4,5,6,7]`.
+- **Bild** je Position (`bild`, `bildDrehung: 0|90|-90|180`). Um ±90° gedrehte
+  Bilder erscheinen hochkant neben der Legende, sonst quer darunter. (Frontal-Tore
+  nutzen die Alcatraz-Bilder um -90° = Alcatraz 90° + 180°-Blickwende.)
 - **Hinweise** (Bojen-Bezeichnungen) sind zentral und werden per Verweis
-  eingebunden; eindeutige Seitennamen (Hafen/Kai/See/Land) statt links/rechts.
-- **Globale Bojen-Kürzel** (`bezeichnungen`): die Richtungs-/Seitenkürzel sind
-  eine Token-Map. In `sub` und Hinweisen werden `hin`/`rueck`/`seiteA`/`seiteB`
-  als ganze Wörter ersetzt - so lassen sich R/L, L/S (Land/See) oder H/K
-  (Hafen/Kai) an EINER Stelle umstellen. (Standard R/L; darum Rückfahrt = Z,
-  damit R eindeutig „Rechts" bleibt.)
+  eingebunden; der Hinweistext passt sich dem gewählten Schema an.
+- **Bojen-Beschriftung, umschaltbar** (`bezeichnungen` + `beschriftungen`): die
+  Richtungs-/Seitenkürzel sind eine Token-Map (`hin`/`rueck`/`seiteA`/`seiteB`
+  plus Langnamen), in `sub` und Hinweisen als ganze Wörter ersetzt. Über
+  `beschriftungen` stehen **auf der Seite live umschaltbare Schemata** bereit:
+  R/L (Standard), L/S (Land/See), S/L, K/H (Kai/Hafen), **Pfeile** (→/←) und
+  **Innen/Außen** (I/A). Fahrtrichtung: Hin = `H`, Rück = `R` (früher `Z`).
+  - **Pfeile** sind räumlich (`raeumlich: true`): an von hinten betrachteten
+    Positionen (`pfeileSpiegeln: true`, Alcatraz-Tore) werden die Seiten
+    gespiegelt, damit die Pfeile in beiden Aufbauten dieselbe Bildrichtung zeigen
+    (dabei je Aufbau eine andere Boje meinen).
+  - **Innen/Außen** ist tor-relativ: jede Tor-Spalte markiert die innere Seite
+    (`innen: seiteA|seiteB`); Tor 5/Start/Ziel bleiben bei R/L.
 - Beide Ausgaben (Eingabe-Prototyp und Vektor-PDF) nutzen dieselbe Konfiguration.
 
 ## 12. Nicht-Ziele / offene Punkte
 
 - Ergebnis-/Ranglistenseite (Zusammenführung aller Bögen) ist **nicht** Teil des
   Prototyps.
-- Verbindliche Reglement-Feinheiten (welche Fehler ab welcher Klasse zählen,
-  Mehrfachwertungen) sind bewusst vereinfacht und mit dem Reglement abzugleichen.
+- Klassenabhängige Listen/Spalten (Speedbojen, Mann-über-Bord) sind umgesetzt
+  (§4a). Weitere Reglement-Feinheiten (Mehrfachwertungen, exakte Fehlerzuordnung
+  je Klasse) bleiben vereinfacht und sind mit dem Reglement abzugleichen.
 - Rollen/Login, Mehrbenutzer-Synchronisation, Offline-Sync: später.
 - Exakte Gruppen-/Verzahnungsschattierung je Klasse: mit Verzahnungstool zu koppeln.
