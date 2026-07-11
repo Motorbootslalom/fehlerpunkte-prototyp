@@ -284,7 +284,7 @@ positionen:
   - id: bstartziel
     titel: "Start/Ziel"
     menue: "Start/Ziel (Zeitnahme + Start-/Zieltor-Bojen)"
-    ausrichtung: hoch
+    ausrichtung: quer   # Querformat: breites Parcoursbild mit allen Toren
     bild: alcatraz_Parcours
     summeSpalte: sum
     disq: alle
@@ -301,7 +301,7 @@ positionen:
   - id: brechts
     titel: "Rechts"
     menue: "Rechts (Tor 1 / 3 + Mann-über-Bord)"
-    ausrichtung: hoch
+    ausrichtung: quer   # Querformat: breites Parcoursbild mit allen Toren
     bild: alcatraz_Parcours
     summeSpalte: sum
     disq: alle
@@ -320,7 +320,7 @@ positionen:
   - id: blinks
     titel: "Links"
     menue: "Links (Tor 2 / 4 / 5 + Speedbojen)"
-    ausrichtung: hoch
+    ausrichtung: quer   # Querformat: breites Parcoursbild mit allen Toren
     bild: alcatraz_Parcours
     summeSpalte: sum
     disq: alle
