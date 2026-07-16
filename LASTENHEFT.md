@@ -275,8 +275,12 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
   **Ausschreibung**, i. d. R. für alle gleich) sind getrennt von den
   **orts-/personenabhängigen Positionen** (z. B. wenige WKR oder Plätze nur von
   einer Seite einsehbar).
-- **Zwei YAML-Dateien** unter `public/config/` (zur Laufzeit geladen, ohne Neubau
-  änderbar; `src/config/`-Kopien als Fallback):
+- **Zwei YAML-Dateien** - gepflegt **ausschließlich** unter `src/config/` (einzige
+  Quelle). Von dort werden sie zweifach genutzt: fest ins JS-Bundle kompiliert
+  (Fallback, immer verfügbar) und per `npm run config:sync` (Teil von `dev`/`build`)
+  nach `public/config/` kopiert, von wo sie zur Laufzeit per fetch geladen werden
+  (Override; ohne Neubau austauschbar, z. B. im Deploy). `public/config/` ist reine
+  Ausgabe, liegt nicht in Git und wird automatisch erzeugt.
   - `fehlerpunkte.yaml` - `disqualifikationen` (beliebig viele, mit Buchstaben) und
     benannte `kataloge` (Fehler mit Zahlen → Punkte).
   - `positionen.yaml` - wiederverwendbare `hinweise`, die `positionen`
@@ -308,8 +312,11 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
   **fett, doppelt, gepunktet, gestrichelt**. Nutzen: Hin- und Rückfahrt-Spalten
   bzw. die beiden Bojen eines Tores klar auseinanderhalten. (Alcatraz/Frontal
   nutzen zwischen den Tor-Bojen standardmäßig „gepunktet", Tor 5 „doppelt".)
-- **Live-Neuladen der Konfiguration:** Ändert sich eine `public/config/*.yaml`
-  im Entwicklungsserver, lädt die Seite automatisch neu (wie bei Code-Änderungen).
+- **Live-Neuladen der Konfiguration:** Der Entwicklungsserver beobachtet die
+  generierten `public/config/*.yaml` und lädt die Seite bei Änderung automatisch
+  neu. Beim Start von `dev` werden sie aus `src/config/` erzeugt; wer während einer
+  laufenden Sitzung an der Quelle arbeitet, stößt mit `npm run config:sync` eine
+  Aktualisierung an (oder editiert testweise direkt die `public/config`-Kopie).
 - **Hinweise** (Bojen-Bezeichnungen) sind zentral und werden per Verweis
   eingebunden; der Hinweistext passt sich dem gewählten Schema an.
 - **Bojen-Beschriftung, umschaltbar** (`bezeichnungen` + `beschriftungen`): die
@@ -328,8 +335,8 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
 - **Konfigurations-Prüfung** (`npm run config:check`, Teil von `npm run check` und
   damit Pre-Commit/CI): meldet doppelte Definitionen (Positions-IDs, Spalten-Keys,
   Fehler-Codes …) und Verweise ins Leere (Aufbau → Position, Spalte → Katalog /
-  Summenspalte, `disq`-Codes), außerdem Drift zwischen `src/config` und
-  `public/config`. Fehler blocken den Commit, Hinweise (z. B. Format-Hygiene,
+  Summenspalte, `disq`-Codes). Geprüft wird die Quelle unter `src/config`.
+  Fehler blocken den Commit, Hinweise (z. B. Format-Hygiene,
   verwaiste Positionen) nicht.
 
 ## 12. Nicht-Ziele / offene Punkte

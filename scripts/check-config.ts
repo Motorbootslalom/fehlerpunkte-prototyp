@@ -1,10 +1,11 @@
 // CLI-Prüfung der YAML-Konfiguration. Aufruf: `npm run config:check`
-// (bzw. `node scripts/check-config.ts`). Prüft die gebündelten Dateien unter
-// src/config und die zur Laufzeit geladenen unter public/config auf:
+// (bzw. `node scripts/check-config.ts`). Prüft die Quelldateien unter
+// src/config auf:
 //   • Syntax / doppelte Mapping-Keys (Parser)
 //   • doppelte Definitionen & Verweise ins Leere (semantischer Validator)
-//   • Drift zwischen src/config und public/config (sollten identisch sein)
 //   • einfache Format-Hygiene (Tabs, Leerzeichen am Zeilenende, Schluss-Newline)
+// public/config wird aus src/config generiert (npm run config:sync) und liegt
+// nicht in Git - daher hier nicht geprüft.
 // Exit-Code 1, sobald ein Fehler (nicht: Warnung) auftritt - für CI/Hooks.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -52,8 +53,7 @@ interface Pair {
 }
 
 const PAIRS: Pair[] = [
-  { label: 'src/config (gebündelt)', fehler: 'src/config/fehlerpunkte.yaml', positionen: 'src/config/positionen.yaml' },
-  { label: 'public/config (Laufzeit)', fehler: 'public/config/fehlerpunkte.yaml', positionen: 'public/config/positionen.yaml' },
+  { label: 'src/config (Quelle)', fehler: 'src/config/fehlerpunkte.yaml', positionen: 'src/config/positionen.yaml' },
 ]
 
 function printIssues(issues: ConfigIssue[]): void {
@@ -89,22 +89,6 @@ for (const pair of PAIRS) {
   else printIssues([...errs, ...warns])
   console.log()
 }
-
-// ---- Drift-Check: src/config und public/config sollten identisch sein -------
-console.log(bold('Abgleich src/config ↔ public/config'))
-for (const name of ['fehlerpunkte.yaml', 'positionen.yaml']) {
-  const a = read(`src/config/${name}`)
-  const b = read(`public/config/${name}`)
-  if (a === null || b === null) continue
-  if (a !== b) {
-    warnCount++
-    console.log(`  ${yellow('Hinweis')} ${dim('[DRIFT]')} ${name}`)
-    console.log(`          src/config/${name} und public/config/${name} unterscheiden sich.`)
-  } else {
-    console.log(`  ${green('✔')} ${name} identisch`)
-  }
-}
-console.log()
 
 // ---- Zusammenfassung --------------------------------------------------------
 const summary = `${errorCount} Fehler, ${warnCount} Hinweis(e)`
