@@ -67,6 +67,17 @@ body {
   margin: 0 0 6px;
 }
 
+.control-panel .cp-version {
+  font-size: 0.7em;
+  color: #8b95a4;
+  margin: -2px 0 8px;
+}
+
+.control-panel .cp-version code {
+  font-size: inherit;
+  color: #aeb8c7;
+}
+
 .control-panel h2 {
   font-size: 14px;
   margin: 0 0 8px;

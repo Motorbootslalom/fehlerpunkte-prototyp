@@ -66,9 +66,18 @@ export function ControlPanel() {
     }
   }
 
+  // Version = git describe (Tag/Hash, ggf. -dirty) + Commit-Zeitstempel.
+  const commitDate = __GIT_COMMIT_DATE__
+    ? new Date(__GIT_COMMIT_DATE__).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })
+    : ''
+
   return (
     <aside className="control-panel">
       <h1>Fehlerpunkte-Prototyp</h1>
+      <p className="cp-version" title="Aktive Version (git describe: Tag/Commits/Hash, -dirty bei lokalen Änderungen) und Zeitstempel des letzten Updates">
+        Version <code>{__GIT_VERSION__}</code>
+        {commitDate && <> · {commitDate}</>}
+      </p>
       <p className="intro">
         Prototyp der WKR-Eingabemasken. Eingabe und Ausdruck sind dieselbe Ansicht - so lässt
         sich jede Eintragung direkt kontrollieren. Alle Daten bleiben lokal im Browser.

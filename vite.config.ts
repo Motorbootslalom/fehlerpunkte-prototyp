@@ -1,5 +1,24 @@
+import { execSync } from 'node:child_process'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+
+// Version = `git describe`: Tag + Commits-seit-Tag + Kurz-Hash, sonst nur der
+// Kurz-Hash (ohne Tag), jeweils mit `-dirty` bei uncommitteten Änderungen. Dazu
+// der Commit-Zeitstempel. Wird beim Start des Dev-Servers bzw. beim Build
+// ermittelt und über `define` in den Code eingesetzt. Fällt zurück, falls kein
+// Git verfügbar ist (z. B. Build ohne Repo).
+function gitInfo(): { version: string; date: string } {
+  try {
+    const run = (cmd: string) => execSync(cmd, { encoding: 'utf8' }).trim()
+    return {
+      version: run('git describe --tags --always --dirty --long'),
+      date: run('git log -1 --format=%cI'),
+    }
+  } catch {
+    return { version: 'unbekannt', date: '' }
+  }
+}
+const git = gitInfo()
 
 // Die Konfiguration (public/config/*.yaml) wird zur Laufzeit per fetch geladen -
 // Dateien unter public/ liegen NICHT im Modulgraph, also löst Vite dafür kein
@@ -32,6 +51,10 @@ function reloadOnConfigYaml(): Plugin {
 //   pdf.html   → echtes Vektor-PDF via @react-pdf/renderer
 export default defineConfig({
   base: './',
+  define: {
+    __GIT_VERSION__: JSON.stringify(git.version),
+    __GIT_COMMIT_DATE__: JSON.stringify(git.date),
+  },
   plugins: [react(), reloadOnConfigYaml()],
   build: {
     rollupOptions: {
