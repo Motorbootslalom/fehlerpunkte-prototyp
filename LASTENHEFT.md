@@ -190,8 +190,12 @@ Zwei Wege sind vorgesehen (im Prototyp beide vorhanden, zum **Vergleich**):
 3. **Vektor-Prototyp** (`pdf.html`, `@react-pdf/renderer`): echtes, kleines
    Vektor-PDF mit Live-Vorschau und Ein-Klick-Download; Kopf und
    Spaltenüberschriften wiederholen sich zuverlässig auf jeder Seite, mit
-   mittiger Seitenzahl, Vektor-QR, eingebetteter Schrift (korrektes „Σ") und
-   eingebettetem Parcoursbild (PNG; Tor-Bögen gedreht). Dient dem Vergleich.
+   Vektor-QR, eingebetteter Schrift (korrektes „Σ") und eingebettetem
+   Parcoursbild (PNG; Tor-Bögen gedreht). Er übernimmt den **mehrseitigen
+   Druck** (§7 „Zeilen pro Seite") genauso wie der Eingabe-Prototyp: bei festem
+   Umbruch je Block eine eigene A4-Seite mit Kopf, Legende/Bild, Leerzeilen und
+   mittiger „Seite n / X"-Angabe; bei `0` eine durchlaufende, selbst umbrechende
+   Tabelle. Dient dem Vergleich.
 
 Der Dateiname wird bei Browser-Druck und Vektor-Prototyp automatisch gebildet:
 `Fehlerpunkte - <Event> [- <Position>] [- Klasse X] [- N. Lauf] - <Zeitstempel>`,

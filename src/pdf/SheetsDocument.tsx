@@ -77,10 +77,20 @@ const s = StyleSheet.create({
   // registriert (react-pdf würde sonst beim Auflösen hängen).
   note: { fontSize: 7, color: '#333', marginBottom: 1 },
 
-  signature: { marginTop: 14, alignItems: 'flex-end' },
+  signatureRow: { marginTop: 14, position: 'relative', alignItems: 'flex-end' },
+  pageIndicator: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    textAlign: 'center',
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: INK,
+  },
+  signature: { alignItems: 'flex-end' },
   sigLine: { width: 160, borderTopWidth: 0.6, borderColor: INK, marginBottom: 2 },
   sigLabel: { fontSize: 8 },
-  pageNum: { position: 'absolute', bottom: 10, left: 0, right: 0, textAlign: 'center', fontSize: 7, color: '#555' },
   course: { marginTop: 6 },
   courseImg: { objectFit: 'contain' },
 })
@@ -143,6 +153,14 @@ export function courseKey(dir: string, klasse: string, drehung: number): string 
 /** Breite der Beschreibungsspalte je Listentyp (in pt), im Browser gemessen. */
 export type LegendWidths = Record<string, number>
 
+/** Startnummern in Seiten-Blöcke aufteilen (mehrseitiger Druck). */
+function chunk<T>(items: T[], size: number): T[][] {
+  if (size <= 0) return [items]
+  const out: T[][] = []
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size))
+  return out
+}
+
 export function SheetsDocument({
   state,
   images,
@@ -154,15 +172,25 @@ export function SheetsDocument({
 }) {
   return (
     <Document title="Fehlerpunkte">
-      {state.boegen.map((b) => (
-        <SheetPage
-          key={b.id}
-          state={state}
-          bogen={b}
-          images={images}
-          descWidth={legendWidths?.[b.typeId]}
-        />
-      ))}
+      {state.boegen.flatMap((b) => {
+        const nums = state.numbers[b.klasse] ?? []
+        // rowsPerPage 0 = durchlaufend (react-pdf bricht selbst um); sonst je
+        // Block eine eigene A4-Seite mit Kopf, Legende/Bild und Unterschrift.
+        const chunks = state.rowsPerPage > 0 ? chunk(nums, state.rowsPerPage) : [nums]
+        if (chunks.length === 0) chunks.push([])
+        return chunks.map((chunkNums, pi) => (
+          <SheetPage
+            key={`${b.id}:${pi}`}
+            state={state}
+            bogen={b}
+            chunkNums={chunkNums}
+            pageIndex={pi}
+            pageCount={chunks.length}
+            images={images}
+            descWidth={legendWidths?.[b.typeId]}
+          />
+        ))
+      })}
     </Document>
   )
 }
@@ -170,21 +198,30 @@ export function SheetsDocument({
 function SheetPage({
   state,
   bogen,
+  chunkNums,
+  pageIndex,
+  pageCount,
   images,
   descWidth,
 }: {
   state: AppState
   bogen: Bogen
+  chunkNums: number[]
+  pageIndex: number
+  pageCount: number
   images: CourseImages
   descWidth?: number
 }) {
   const def = getSheetDef(bogen.typeId)
-  const nums = state.numbers[bogen.klasse] ?? []
   const values = state.values[bogen.id] ?? {}
   const get = (k: string) => values[k] ?? ''
 
-  const rows: RowData[] = nums.map((n) => ({ id: String(n), nr: String(n), fixed: true, shaded: false }))
-  for (let i = 0; i < state.emptyRows; i++) rows.push({ id: `_x${i}`, nr: '', fixed: false, shaded: false })
+  const rows: RowData[] = chunkNums.map((n) => ({ id: String(n), nr: String(n), fixed: true, shaded: false }))
+  // Leerzeilen je Seite (einstellbar). Seiten-Präfix hält die Zeilen-IDs im
+  // Dokument eindeutig und deckt sich mit den Zellschlüsseln der HTML-Ansicht.
+  for (let i = 0; i < state.emptyRows; i++) {
+    rows.push({ id: `_p${pageIndex}_x${i}`, nr: '', fixed: false, shaded: false })
+  }
   rows.forEach((r, i) => (r.shaded = (i + 1) % 5 === 0))
 
   // Nur die für diese Klasse gültigen Spalten (z. B. Speed/MüB je Klasse).
@@ -231,16 +268,19 @@ function SheetPage({
 
       <CourseFooter def={def} bogen={bogen} images={images} descWidth={descWidth} />
 
-      <View style={s.signature}>
-        <View style={s.sigLine} />
-        <Text style={s.sigLabel}>Unterschrift WKR</Text>
+      {/* Fuß: mittige „Seite n / X" (nur mehrseitig) auf Höhe der rechts-
+          bündigen Unterschrift - wie in der HTML-Ansicht. */}
+      <View style={s.signatureRow}>
+        {pageCount > 1 && (
+          <Text style={s.pageIndicator}>
+            Seite {pageIndex + 1} / {pageCount}
+          </Text>
+        )}
+        <View style={s.signature}>
+          <View style={s.sigLine} />
+          <Text style={s.sigLabel}>Unterschrift WKR</Text>
+        </View>
       </View>
-
-      <Text
-        style={s.pageNum}
-        fixed
-        render={({ pageNumber, totalPages }) => `Seite ${pageNumber} / ${totalPages}`}
-      />
     </Page>
   )
 }
