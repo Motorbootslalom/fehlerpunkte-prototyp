@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "tsc -b && vitest run",
+    "config:check": "node scripts/check-config.ts",
+    "check": "tsc -b && vitest run && npm run config:check",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {

@@ -9,6 +9,7 @@ import {
 import { extendNumbers, formatNumbers, parseNumbers, shrinkNumbers } from '../lib/demo'
 import { exportSheetsToPdf } from '../lib/exportPdf'
 import { describeBoegen, exportBaseName, printWithFilename } from '../lib/print'
+import { buildShareUrl } from '../lib/sharelink'
 import { useStore } from '../state/store'
 import { CLASS_IDS, type ClassId, type Lauf, type SheetTypeId } from '../types'
 
@@ -21,6 +22,19 @@ export function ControlPanel() {
   const [addLauf, setAddLauf] = useState<Lauf>(1)
   const [qpLauf, setQpLauf] = useState<Lauf>(1)
   const [busy, setBusy] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  async function copyShareLink() {
+    const url = buildShareUrl(state)
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    } catch {
+      // Clipboard verweigert (z. B. ohne HTTPS): URL zur manuellen Übernahme zeigen.
+      window.prompt('Link kopieren (Strg+C):', url)
+    }
+  }
 
   // Positionen des gewählten Aufbaus (Setup).
   const order = getAufbau(state.aufbau).order
@@ -108,6 +122,33 @@ export function ControlPanel() {
             onChange={(e) => dispatch({ type: 'SET_EMPTY_ROWS', emptyRows: Number(e.target.value) })}
           />
         </label>
+        <label
+          className="field field-nums"
+          style={{ marginTop: 8 }}
+          title="0 = automatisch (eine durchlaufende Seite). Ab 5: nach so vielen Startern beginnt eine neue Druckseite - jede Seite mit Legende/Bild/Leerzeilen und „Seite n / X“."
+        >
+          <span>Zeilen / Seite</span>
+          <input
+            type="number"
+            min={0}
+            max={100}
+            value={state.rowsPerPage}
+            onChange={(e) => dispatch({ type: 'SET_ROWS_PER_PAGE', rowsPerPage: Number(e.target.value) })}
+          />
+        </label>
+        <p className="hint">Zeilen / Seite: 0 = automatisch, sonst Startnummern pro Druckseite (min. 5).</p>
+        <div className="btn-row" style={{ marginTop: 10 }}>
+          <button
+            onClick={copyShareLink}
+            title="Kopiert eine URL, die genau diese Zusammenstellung (Aufbau, Bezeichnung, Veranstaltung, Leerzeilen, Zeilen/Seite und die Bogen-Auswahl) wiederherstellt - ohne eingetragene Werte"
+          >
+            {copied ? '✓ Link kopiert' : '🔗 Einstellungs-Link kopieren'}
+          </button>
+        </div>
+        <p className="hint">
+          Die Adresszeile enthält immer den aktuellen Stand - stelle dir z. B. „alle Wasser-2-Listen"
+          zusammen und teile einfach die URL. Eingetragene Werte werden nicht übertragen.
+        </p>
       </section>
 
       <section>

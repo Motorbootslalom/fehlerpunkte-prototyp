@@ -9,6 +9,7 @@ import {
 } from '../config/active'
 import { allDemoNumbers } from '../lib/demo'
 import { cellKey } from '../lib/scoring'
+import { readShareConfig, syncUrlToState, type ShareConfig } from '../lib/sharelink'
 import { clearState, loadState, saveState } from '../lib/storage'
 
 function uid(prefix: string): string {
@@ -36,6 +37,7 @@ function defaultState(): AppState {
     aufbau,
     beschriftung: defaultBeschriftungId(),
     emptyRows: 3,
+    rowsPerPage: 0,
     numbers: allDemoNumbers(),
     wkr: {},
     boegen: defaultBoegen(aufbau),
@@ -49,6 +51,7 @@ export type Action =
   | { type: 'SET_AUFBAU'; aufbau: string }
   | { type: 'SET_BESCHRIFTUNG'; beschriftung: string }
   | { type: 'SET_EMPTY_ROWS'; emptyRows: number }
+  | { type: 'SET_ROWS_PER_PAGE'; rowsPerPage: number }
   | { type: 'SET_NUMBERS'; klasse: ClassId; numbers: number[] }
   | { type: 'SET_WKR'; bogenId: string; name: string }
   | { type: 'ADD_BOGEN'; typeId: SheetTypeId; klasse: ClassId; lauf: Lauf }
@@ -79,6 +82,12 @@ function reducer(state: AppState, action: Action): AppState {
 
     case 'SET_EMPTY_ROWS':
       return { ...state, emptyRows: Math.max(0, Math.min(30, action.emptyRows)) }
+
+    case 'SET_ROWS_PER_PAGE': {
+      // 0 = aus (durchlaufend); sonst Minimum 5 Starter pro Seite.
+      const v = Math.max(0, Math.min(100, Math.round(action.rowsPerPage)))
+      return { ...state, rowsPerPage: v === 0 ? 0 : Math.max(5, v) }
+    }
 
     case 'SET_NUMBERS':
       return { ...state, numbers: { ...state.numbers, [action.klasse]: action.numbers } }
@@ -151,11 +160,43 @@ function reducer(state: AppState, action: Action): AppState {
   }
 }
 
+/** Gleiche Bogen-Folge (Typ/Klasse/Lauf) - dann bleiben die lokalen IDs erhalten. */
+function sameBoegenShape(a: Bogen[], b: ShareConfig['boegen']): boolean {
+  if (a.length !== b.length) return false
+  return a.every(
+    (x, i) => x.typeId === b[i].typeId && x.klasse === b[i].klasse && x.lauf === b[i].lauf,
+  )
+}
+
 function init(): AppState {
   const loaded = loadState()
-  const state = loaded ? { ...defaultState(), ...loaded } : defaultState()
-  // Persistiertes Bezeichnungs-Schema auf die geladene Konfiguration anwenden,
-  // damit die Bojen-Kürzel zum gespeicherten Zustand passen.
+  let state = loaded ? { ...defaultState(), ...loaded } : defaultState()
+
+  // Geteilte Konfiguration aus der URL hat Vorrang vor dem lokalen Stand: Aufbau,
+  // Bezeichnung, Veranstaltung, Leerzeilen, Zeilen/Seite und die Bogen-Auswahl.
+  const shared = readShareConfig()
+  if (shared) {
+    state = {
+      ...state,
+      eventName: shared.eventName || state.eventName,
+      aufbau: shared.aufbau || state.aufbau,
+      beschriftung: shared.beschriftung || state.beschriftung,
+      emptyRows: shared.emptyRows,
+      rowsPerPage: shared.rowsPerPage,
+      // Startnummern aus dem Link je Klasse übernehmen (fehlende Klassen bleiben
+      // lokal/Demo).
+      numbers: { ...state.numbers, ...shared.numbers },
+    }
+    // Bögen nur ersetzen, wenn die Auswahl wirklich abweicht - so bleiben beim
+    // normalen Neuladen (Auto-Sync-URL = eigener Stand) die lokalen IDs samt
+    // eingetragener Werte erhalten.
+    if (shared.boegen.length > 0 && !sameBoegenShape(state.boegen, shared.boegen)) {
+      state = { ...state, boegen: shared.boegen.map((b) => ({ id: uid('bg'), ...b })) }
+    }
+  }
+
+  // Persistiertes/geteiltes Bezeichnungs-Schema auf die geladene Konfiguration
+  // anwenden, damit die Bojen-Kürzel zum Zustand passen.
   if (state.beschriftung) applyBeschriftung(state.beschriftung)
   return state
 }
@@ -172,6 +213,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     saveState(state)
+    // Adresszeile fortlaufend auf den aktuellen Stand spiegeln (Einstellungs-Link).
+    syncUrlToState(state)
   }, [state])
 
   return <StoreContext.Provider value={{ state, dispatch }}>{children}</StoreContext.Provider>

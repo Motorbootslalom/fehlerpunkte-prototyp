@@ -6,6 +6,9 @@
 
 export type ClassId = 'E' | '1' | '2' | '3' | '4' | '5' | '6' | '7'
 
+/** Design einer Spalten-Trennlinie. */
+export type TrennerDesign = 'fett' | 'doppelt' | 'gepunktet' | 'gestrichelt'
+
 export const CLASS_IDS: ClassId[] = ['E', '1', '2', '3', '4', '5', '6', '7']
 
 export type Lauf = 1 | 2 | 3
@@ -48,6 +51,18 @@ export interface Column {
   errorTable?: ErrorDef[]
   /** Relative Spaltenbreite (CSS-Flexbasis-artig, nur grobe Steuerung). */
   grow?: number
+  /**
+   * Optische Trennlinie am linken Rand dieser Spalte, z. B. zur Trennung von
+   * Hin- und Rückfahrt-Spalten. Wird entweder direkt an der Spalte gesetzt oder
+   * über einen eigenen `{ typ: trenner, design }`-Eintrag davor (siehe schema).
+   */
+  trenner?: TrennerDesign
+  /**
+   * Design der Trennlinien ZWISCHEN den Unter-Spalten (`sub`) dieser Spalte,
+   * z. B. gepunktet zwischen den beiden Bojen eines Tores. Fehlt = normale
+   * dünne Linie.
+   */
+  subTrenner?: TrennerDesign
   /**
    * Klassen, für die diese Spalte erscheint (z. B. Speed/MüB). Leer/undefiniert
    * = alle Klassen. Ein Blatt gilt genau einer Klasse, daher entfällt die
@@ -131,6 +146,13 @@ export interface AppState {
   beschriftung: string
   /** Anzahl leerer Zeilen, die nach den Startnummern angehängt werden. */
   emptyRows: number
+  /**
+   * Startnummern pro Druckseite. 0 = keine feste Aufteilung (eine durchlaufende
+   * Seite, Browser bricht bei Bedarf selbst um). > 0 = nach so vielen Startern
+   * beginnt eine neue Seite (Minimum 5); jede Seite trägt Legende/Bild/Leerzeilen
+   * und eine mittige „Seite n / X"-Angabe.
+   */
+  rowsPerPage: number
   /** Startnummern je Klasse (Reihenfolge = Startreihenfolge). */
   numbers: Partial<Record<ClassId, number[]>>
   /** WKR-Name je Bogen. */

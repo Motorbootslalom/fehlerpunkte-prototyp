@@ -4,7 +4,7 @@ import { getSheetDef } from '../config/active'
 import { cellKey, columnsForClass, scoreRow } from '../lib/scoring'
 import { formatTimeDisplay, parseTime } from '../lib/time'
 import { bogenPayload } from '../lib/qr'
-import type { AppState, Bogen, CellKind, Column, SheetDef } from '../types'
+import type { AppState, Bogen, CellKind, Column, SheetDef, TrennerDesign } from '../types'
 import { QrPdf } from './Qr'
 
 // Echtes Vektor-PDF via @react-pdf/renderer - zum Vergleich mit dem
@@ -89,14 +89,31 @@ interface Leaf {
   colKey: string
   subIndex?: number
   kind: CellKind
+  /** Trennlinie am linken Rand (nur am ersten Blatt einer Spalte gesetzt). */
+  trenner?: TrennerDesign
 }
 
 function toLeaves(columns: Column[]): Leaf[] {
   return columns.flatMap((col) =>
     col.sub && col.sub.length > 0
-      ? col.sub.map((_, i) => ({ colKey: col.key, subIndex: i, kind: col.kind }))
-      : [{ colKey: col.key, kind: col.kind }],
+      ? col.sub.map((_, i) => ({
+          colKey: col.key,
+          subIndex: i,
+          kind: col.kind,
+          trenner: i === 0 ? col.trenner : col.subTrenner,
+        }))
+      : [{ colKey: col.key, kind: col.kind, trenner: col.trenner }],
   )
+}
+
+/** Linke Trennlinie als react-pdf-Style (kennt nur solid/dashed/dotted). */
+function trennerStyle(trenner?: TrennerDesign): Style {
+  if (!trenner) return {}
+  const borderLeftColor = INK
+  if (trenner === 'gepunktet') return { borderLeftWidth: 1.5, borderLeftColor, borderLeftStyle: 'dotted' }
+  if (trenner === 'gestrichelt') return { borderLeftWidth: 1.5, borderLeftColor, borderLeftStyle: 'dashed' }
+  // fett / doppelt: react-pdf kann kein 'double' → dicke durchgezogene Linie.
+  return { borderLeftWidth: trenner === 'doppelt' ? 2 : 1.5, borderLeftColor }
 }
 
 /** Feste Breite bzw. Flex-Anteil je Spaltenart (für die Ausrichtung). */
@@ -261,9 +278,10 @@ function HeaderRows({ def }: { def: SheetDef }) {
       <Text style={[s.cell, s.headCell, { width: NR_WIDTH }]}>Nr.</Text>
       {def.columns.map((col) => {
         const flex = colFlex(col.kind, col.grow)
+        const sep = trennerStyle(col.trenner)
         if (col.sub && col.sub.length > 0) {
           return (
-            <View key={col.key} style={[s.cell, s.groupCell, { flexGrow: col.sub.length, flexBasis: 0 }]}>
+            <View key={col.key} style={[s.cell, s.groupCell, { flexGrow: col.sub.length, flexBasis: 0 }, sep]}>
               <Text style={s.groupLabel}>{col.label}</Text>
               <View style={s.subRow}>
                 {col.sub.map((sub, i) => (
@@ -283,7 +301,7 @@ function HeaderRows({ def }: { def: SheetDef }) {
           )
         }
         return (
-          <Text key={col.key} style={[s.cell, s.headCell, flex]}>
+          <Text key={col.key} style={[s.cell, s.headCell, flex, sep]}>
             {col.label}
           </Text>
         )
@@ -309,6 +327,7 @@ function DataCell({
 }) {
   const flex = colFlex(leaf.kind, col.grow)
   const ck = cellKey(rowKey, leaf.colKey, leaf.subIndex)
+  const sep = trennerStyle(leaf.trenner)
 
   let text = ''
   let extra: Style = {}
@@ -328,7 +347,7 @@ function DataCell({
     if (leaf.kind === 'text') extra = s.leftText
   }
 
-  return <Text style={[s.cell, flex, extra]}>{text}</Text>
+  return <Text style={[s.cell, flex, extra, sep]}>{text}</Text>
 }
 
 function CourseFooter({

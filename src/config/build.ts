@@ -1,4 +1,4 @@
-import type { CellKind, Column, DisqDef, ErrorDef, ErrorGroup, SheetDef } from '../types'
+import type { CellKind, Column, DisqDef, ErrorDef, ErrorGroup, SheetDef, TrennerDesign } from '../types'
 import type { RawConfig, RawKatalog, RawPosition, RawSpalte } from './schema'
 
 // Wandelt die geparste (zusammengeführte) YAML-Konfiguration in die interne
@@ -30,7 +30,9 @@ export interface ResolvedConfig {
   beschriftungen: BeschriftungScheme[]
 }
 
-const TYP_TO_KIND: Record<RawSpalte['typ'], CellKind> = {
+// 'trenner' ist keine Datenspalte und taucht hier nicht auf (wird vorher aus der
+// Spaltenliste herausgefiltert, siehe buildColumns).
+const TYP_TO_KIND: Record<Exclude<RawSpalte['typ'], 'trenner'>, CellKind> = {
   boje: 'buoy',
   code: 'code',
   punkte: 'points',
@@ -75,15 +77,49 @@ function toColumn(
     }
   }
   return {
-    key: sp.key,
-    label: sp.label,
-    kind: TYP_TO_KIND[sp.typ],
+    key: sp.key ?? '',
+    label: sp.label ?? '',
+    kind: TYP_TO_KIND[sp.typ as Exclude<RawSpalte['typ'], 'trenner'>] ?? 'text',
     sub: sp.sub?.map((x) => resolveTokens(x, subTokens)),
     pointsCol: sp.punkteSpalte,
     errorTable: sp.katalog ? katalogRows(kataloge[sp.katalog]) : undefined,
     grow: sp.breite,
+    trenner: sp.trenner,
+    subTrenner: sp.subTrenner,
     klassen: sp.klassen?.map((k) => String(k)),
   }
+}
+
+/**
+ * Baut die Spaltenliste einer Position. Einträge mit `typ: trenner` sind keine
+ * echten Spalten, sondern hängen ihre Trennlinie (Design) an die LINKE Kante der
+ * folgenden Spalte. Zusätzlich bleibt die Kurzform `trenner:` an einer Spalte
+ * erhalten; ein vorangestellter Trenner-Eintrag hat Vorrang.
+ */
+function buildColumns(
+  spalten: RawSpalte[],
+  tokens: Record<string, string>,
+  kataloge: Record<string, RawKatalog>,
+  posSubTrenner?: TrennerDesign,
+): Column[] {
+  const cols: Column[] = []
+  let pending: TrennerDesign | undefined
+  for (const sp of spalten) {
+    if (sp.typ === 'trenner') {
+      pending = sp.design ?? 'fett'
+      continue
+    }
+    const col = toColumn(sp, tokens, kataloge)
+    if (pending) {
+      col.trenner = pending
+      pending = undefined
+    }
+    // Positions-Standard für Unter-Spalten-Trenner, sofern die Spalte nicht
+    // selbst eines vorgibt.
+    if (!col.subTrenner && posSubTrenner) col.subTrenner = posSubTrenner
+    cols.push(col)
+  }
+  return cols
 }
 
 function resolveDisq(pos: RawPosition, all: DisqDef[]): DisqDef[] | undefined {
@@ -140,7 +176,7 @@ export function buildConfig(raw: RawConfig, opts?: { raeumlich?: boolean }): Res
       orientation: pos.ausrichtung === 'quer' ? 'landscape' : 'portrait',
       showLauf: pos.lauf !== false,
       klassen: pos.klassen?.map((k) => String(k)),
-      columns: pos.spalten.map((sp) => toColumn(sp, posTokens, kataloge)),
+      columns: buildColumns(pos.spalten, posTokens, kataloge, pos.subTrenner),
       sumColumnKey: pos.summeSpalte,
       errorTable: katalogRows(kat),
       errorTableTitle: kat?.titel,

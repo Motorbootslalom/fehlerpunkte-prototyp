@@ -34,7 +34,7 @@ export function SheetHeader({
             className="wkr-input"
             value={wkr}
             onChange={(e) => onWkr(e.target.value)}
-            placeholder="Name Wettkampfrichter"
+            placeholder="Name Wettkampfrichter*in"
           />
         </label>
       </div>

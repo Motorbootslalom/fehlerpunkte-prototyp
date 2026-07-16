@@ -166,10 +166,15 @@ Intern wird jede Zeit als Hundertstelsekunden geführt, damit gerechnet werden k
 - Nach den Startnummern folgt eine **einstellbare Anzahl leerer Zeilen**
   (Standard **3**) für Nachmeldungen.
 - **Jede 5. Zeile** ist grau hinterlegt (Lesehilfe).
-- Bei vielen Startern bricht die Liste auf **mehrere Seiten** um. **Kopf
-  (Titel/Klasse/Lauf/WKR) und Spaltenüberschriften wiederholen sich auf jeder
-  Seite** (per Tabellen-`thead`). Die **Fuß-Legende** (`tfoot`) erscheint in
-  Firefox auf jeder Seite, in Chrome auf der letzten Seite (Browser-Verhalten).
+- **Zeilen pro Seite** (einstellbar, Standard **0 = automatisch**): Bei `0`
+  bleibt es eine durchlaufende Tabelle; der Browser bricht bei Bedarf selbst um
+  und wiederholt Kopf/Spaltenüberschriften (`thead`) sowie die Fuß-Legende
+  (`tfoot`) je Seite (Firefox jede Seite, Chrome letzte Seite).
+- Ist ein Wert **≥ 5** gesetzt, wird der Bogen **fest nach so vielen Startern**
+  auf mehrere A4-Seiten aufgeteilt. **Jede Seite** trägt Kopf,
+  Spaltenüberschriften, **Legende/Parcoursbild und die konfigurierten
+  Leerzeilen** sowie - mittig auf Höhe der Unterschrift - eine **„Seite n / X"**-
+  Angabe. So bleibt jede Einzelseite eine vollständige, unterschreibbare Liste.
 
 ## 8. Druck / PDF-Export
 
@@ -191,6 +196,20 @@ Zwei Wege sind vorgesehen (im Prototyp beide vorhanden, zum **Vergleich**):
 Der Dateiname wird bei Browser-Druck und Vektor-Prototyp automatisch gebildet:
 `Fehlerpunkte - <Event> [- <Position>] [- Klasse X] [- N. Lauf] - <Zeitstempel>`,
 wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
+
+## 8a. Einstellungs-Link (teilbare Zusammenstellung)
+
+- Die aktuelle **Zusammenstellung** steckt fortlaufend in der **Adresszeile**
+  (URL-Parameter `c`): Veranstaltung, Aufbau, Bojen-Bezeichnung, Leerzeilen,
+  Zeilen/Seite, die **Startnummern je Klasse** und die **Bogen-Auswahl**
+  (Liste × Klasse × Lauf). So lässt sich z. B. „Baden-Württemberg, alle
+  Wasser-2-Listen" zusammenklicken und einfach **die URL teilen**; ein Knopf
+  „Einstellungs-Link kopieren" legt sie in die Zwischenablage.
+- **Nicht** enthalten sind eingetragene Werte (Punkte/Zeiten) und WKR-Namen -
+  der Link stellt nur die leere Zusammenstellung her, keine Daten.
+- Öffnet jemand einen geteilten Link, hat dessen Konfiguration Vorrang vor dem
+  lokal gespeicherten Stand. Beim normalen Neuladen (eigene URL) bleiben die
+  lokalen Eingaben erhalten.
 
 ## 9. Scanner-Erfassung (spätere Ausbaustufe)
 
@@ -240,6 +259,16 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
 - **Bild** je Position (`bild`, `bildDrehung: 0|90|-90|180`). Um ±90° gedrehte
   Bilder erscheinen hochkant neben der Legende, sonst quer darunter. (Frontal-Tore
   nutzen die Alcatraz-Bilder um -90° = Alcatraz 90° + 180°-Blickwende.)
+- **Spalten-Trenner** (optische Linien): Zwischen zwei Spalten lässt sich eine
+  hervorgehobene Linie legen - als eigener Eintrag `{ typ: trenner, design: … }`
+  (linke Kante der Folgespalte) oder als Kurzform `trenner: …` an der Spalte.
+  Zwischen den Unter-Spalten (`sub`) eines Tores steuert `subTrenner` das Design
+  (positionsweit oder je Spalte überschreibbar, z. B. Tor 5 „doppelt"). Designs:
+  **fett, doppelt, gepunktet, gestrichelt**. Nutzen: Hin- und Rückfahrt-Spalten
+  bzw. die beiden Bojen eines Tores klar auseinanderhalten. (Alcatraz/Frontal
+  nutzen zwischen den Tor-Bojen standardmäßig „gepunktet", Tor 5 „doppelt".)
+- **Live-Neuladen der Konfiguration:** Ändert sich eine `public/config/*.yaml`
+  im Entwicklungsserver, lädt die Seite automatisch neu (wie bei Code-Änderungen).
 - **Hinweise** (Bojen-Bezeichnungen) sind zentral und werden per Verweis
   eingebunden; der Hinweistext passt sich dem gewählten Schema an.
 - **Bojen-Beschriftung, umschaltbar** (`bezeichnungen` + `beschriftungen`): die
@@ -255,6 +284,12 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
   - **Innen/Außen** ist tor-relativ: jede Tor-Spalte markiert die innere Seite
     (`innen: seiteA|seiteB`); Tor 5/Start/Ziel bleiben bei R/L.
 - Beide Ausgaben (Eingabe-Prototyp und Vektor-PDF) nutzen dieselbe Konfiguration.
+- **Konfigurations-Prüfung** (`npm run config:check`, Teil von `npm run check` und
+  damit Pre-Commit/CI): meldet doppelte Definitionen (Positions-IDs, Spalten-Keys,
+  Fehler-Codes …) und Verweise ins Leere (Aufbau → Position, Spalte → Katalog /
+  Summenspalte, `disq`-Codes), außerdem Drift zwischen `src/config` und
+  `public/config`. Fehler blocken den Commit, Hinweise (z. B. Format-Hygiene,
+  verwaiste Positionen) nicht.
 
 ## 12. Nicht-Ziele / offene Punkte
 

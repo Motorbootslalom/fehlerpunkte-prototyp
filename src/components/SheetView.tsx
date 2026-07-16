@@ -5,7 +5,7 @@ import { normalizeCodeCell } from '../lib/codes'
 import { allowedSet, sanitizeBuoy, sanitizeCodeInput, sanitizeDisq } from '../lib/disq'
 import { cellKey, columnsForClass, formatDisqs, scoreRow } from '../lib/scoring'
 import { useCell, useStore } from '../state/store'
-import type { Bogen, CellKind, Column } from '../types'
+import type { Bogen, CellKind, Column, SheetDef, TrennerDesign } from '../types'
 import { Legend } from './Legend'
 import { SheetHeader } from './SheetHeader'
 import { TimeCell } from './TimeCell'
@@ -26,6 +26,19 @@ interface Leaf {
   grow?: number
   /** Nur 'code': erlaubte Codes dieser Spalte (eigener Katalog), sonst undefined. */
   codes?: Set<string>
+  /**
+   * Trennlinie am linken Rand. Erstes Blatt einer Spalte = Spalten-Trenner,
+   * weitere Blätter = Trennlinie zwischen den Unter-Spalten (subTrenner).
+   */
+  trenner?: TrennerDesign
+  /**
+   * Trennlinie am RECHTEN Rand (nur zwischen Unter-Spalten gesetzt). Wird
+   * zusätzlich zur linken Linie der Nachbarzelle gezeichnet, damit die
+   * (gepunktete/gestrichelte) Sub-Trennung unter `border-collapse` in allen
+   * Browsern sichtbar bleibt und nicht von der durchgezogenen Nachbarkante
+   * verdeckt wird.
+   */
+  trennerR?: TrennerDesign
 }
 
 function toLeaves(columns: Column[]): Leaf[] {
@@ -40,9 +53,25 @@ function toLeaves(columns: Column[]): Leaf[] {
           label: `${col.label} ${s}`,
           grow: col.grow,
           codes,
+          // Erstes Unter-Blatt: linke Kante der Gruppe (Spalten-Trenner).
+          // Weitere: Trennlinie zwischen den Unter-Spalten (subTrenner).
+          trenner: i === 0 ? col.trenner : col.subTrenner,
+          // Zusätzlich rechts, außer beim letzten Unter-Blatt - so trägt jede
+          // innere Sub-Kante die Linie beidseitig (border-collapse-fest).
+          trennerR: i < col.sub!.length - 1 ? col.subTrenner : undefined,
         }))
-      : [{ colKey: col.key, kind: col.kind, label: col.label, grow: col.grow, codes }]
+      : [{ colKey: col.key, kind: col.kind, label: col.label, grow: col.grow, codes, trenner: col.trenner }]
   })
+}
+
+/** CSS-Klasse für die Trennlinie am linken Rand. */
+function trennerClass(trenner?: TrennerDesign): string {
+  return trenner ? ` sep-${trenner}` : ''
+}
+
+/** CSS-Klasse für die Trennlinie am rechten Rand (Sub-Kante beidseitig). */
+function trennerClassR(trenner?: TrennerDesign): string {
+  return trenner ? ` sepr-${trenner}` : ''
 }
 
 /**
@@ -57,22 +86,75 @@ function leafWidth(leaf: Leaf): string | undefined {
   return undefined // buoy/time/code ohne grow → teilen sich den Rest
 }
 
-/** Rendert einen kompletten Bogen als A4-Seite (Eingabe = Druckansicht). */
+/** Startnummern in Seiten-Blöcke aufteilen (Feature 3: mehrseitiger Druck). */
+function chunk<T>(items: T[], size: number): T[][] {
+  if (size <= 0) return [items]
+  const out: T[][] = []
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size))
+  return out
+}
+
+/**
+ * Rendert einen Bogen. Bei gesetzter „Zeilen pro Seite" (state.rowsPerPage)
+ * werden die Startnummern auf mehrere A4-Seiten aufgeteilt; jede Seite trägt
+ * Kopf, Spaltenüberschriften, Legende/Bild, Leerzeilen und Unterschrift sowie
+ * eine mittige „Seite n / X"-Angabe. Ohne Einstellung bleibt es eine
+ * durchlaufende Tabelle (Browser bricht bei Bedarf selbst um).
+ */
 export function SheetView({ bogen }: { bogen: Bogen }) {
-  const { state, dispatch } = useStore()
-  const cell = useCell(bogen.id)
+  const { state } = useStore()
   const def = getSheetDef(bogen.typeId)
   const nums = state.numbers[bogen.klasse] ?? []
+
+  // Startnummern seitenweise aufteilen (Minimum 5 Starter/Seite erzwingt der
+  // Reducer). rowsPerPage 0 = keine feste Aufteilung → eine durchlaufende Seite.
+  const chunks = state.rowsPerPage > 0 ? chunk(nums, state.rowsPerPage) : [nums]
+  if (chunks.length === 0) chunks.push([])
+  const pageCount = chunks.length
+
+  return (
+    <>
+      {chunks.map((chunkNums, pi) => (
+        <SheetPage
+          key={`${bogen.id}:${pi}`}
+          bogen={bogen}
+          def={def}
+          chunkNums={chunkNums}
+          pageIndex={pi}
+          pageCount={pageCount}
+        />
+      ))}
+    </>
+  )
+}
+
+/** Eine einzelne A4-Seite eines Bogens (Kopf + Tabelle + Legende + Unterschrift). */
+function SheetPage({
+  bogen,
+  def,
+  chunkNums,
+  pageIndex,
+  pageCount,
+}: {
+  bogen: Bogen
+  def: SheetDef
+  chunkNums: number[]
+  pageIndex: number
+  pageCount: number
+}) {
+  const { state, dispatch } = useStore()
+  const cell = useCell(bogen.id)
 
   // Fadenkreuz: aktuell fokussierte Zeile/Spalte (für die Orientierungs-Hervorhebung).
   const [focus, setFocus] = useState<{ row: number; col: number } | null>(null)
 
-  const rows: Row[] = nums.map((n) => ({ id: String(n), nr: String(n), fixed: true, shaded: false }))
-  // Immer genau `emptyRows` leere Zeilen nach den Startnummern (einstellbar).
+  const rows: Row[] = chunkNums.map((n) => ({ id: String(n), nr: String(n), fixed: true, shaded: false }))
+  // Immer genau `emptyRows` leere Zeilen nach den Startnummern (einstellbar) -
+  // auf jeder Seite. Seiten-Präfix hält die Zellschlüssel je Seite eindeutig.
   for (let i = 0; i < state.emptyRows; i++) {
-    rows.push({ id: `_x${i}`, nr: '', fixed: false, shaded: false })
+    rows.push({ id: `_p${pageIndex}_x${i}`, nr: '', fixed: false, shaded: false })
   }
-  // Zur Orientierung ist jede 5. Zeile grau hinterlegt.
+  // Zur Orientierung ist jede 5. Zeile grau hinterlegt (je Seite gezählt).
   rows.forEach((r, i) => {
     r.shaded = (i + 1) % 5 === 0
   })
@@ -115,8 +197,8 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
 
   return (
     <div className={`sheet sheet--${def.orientation}${gedreht ? ' sheet--rotated' : ''}`}>
-      {/* Der gesamte Bogen ist EINE Tabelle: <thead>/<tfoot> wiederholen sich
-          beim Druck automatisch auf jeder Seite, wenn die Liste umbricht. */}
+      {/* Der Bogen ist EINE Tabelle: <thead>/<tfoot> wiederholen sich beim Druck
+          automatisch auf jeder Seite, falls eine Seite doch noch umbricht. */}
       <table className="sheet-table" onFocusCapture={handleFocus} onBlurCapture={handleBlur}>
         <colgroup>
           <col className="cg-nr" />
@@ -147,7 +229,12 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
               {cols.flatMap((col) =>
                 col.sub && col.sub.length > 0
                   ? col.sub.map((s, i) => (
-                      <th key={`${col.key}-${i}`} className="col-sub">
+                      <th
+                        key={`${col.key}-${i}`}
+                        className={`col-sub${trennerClass(i === 0 ? col.trenner : col.subTrenner)}${
+                          i < col.sub!.length - 1 ? trennerClassR(col.subTrenner) : ''
+                        }`}
+                      >
                         {s}
                       </th>
                     ))
@@ -193,9 +280,16 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
                     )}
                   </div>
                 )}
-                <div className="signature">
-                  <span className="sig-line" />
-                  <span className="sig-label">Unterschrift WKR</span>
+                <div className="sheet-signature-row">
+                  {pageCount > 1 && (
+                    <span className="page-indicator">
+                      Seite {pageIndex + 1} / {pageCount}
+                    </span>
+                  )}
+                  <div className="signature">
+                    <span className="sig-line" />
+                    <span className="sig-label">Unterschrift WKR</span>
+                  </div>
                 </div>
               </div>
             </td>
@@ -250,13 +344,13 @@ export function SheetView({ bogen }: { bogen: Bogen }) {
 function renderHeadTop(col: Column, twoRow: boolean) {
   if (col.sub && col.sub.length > 0) {
     return (
-      <th key={col.key} className="col-group" colSpan={col.sub.length}>
+      <th key={col.key} className={`col-group${trennerClass(col.trenner)}`} colSpan={col.sub.length}>
         {col.label}
       </th>
     )
   }
   return (
-    <th key={col.key} className={`col-${col.kind}`} rowSpan={twoRow ? 2 : 1}>
+    <th key={col.key} className={`col-${col.kind}${trennerClass(col.trenner)}`} rowSpan={twoRow ? 2 : 1}>
       {col.label}
     </th>
   )
@@ -275,11 +369,13 @@ function renderLeafCell(
 ) {
   const ck = cellKey(rowKey, leaf.colKey, leaf.subIndex)
   const key = leaf.subIndex === undefined ? leaf.colKey : `${leaf.colKey}#${leaf.subIndex}`
+  // Trennlinien links (Spalten-/Sub-Trenner) und ggf. rechts (innere Sub-Kante).
+  const sep = trennerClass(leaf.trenner) + trennerClassR(leaf.trennerR)
 
   if (leaf.kind === 'sum') {
     const val = leaf.colKey in score.computedCols ? score.computedCols[leaf.colKey] : score.sum
     return (
-      <td key={key} className={`col-sum-cell${hlCls}`} title={disqTitle}>
+      <td key={key} className={`col-sum-cell${hlCls}${sep}`} title={disqTitle}>
         {val > 0 ? val : ''}
       </td>
     )
@@ -287,7 +383,7 @@ function renderLeafCell(
 
   if (leaf.kind === 'time') {
     return (
-      <td key={key} className={`col-time-cell${hlCls}`}>
+      <td key={key} className={`col-time-cell${hlCls}${sep}`}>
         <TimeCell value={cell.getByKey(ck)} onChange={(raw) => cell.set(ck, raw)} />
       </td>
     )
@@ -299,7 +395,7 @@ function renderLeafCell(
     const stored = cell.getByKey(ck)
     const showAuto = stored === '' && autoDisq !== ''
     return (
-      <td key={key} className={`col-disq-cell${hlCls}`}>
+      <td key={key} className={`col-disq-cell${hlCls}${sep}`}>
         <input
           className={`cell-input disq-input${showAuto ? ' disq-auto' : ''}`}
           value={stored === '' ? autoDisq : stored}
@@ -330,7 +426,7 @@ function renderLeafCell(
       : undefined
 
   return (
-    <td key={key} className={`col-${leaf.kind}-cell${hlCls}`}>
+    <td key={key} className={`col-${leaf.kind}-cell${hlCls}${sep}`}>
       <input
         className={`cell-input ${cls}`}
         inputMode={leaf.kind === 'buoy' ? 'text' : undefined}

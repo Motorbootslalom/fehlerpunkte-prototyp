@@ -492,6 +492,51 @@ body {
   background: var(--shade);
 }
 
+/* Optische Spalten-Trenner (am linken Rand einer Spalte, über Kopf + Zellen).
+   Trennt z. B. Hin- von Rückfahrt-Spalten. Designs: fett, doppelt, gepunktet,
+   gestrichelt (per `{ typ: trenner, design: … }` in positionen.yaml). */
+.sheet-table > thead > tr > th.sep-fett,
+.sheet-table > tbody > tr > td.sep-fett {
+  border-left: 2.5px solid var(--line);
+}
+
+.sheet-table > thead > tr > th.sep-doppelt,
+.sheet-table > tbody > tr > td.sep-doppelt {
+  border-left: 4px double var(--line);
+}
+
+.sheet-table > thead > tr > th.sep-gepunktet,
+.sheet-table > tbody > tr > td.sep-gepunktet {
+  border-left: 2px dotted var(--line);
+}
+
+.sheet-table > thead > tr > th.sep-gestrichelt,
+.sheet-table > tbody > tr > td.sep-gestrichelt {
+  border-left: 2px dashed var(--line);
+}
+
+/* Rechte Kante (bei inneren Sub-Trennungen zusätzlich gesetzt, damit die Linie
+   unter border-collapse beidseitig getragen und nicht überdeckt wird). */
+.sheet-table > thead > tr > th.sepr-fett,
+.sheet-table > tbody > tr > td.sepr-fett {
+  border-right: 2.5px solid var(--line);
+}
+
+.sheet-table > thead > tr > th.sepr-doppelt,
+.sheet-table > tbody > tr > td.sepr-doppelt {
+  border-right: 4px double var(--line);
+}
+
+.sheet-table > thead > tr > th.sepr-gepunktet,
+.sheet-table > tbody > tr > td.sepr-gepunktet {
+  border-right: 2px dotted var(--line);
+}
+
+.sheet-table > thead > tr > th.sepr-gestrichelt,
+.sheet-table > tbody > tr > td.sepr-gestrichelt {
+  border-right: 2px dashed var(--line);
+}
+
 /* Zelleingaben sehen aus wie handgeschriebene Felder (randlos in der Zelle) */
 .cell-input {
   width: 100%;
@@ -629,9 +674,29 @@ body {
   max-height: 78mm;
 }
 
-.signature {
+/* Zeile am Fuß: mittige Seitenzahl (mehrseitiger Druck) + rechte Unterschrift.
+   position: relative, damit die Seitenzahl mittig „auf Höhe der Unterschrift"
+   liegt, während die Unterschrift rechtsbündig bleibt. */
+.sheet-signature-row {
   margin-top: auto;
   padding-top: 14px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.page-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  font-size: 9pt;
+  font-weight: 600;
+}
+
+.signature {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -684,7 +749,7 @@ body {
   height: calc(100% - 8px);
 }
 
-.sheet--rotated .signature {
+.sheet--rotated .sheet-signature-row {
   grid-area: sig;
 }
 

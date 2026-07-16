@@ -28,12 +28,19 @@ export interface RawFehlerpunkte {
   kataloge?: Record<string, RawKatalog>
 }
 
-export type RawSpaltenTyp = 'boje' | 'code' | 'punkte' | 'zeit' | 'disq' | 'text' | 'summe'
+import type { TrennerDesign } from '../types'
+
+// 'trenner' ist keine echte Datenspalte, sondern ein Platzhalter-Eintrag, der
+// zwischen zwei Spalten eine Trennlinie erzeugt (linke Kante der Folgespalte).
+export type RawSpaltenTyp = 'boje' | 'code' | 'punkte' | 'zeit' | 'disq' | 'text' | 'summe' | 'trenner'
 
 export interface RawSpalte {
-  key: string
-  label: string
+  /** Bei `typ: trenner` entfällt der key (reiner Trennlinien-Eintrag). */
+  key?: string
+  label?: string
   typ: RawSpaltenTyp
+  /** Nur bei `typ: trenner`: Linien-Design (Standard: fett). */
+  design?: TrennerDesign
   /** Unter-Spalten (z. B. Bojen-Bezeichnungen [H K, H H]) - nur bei 'boje'. */
   sub?: string[]
   /**
@@ -53,6 +60,14 @@ export interface RawSpalte {
   katalog?: string
   /** Relative Breite (Flex-Anteil). */
   breite?: number
+  /**
+   * Kurzform: optische Trennlinie am LINKEN Rand dieser Spalte (trennt sie von
+   * der vorherigen). Alternativ - und meist lesbarer - ein eigener Eintrag
+   * `{ typ: trenner, design: fett|doppelt|gepunktet|gestrichelt }` DAVOR.
+   */
+  trenner?: TrennerDesign
+  /** Design der Trennlinien zwischen den `sub`-Unter-Spalten dieser Spalte. */
+  subTrenner?: TrennerDesign
   /**
    * Nur für diese Klassen anzeigen (z. B. [5, 6, 7] für Speed 1, [7] für
    * Speed 2, [4, 5, 6, 7] für Mann-über-Bord). Fehlt die Angabe → alle Klassen.
@@ -93,6 +108,12 @@ export interface RawPosition {
   klassen?: Array<string | number>
   /** Schlüssel der Spalte, die die Zeilensumme (Σ) berechnet zeigt. */
   summeSpalte?: string
+  /**
+   * Standard-Design der Trennlinien zwischen Unter-Spalten (`sub`) ALLER Spalten
+   * dieser Position, z. B. gepunktet zwischen den beiden Bojen jedes Tores. Pro
+   * Spalte via `subTrenner` überschreibbar.
+   */
+  subTrenner?: TrennerDesign
   spalten: RawSpalte[]
 }
 
