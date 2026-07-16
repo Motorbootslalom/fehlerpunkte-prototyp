@@ -53,6 +53,14 @@ export interface RawSpalte {
   /** Nur 'code': Schlüssel der 'summe'-Spalte, in der die Punkte erscheinen. */
   punkteSpalte?: string
   /**
+   * Element-ID im Parcoursbild (z. B. "Tor1"), die diese Spalte im Bild
+   * HERVORHEBT. Genutzt vom Bildgenerator (scripts/generate-parcours.ts): Tore
+   * mit `hebt` bleiben voll sichtbar, die übrigen aus DIM_UNIVERSE werden
+   * abgeblendet. Der Vorteil: kopiert man eine Spaltenzeile, wandert die
+   * Hervorhebung mit. Ohne `hebt` greift die Positions-Liste `abblenden`.
+   */
+  hebt?: string
+  /**
    * Nur 'code': eigener Fehler-Katalog dieser Spalte (Verweis auf
    * fehlerpunkte.kataloge.<id>). Ohne Angabe gilt der positionsweite `katalog`.
    * Damit lassen die Spalten Steg AB/AN je nur ihre eigenen Codes zu.
@@ -85,6 +93,22 @@ export interface RawPosition {
   lauf?: boolean
   /** Bild-Ordner unter public/parcours (z. B. alcatraz_Parcours). */
   bild?: string
+  /**
+   * Wird `bild` beim Build automatisch aus `bildQuelle` erzeugt? Dann leitet
+   * scripts/generate-parcours.ts die Abblendung aus den Spalten (`hebt`) bzw.
+   * `abblenden` ab und schreibt gedimmte SVG+PNG nach parcours/<bild>. Fehlt
+   * der Schalter, verweist `bild` wie bisher auf ein festes fertiges Bild.
+   */
+  bildGenerator?: boolean
+  /** Quell-Bildordner für den Generator (Default: alcatraz_Parcours). */
+  bildQuelle?: string
+  /**
+   * Element-IDs im Parcoursbild, die abgeblendet (opacity reduziert) werden.
+   * Fallback/Ergänzung zur spaltenbasierten `hebt`-Hervorhebung: Ohne `hebt` in
+   * den Spalten steuert allein diese Liste, was gedimmt wird; mit `hebt` kann
+   * sie zusätzliche Elemente (z. B. SpeedbojeKlasse7) abblenden.
+   */
+  abblenden?: string[]
   /** Bild-Drehung in Grad: 0 | 90 | -90 | 180. */
   bildDrehung?: number
   /**

@@ -6,7 +6,7 @@
    width="853.32581"
    style="enable-background:new"
    xml:space="preserve"
-   sodipodi:docname="tmpm15169tb.svg"
+   sodipodi:docname="tmpvhbfyb8l.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +14,7 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/"><sodipodi:namedview
-     id="namedview2"
+     id="namedview3"
      pagecolor="#ffffff"
      bordercolor="#000000"
      borderopacity="0.25"
@@ -134,7 +134,7 @@
            d="m 226.88557,466.31536 c 0,23.37939 0,46.75876 0,70.13813 0,19.9914 0,67.88504 0,87.2713"
            id="path14169" /></g><g
          transform="translate(113.43616,157.27691)"
-         id="Tor1"
+         id="Tor1" opacity="0.2"
          style="display:inline;fill:#ff6600"><path
            style="fill:#ff6600;stroke:#000000;stroke-width:1.05575"
            d="m 309.39338,536.69343 c 0,-3.88326 -3.14878,-7.0317 -7.03118,-7.0317 -3.88134,0 -7.03118,3.14844 -7.03118,7.0317 0,3.88327 3.14984,7.03066 7.03118,7.03066 3.8824,0 7.03118,-3.14739 7.03118,-7.03066 z"
@@ -152,7 +152,7 @@
            d="m 328.29102,597.16588 c 0,-3.88329 -3.14879,-7.0317 -7.03118,-7.0317 -3.88133,0 -7.03118,3.14841 -7.03118,7.0317 0,3.88327 3.14985,7.03065 7.03118,7.03065 3.88239,0 7.03118,-3.14738 7.03118,-7.03065 z"
            id="Tor2_innen" /></g><g
          transform="translate(340.20779,157.27691)"
-         id="Tor3"
+         id="Tor3" opacity="0.2"
          style="display:inline;fill:#ff6600"><path
            style="fill:#ff6600;stroke:#000000;stroke-width:1.05575"
            d="m 347.18865,536.69343 c 0,-3.88326 -3.14878,-7.0317 -7.03118,-7.0317 -3.88133,0 -7.03118,3.14844 -7.03118,7.0317 0,3.88327 3.14985,7.03066 7.03118,7.03066 3.8824,0 7.03118,-3.14739 7.03118,-7.03066 z"
@@ -177,9 +177,9 @@
            id="Tor5_oben" /><path
            style="fill:#ff6600;stroke:#000000;stroke-width:1.05575"
            d="m 384.98394,597.16588 c 0,-3.88329 -3.14879,-7.0317 -7.03118,-7.0317 -3.88134,0 -7.03118,3.14841 -7.03118,7.0317 0,3.88327 3.14984,7.03065 7.03118,7.03065 3.88239,0 7.03118,-3.14738 7.03118,-7.03065 z"
-           id="Tor5_unten" /></g><g
+           id="Tor5_unten" opacity="0.2" /></g><g
          transform="translate(18.947957,138.37931)"
-         id="Schikane"
+         id="Schikane" opacity="0.2"
          style="display:inline"><g
            style="fill:none"
            id="Ring"><ellipse
@@ -209,7 +209,7 @@
            id="Tor1_innen-7" /><path
            style="fill:#ffff00;stroke:#000000;stroke-width:1.05575"
            d="m 309.39338,597.16588 c 0,-3.88329 -3.14879,-7.0317 -7.03118,-7.0317 -3.88134,0 -7.03118,3.14841 -7.03118,7.0317 0,3.88327 3.14984,7.03065 7.03118,7.03065 3.88239,0 7.03118,-3.14738 7.03118,-7.03065 z"
-           id="Tor1_aussen-3" /></g></g></g><g
+           id="Tor1_aussen-3" opacity="0.2" /></g></g></g><g
      transform="translate(-215.4445,-435.39547)"
      style="display:inline"
      id="ParcoursLabel"><defs
@@ -326,7 +326,7 @@
            d="m 257.91421,690.91589 -1.03946,7.96853 v 0.11981 0"
            style="display:inline;fill:none;stroke:#000000;stroke-width:1.0241;stroke-linecap:round" /></g></g></g><g
      transform="translate(363.35428,-208.73025)"
-     id="SpeedbojeKlasse7"
+     id="SpeedbojeKlasse7" opacity="0.2"
      style="display:inline;enable-background:new"><path
        id="path2174"
        d="m 411.08738,540.47244 c 0,-3.68456 -2.98553,-6.67793 -6.67793,-6.67793 -3.6831,0 -6.67794,2.98671 -6.67794,6.67793 0,3.68455 2.9874,6.67793 6.67794,6.67793 3.68495,0 6.67793,-2.9867 6.67793,-6.67793 z"
@@ -360,15 +360,5 @@
        style="display:inline;opacity:0.5;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000080;stroke-width:2.13333;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:4.26667, 8.53333;stroke-dashoffset:0;stroke-opacity:1"
        d="m 181.87911,199.201 c 0,117.13405 0,234.2681 0,351.40216 4.37991,6.41891 13.1037,2.14473 19.59162,3.37445 276.05854,0 552.11708,0 828.17557,0 6.2953,-4.46595 2.1035,-13.36114 3.3095,-19.97654 0,-111.60002 0,-223.20005 0,-334.80007 -4.3799,-6.41892 -13.1037,-2.14473 -19.5916,-3.37446 -276.05857,0 -552.11711,0 -828.17565,0 -1.10314,1.12482 -2.20628,2.24965 -3.30944,3.37446 z"
        id="rect4816" /><g
-       id="Alcatraz_2"
-       style="display:inline"><path
-         style="display:inline;opacity:0.85;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2.13333;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:4.26667, 8.53333;stroke-dashoffset:0;stroke-opacity:1"
-         d="m 187.96875,399.73333 v 30.54938 h -2.60208 l 7.56946,120.32045 815.85347,-3.81651 c 0.895,-140.99619 -60.53835,-44.70055 -98.48404,-102.55141 -101.72369,8.45537 -264.57671,-42.5707 -264.57671,-42.5707 L 513.375,399.73333 Z"
-         id="rect5805" /><rect
-         style="display:inline;opacity:0.85;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2.13333;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:4.26667, 8.53333;stroke-dashoffset:0;stroke-opacity:1"
-         id="rect6021"
-         width="104.06604"
-         height="104.06604"
-         x="289.43365"
-         y="247.35408" /></g><g
-       id="g2" /></g></svg>
+       id="g2" /><g
+       id="g3" /></g></svg>

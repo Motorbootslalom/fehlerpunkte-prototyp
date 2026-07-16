@@ -153,6 +153,23 @@ export function validateRawConfig(raw: ConfigInput): ConfigIssue[] {
     if (pos.subTrenner && !VALID_TRENNER.has(pos.subTrenner))
       err('BAD_SUBTRENNER', `subTrenner "${pos.subTrenner}" in "${pos.id}" muss fett | doppelt | gepunktet | gestrichelt sein.`, where)
 
+    // Bildgenerator: braucht ein Ziel (`bild`) und wenigstens eine Quelle für die
+    // Abblendung (spaltenweise `hebt` ODER positionsweite `abblenden`).
+    if (pos.bildGenerator) {
+      if (!pos.bild)
+        err('MISSING_BILD', `Position "${pos.id}" hat bildGenerator: true, aber kein "bild" (Zielordner).`, where)
+      const hatHebt = (pos.spalten ?? []).some((s) => !!s?.hebt)
+      const hatAbblenden = Array.isArray(pos.abblenden) && pos.abblenden.length > 0
+      if (!hatHebt && !hatAbblenden)
+        warn(
+          'EMPTY_ABBLENDUNG',
+          `Position "${pos.id}" nutzt bildGenerator, blendet aber nichts ab (weder Spalten-"hebt" noch "abblenden") - erzeugt eine Kopie ohne Änderung.`,
+          where,
+        )
+    }
+    if (pos.abblenden !== undefined && !Array.isArray(pos.abblenden))
+      err('BAD_ABBLENDEN', `abblenden in "${pos.id}" muss eine Liste von Element-IDs sein.`, where)
+
     if (Array.isArray(pos.disq)) {
       for (const c of pos.disq)
         if (!disqCodes.has(String(c)))

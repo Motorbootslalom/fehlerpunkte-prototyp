@@ -72,8 +72,8 @@ Mitgelieferte Positionen (Auszug, Aufbau Alcatraz):
 
 | Typ | Kopf-Titel | Spalten (nach Nr.) | Σ | Bild |
 | --- | ---------- | ------------------ | :-: | :-: |
-| Tore 1/3/5 | Tor 1 / 3 / 5 | Start · Tor 1 · Tor 3 · Tor 5 · Tor 3 · Tor 1 · Ziel (je Bojenspalten mit Fahrtrichtung/Seite) · Disq. · Σ | ✓ | alcatraz_I |
-| Tore 2/4/5 | Tor 2 / 4 / 5 | analog mit Toren 2/4/5, dazu **Speedbojen (je Klasse, §4a)** | ✓ | alcatraz_II |
+| Tore 1/3/5 | Tor 1 / 3 / 5 | Start · Tor 1 · Tor 3 · Tor 5 · Tor 3 · Tor 1 · Ziel (je Bojenspalten mit Fahrtrichtung/Seite) · Disq. · Σ | ✓ | alcatraz_I (generiert, §4b) |
+| Tore 2/4/5 | Tor 2 / 4 / 5 | analog mit Toren 2/4/5, dazu **Speedbojen (je Klasse, §4a)** | ✓ | alcatraz_II (generiert, §4b) |
 | Tor 5 | Tor 5 | Fehler · Σ · Disq. · Bemerkung | ✓ | alcatraz_Parcours |
 | Mann-über-Bord | Mann-über-Bord | Fehler · Fehlerpunkte · **Σ (mittig)** · Disq. · Bemerkung | ✓ | - |
 | Steg | Steg | Fehler AB · F-Pkt. AB · Fehler AN · F-Pkt. AN · Disq. · Bemerkung | (je Gruppe) | - |
@@ -102,6 +102,37 @@ Umfang und Spalten der Listen hängen von **Klasse** (und Aufbau) ab:
 Technisch: Spalten und Positionen tragen optional `klassen: [...]` (fehlt = alle).
 Ein Bogen gilt genau einer Klasse, daher wird pro Blatt gefiltert; die
 Schnellauswahl lässt nicht passende Klassen aus.
+
+## 4b. Parcoursbilder: automatische Hervorhebung
+
+Statt für jede Tor-Position ein eigenes Bild von Hand zu malen (früher
+`alcatraz_I` für Tore 1/3/5, `alcatraz_II` für 2/4/5), wird aus **einer** sauberen
+Quelle (`alcatraz_Parcours`) je Position das passende Bild **beim Build erzeugt**.
+
+- Jedes Bild-Element hat eine stabile `id` (`Tor1`…`Tor5`, `Start+Ziel`,
+  `SpeedbojeKlasse7`, `Schikane`, `Zeitnahme`), über alle Klassen identisch.
+- In `positionen.yaml` markiert das Spalten-Feld `hebt: Tor1` die im Bild
+  **hervorzuhebenden** Tore. Die übrigen Tore werden mit reduzierter Deckkraft
+  (opacity) abgeblendet; **Fahrweg, Start/Ziel, Zeitnahme usw. bleiben immer voll
+  sichtbar**. Weil `hebt` an der Spalte hängt, wandert die Hervorhebung beim
+  Kopieren einer Spaltenzeile automatisch mit.
+- Alternativ/ergänzend blendet eine Positions-Liste `abblenden: [Tor2, Tor4]`
+  gezielt Elemente ab (Fallback, falls keine Spalte `hebt` nutzt).
+- **Einzelne Bojen** sind ebenso ansprechbar wie ganze Tore: Tor 5 (`Tor5_oben` /
+  `Tor5_unten`), die beiden Start/Ziel-Bojen (`Tor1_innen-7` oben / `Tor1_aussen-3`
+  unten) und die beiden Speedbojen (`g3068` oben / `SpeedbojeKlasse7` unten).
+  Damit zeigt jede Position genau die **beobachtete Hälfte**: bei Alcatraz z. B.
+  Tore 1/3/5 nur die untere Boje von Tor 5 und Start/Ziel, bei Baden-Württemberg
+  je Land-/Wasser-Seite die passende Einzelboje jedes Tores.
+- Auch die **Baden-Württemberg**-Positionen (Land 1/2, Wasser 1/2) werden so aus
+  `alcatraz_Parcours` erzeugt (`bawue_Land_1` … `bawue_wasser_2`).
+- Der Schalter `bildGenerator: true` aktiviert die Erzeugung; `bild` ist dann der
+  **Ziel**-Ordner, `bildQuelle` der Quell-Ordner (Default `alcatraz_Parcours`).
+  Ohne den Schalter zeigt `bild` weiter auf ein festes fertiges Bild - **beides
+  funktioniert parallel**.
+- Erzeugt werden je Klasse eine gedimmte **SVG** (Bildschirm) und ein **PNG**
+  (für den Vektor-PDF-Druck, der kein SVG einbetten kann). Skript:
+  `npm run parcours:build` (Teil von `npm run build`).
 
 ## 5. Fehlerpunkt-Berechnung
 
@@ -263,6 +294,12 @@ wobei Position/Klasse/Lauf nur erscheinen, wenn über alle Bögen eindeutig.
 - **Bild** je Position (`bild`, `bildDrehung: 0|90|-90|180`). Um ±90° gedrehte
   Bilder erscheinen hochkant neben der Legende, sonst quer darunter. (Frontal-Tore
   nutzen die Alcatraz-Bilder um -90° = Alcatraz 90° + 180°-Blickwende.)
+- **Bildgenerator (§4b):** `bild` kann auf ein festes fertiges Bild zeigen ODER
+  mit `bildGenerator: true` beim Build automatisch aus einer Quelle
+  (`bildQuelle`, Default `alcatraz_Parcours`) erzeugt werden. Dabei bleiben die
+  per Spalten-`hebt: <ElementID>` markierten Tore voll sichtbar, die übrigen
+  werden abgeblendet (der Fahrweg bleibt immer sichtbar). So entfallen die
+  früher von Hand gemalten Varianten `alcatraz_I`/`alcatraz_II`.
 - **Spalten-Trenner** (optische Linien): Zwischen zwei Spalten lässt sich eine
   hervorgehobene Linie legen - als eigener Eintrag `{ typ: trenner, design: … }`
   (linke Kante der Folgespalte) oder als Kurzform `trenner: …` an der Spalte.
