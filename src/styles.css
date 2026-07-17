@@ -366,8 +366,11 @@ body {
 .event-bar .qr {
   position: absolute;
   right: 5px;
-  top: 50%;
-  transform: translateY(-50%);
+  /* Nicht zentriert (translateY(-50%)) - sonst ragt der QR-Code oben aus der
+     Event-Zeile und landet beim Druck (jeder Bogen bricht die Seite um) unten
+     auf der vorherigen Seite. Stattdessen an der Oberkante verankert und etwas
+     nach unten versetzt; nach unten ragt er in den Kopfkörper, das stört nicht. */
+  top: 5px;
   border: 1px solid #bbb;
 }
 
